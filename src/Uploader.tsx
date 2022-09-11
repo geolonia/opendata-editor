@@ -1,4 +1,5 @@
 import React from 'react'
+
 import {useDropzone} from 'react-dropzone'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -102,6 +103,7 @@ const Component = (props: Props) => {
           simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(props.map).fitBounds()
         }
       }
+
       reader.readAsText(file)
     })
 

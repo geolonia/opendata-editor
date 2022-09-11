@@ -11,22 +11,34 @@ html, body, .map, .main, .uploader
 
 .menu
 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50px;
-  box-sizing: border-box;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  padding-top: 16px;
-  text-align: center;
-  background-color: #272727;
-
-  li
+  ul
   {
-    margin-bottom: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    padding-top: 16px;
+    text-align: center;
+    background-color: #272727;
+
+    li
+    {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+  }
+
+  .settings
+  {
+    position: absolute;
+    width: 50px;
+    bottom: 16px;
     font-size: 24px;
+    text-align: center;
   }
 }
 
@@ -50,6 +62,8 @@ html, body, .map, .main, .uploader
   {
     box-sizing: border-box;
     color: #FFFFFF;
+    width: 98%;
+    margin: 0 auto;
 
     h1
     {

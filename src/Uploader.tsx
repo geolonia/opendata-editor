@@ -40,7 +40,7 @@ let lastTarget: any = null; // cache the last target here
 
 const showUploader = (event: DragEvent) => {
   lastTarget = event.target; // cache the last target here
-  const el = document.querySelector('.uploader') as HTMLElement
+  const el = document.querySelector('.uploader') as HTMLDivElement
   el.style.display = "block"
 }
 
@@ -50,9 +50,6 @@ const hideUploader = (event: DragEvent) => {
     el.style.display = "none"
   }
 }
-
-window.addEventListener('dragenter', showUploader)
-window.addEventListener('dragleave', hideUploader)
 
 interface Props {
   className: string;
@@ -68,6 +65,11 @@ const geojson = {
 } as GeoJSON.FeatureCollection
 
 const Component = (props: Props) => {
+
+  React.useEffect(() => {
+    window.addEventListener('dragenter', showUploader)
+    window.addEventListener('dragleave', hideUploader)
+  })
 
   const onDrop = React.useCallback((acceptedFiles : any) => {
     if (! props.map) {

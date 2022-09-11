@@ -26,14 +26,14 @@ function Home() {
 
   return (
     <HashRouter>
-      <Menu className='menu'></Menu>
-      <Map className="map" setmap={setMap} />
       <Routes>
         <Route path="/" element={<></>} />
         <Route path="/table" element={<Table data={data} />} />
         <Route path="/download" element={<Download data={data} />} />
       </Routes>
       <Uploader className="uploader" map={map} dataCallback={setData}></Uploader>
+      <Menu className='menu'></Menu>
+      <Map className="map" setmap={setMap} />
     </HashRouter>
   );
 }

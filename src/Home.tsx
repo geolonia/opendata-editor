@@ -1,0 +1,41 @@
+import React from 'react';
+
+import Table from './Table';
+import Download from './Download';
+
+import {
+  HashRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
+import Map from './Map'
+import Uploader from './Uploader'
+import Menu from './Menu'
+
+import './Home.scss';
+
+const geojson = {
+  "type": "FeatureCollection",
+  "features": []
+} as GeoJSON.FeatureCollection
+
+function Home() {
+  const [ map, setMap ] = React.useState()
+  const [ data, setData ] = React.useState<GeoJSON.FeatureCollection>(geojson)
+
+  return (
+    <HashRouter>
+      <Menu className='menu'></Menu>
+      <Map className="map" setmap={setMap} />
+      <Routes>
+        <Route path="/" element={<></>} />
+        <Route path="/table" element={<Table data={data} />} />
+        <Route path="/download" element={<Download data={data} />} />
+      </Routes>
+      <Uploader className="uploader" map={map} dataCallback={setData}></Uploader>
+    </HashRouter>
+  );
+}
+
+export default Home;

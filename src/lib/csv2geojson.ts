@@ -1,0 +1,59 @@
+import Papa from 'papaparse';
+
+const latColumns = [ '緯度', 'lat', 'latitude' ]
+const lngColumns = [ '経度', 'lng', 'longitude' ]
+
+export function csv2geojson(csv: string) {
+  const data = Papa.parse(csv, {
+    header: true,
+    skipEmptyLines: true,
+  }).data;
+
+  let latColumn = 'latitude'
+  let lngColumn = 'longitude'
+
+  for (let i = 0; i < latColumns.length; i++) {
+    // @ts-ignore
+    if (data.length && data[0] && data[0][latColumns[i]]) {
+      latColumn = latColumns[i]
+    }
+  }
+
+  for (let i = 0; i < lngColumns.length; i++) {
+    // @ts-ignore
+    if (data.length && data[0] && data[0][lngColumns[i]]) {
+      lngColumn = lngColumns[i]
+    }
+  }
+
+  const geojson = {
+    "type": "FeatureCollection",
+    "features": []
+  } as GeoJSON.FeatureCollection
+
+  for (let i = 0; i < data.length; i++) {
+    const feature = {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": []
+      },
+      "properties": {}
+    } as GeoJSON.Feature
+
+    if (data[i]) {
+      feature.geometry = {
+        type: "Point",
+        // @ts-ignore
+        coordinates: [Number(data[i][lngColumn]), Number(data[i][latColumn])]
+      }
+
+      // @ts-ignore
+      feature.properties = data[i]
+
+      geojson.features.push(feature)
+    }
+  }
+
+  return geojson
+}

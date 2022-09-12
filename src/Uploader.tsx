@@ -58,19 +58,25 @@ interface Props {
   dataCallback: Function;
 }
 
-let simpleStyle: any;
-
 const geojson = {
   "type": "FeatureCollection",
   "features": []
 } as GeoJSON.FeatureCollection
 
 const Component = (props: Props) => {
+  const [simpleStyle, setSimpleStyle] = React.useState()
 
   React.useEffect(() => {
     window.addEventListener('dragenter', showUploader)
     window.addEventListener('dragleave', hideUploader)
   })
+
+  React.useEffect(() => {
+    if (props.map && !simpleStyle) {
+      const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(props.map).fitBounds()
+      setSimpleStyle(simpleStyle)
+    }
+  }, [props.map, simpleStyle])
 
   const onDrop = React.useCallback((acceptedFiles : any) => {
     if (! props.map) {
@@ -98,16 +104,15 @@ const Component = (props: Props) => {
         props.dataCallback(geojson)
 
         if (simpleStyle) {
+          // @ts-ignore
           simpleStyle.updateData(geojson).fitBounds()
-        } else {
-          simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(props.map).fitBounds()
         }
       }
 
       reader.readAsText(file)
     })
 
-  }, [props])
+  }, [props, simpleStyle])
 
   const {
     getRootProps,

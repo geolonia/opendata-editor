@@ -9,7 +9,6 @@ const Component = (props: Props) => {
   return (
     <div className="main">
       <div className="container">
-        <h1>レコードの一覧</h1>
         <p>{props.data.features.length}件のデータが登録されています。</p>
       </div>
     </div>

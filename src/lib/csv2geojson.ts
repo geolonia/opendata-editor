@@ -2,6 +2,7 @@ import Papa from 'papaparse';
 
 const latColumns = [ '緯度', 'lat', 'latitude' ]
 const lngColumns = [ '経度', 'lng', 'longitude' ]
+const titleColumns = [ '名称', '名前', 'タイトル', 'title' ]
 
 export function csv2geojson(csv: string) {
   const data = Papa.parse(csv, {
@@ -11,6 +12,7 @@ export function csv2geojson(csv: string) {
 
   let latColumn = 'latitude'
   let lngColumn = 'longitude'
+  let titleColumn = 'title'
 
   for (let i = 0; i < latColumns.length; i++) {
     // @ts-ignore
@@ -23,6 +25,13 @@ export function csv2geojson(csv: string) {
     // @ts-ignore
     if (data.length && data[0] && data[0][lngColumns[i]]) {
       lngColumn = lngColumns[i]
+    }
+  }
+
+  for (let i = 0; i < titleColumns.length; i++) {
+    // @ts-ignore
+    if (data.length && data[0] && data[0][titleColumns[i]]) {
+      titleColumn = titleColumns[i]
     }
   }
 
@@ -47,6 +56,9 @@ export function csv2geojson(csv: string) {
         // @ts-ignore
         coordinates: [Number(data[i][lngColumn]), Number(data[i][latColumn])]
       }
+
+      // @ts-ignore
+      data[i]['title'] = data[i][titleColumn]
 
       // @ts-ignore
       feature.properties = data[i]

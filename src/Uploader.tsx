@@ -17,7 +17,7 @@ const baseStyle = {
   padding: '20px',
   borderWidth: 2,
   borderRadius: 2,
-  borderColor: '#FFFFFF',
+  borderColor: '##FFFFFF',
   borderStyle: 'dashed',
   backgroundColor: 'rgba(0, 0, 0, 0.5)',
   color: '#FFFFFF',
@@ -26,15 +26,15 @@ const baseStyle = {
 }
 
 const focusedStyle = {
-  borderColor: '#FFFFFF'
+  // borderColor: '#FF0000'
 }
 
 const acceptStyle = {
-  borderColor: '#FFFFFF'
+  // borderColor: '#FF0000'
 }
 
 const rejectStyle = {
-  borderColor: '#FFFFFF'
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
 }
 
 let lastTarget: any = null; // cache the last target here
@@ -86,7 +86,7 @@ const Component = (props: Props) => {
     acceptedFiles.forEach((file: any) => {
       const reader = new FileReader()
 
-      reader.onabort = () => console.log('file reading was aborted')
+      reader.onabort = () => () => {}
       reader.onerror = () => console.log('file reading has failed')
       reader.onload = () => {
         const data = reader.result as string

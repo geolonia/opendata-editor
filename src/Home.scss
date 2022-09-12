@@ -2,8 +2,8 @@
 html, body, .map, .main, .uploader
 {
   position: absolute;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   padding: 0;
   margin: 0;
   background-color: #171717;
@@ -46,7 +46,7 @@ html, body, .map, .main, .uploader
 {
   padding: 16px;
   margin-left: 50px;
-  width: calc(100vw - 50px);
+  width: calc(100% - 50px);
   box-sizing: border-box;
 }
 
@@ -54,7 +54,7 @@ html, body, .map, .main, .uploader
 {
   padding: 16px;
   margin-left: 50px;
-  width: calc(100vw - 50px);
+  width: calc(100% - 50px);
   box-sizing: border-box;
   z-index: 9999;
 

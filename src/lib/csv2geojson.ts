@@ -2,7 +2,7 @@ import Papa from 'papaparse';
 
 const latColumns = [ '緯度', 'lat', 'latitude' ]
 const lngColumns = [ '経度', 'lng', 'longitude' ]
-const titleColumns = [ '名称', '名前', 'タイトル', 'title' ]
+const titleColumns = [ '名称', '名前', 'タイトル', 'title', 'name' ]
 
 export function csv2geojson(csv: string) {
   const data = Papa.parse(csv, {

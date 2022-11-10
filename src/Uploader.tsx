@@ -34,7 +34,7 @@ const acceptStyle = {
 }
 
 const rejectStyle = {
-  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  // borderColor: '#FF0000',
 }
 
 let lastTarget: any = null; // cache the last target here
@@ -123,7 +123,7 @@ const Component = (props: Props) => {
   } = useDropzone({ accept: {
     'application/json': ['.json', '.geojson'],
     'text/plain': ['.csv', '.txt'],
-  }, onDrop });
+  }, onDrop, maxFiles: 1, });
 
   const style = React.useMemo(() => ({
     ...baseStyle,

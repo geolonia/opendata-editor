@@ -18,6 +18,7 @@ const Component = (props: Props) => {
     const map = new window.geolonia.Map({
       container: mapContainer.current,
       style: "geolonia/gsi",
+      hash: true,
     })
 
     map.on("load", () => {

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {useDropzone} from 'react-dropzone'
+import queryString from "query-string"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons"
@@ -75,6 +76,19 @@ const Component = (props: Props) => {
     if (props.map && !simpleStyle) {
       const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(props.map).fitBounds()
       setSimpleStyle(simpleStyle)
+
+      if (window.location.search && simpleStyle) {
+        const query = queryString.parse(window.location.search)
+        if (query.data) {
+          // @ts-ignore
+          const res = fetch(query.data)
+            .then((response) => response.text())
+            .then((data) => {
+              const geojson = csv2geojson(data)
+              simpleStyle.updateData(geojson).fitBounds()
+            });
+        }
+      }
     }
   }, [props.map, simpleStyle])
 

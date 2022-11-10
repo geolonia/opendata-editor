@@ -21,7 +21,7 @@ const geojson = {
   "features": []
 } as GeoJSON.FeatureCollection
 
-function Home() {
+const Home = () => {
   const [ map, setMap ] = React.useState()
   const [ data, setData ] = React.useState<GeoJSON.FeatureCollection>(geojson)
 

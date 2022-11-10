@@ -81,7 +81,7 @@ const Component = (props: Props) => {
         const query = queryString.parse(window.location.search)
         if (query.data) {
           // @ts-ignore
-          const res = fetch(query.data)
+          fetch(query.data)
             .then((response) => response.text())
             .then((data) => {
               const geojson = csv2geojson(data)

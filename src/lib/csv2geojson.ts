@@ -51,10 +51,21 @@ export function csv2geojson(csv: string) {
     } as GeoJSON.Feature
 
     if (data[i]) {
+      let coordinates = [];
+      
+      // @ts-ignore
+      if (data[i]['location']) {
+        // @ts-ignore
+        const [latitude, longitude] = data[i]['location'].split(',')
+        coordinates = [Number(longitude), Number(latitude)]
+      } else {
+        // @ts-ignore
+        coordinates = [Number(data[i][lngColumn]), Number(data[i][latColumn])]
+      }
+
       feature.geometry = {
         type: "Point",
-        // @ts-ignore
-        coordinates: [Number(data[i][lngColumn]), Number(data[i][latColumn])]
+        coordinates: coordinates
       }
 
       // @ts-ignore

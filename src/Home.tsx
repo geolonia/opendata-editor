@@ -3,6 +3,7 @@ import React from 'react';
 import Table from './Table';
 import Download from './Download';
 import Settings from './Settings';
+import Edit from './Edit';
 
 import {
   HashRouter,
@@ -32,6 +33,7 @@ const Home = () => {
         <Route path="/table" element={<Table data={data} />} />
         <Route path="/download" element={<Download data={data} />} />
         <Route path="/settings" element={<Settings data={data} />} />
+        <Route path="/edit/:id" element={<Edit data={data} />} />
       </Routes>
       <Uploader className="uploader" map={map} dataCallback={setData}></Uploader>
       <Menu className='menu'></Menu>

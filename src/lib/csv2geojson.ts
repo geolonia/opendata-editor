@@ -68,7 +68,7 @@ export function csv2geojson(csv: string) {
         coordinates: coordinates
       }
 
-      let description = '';
+      let description = `<a href="#/edit/${i}">編集</a><br />`;
       const obj: any = data[i];
       for(let key in obj) {
         description += `<strong>${key}:</strong> ${obj[key]}<br />`

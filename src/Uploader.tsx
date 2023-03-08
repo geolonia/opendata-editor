@@ -8,6 +8,8 @@ import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons"
 
 import { csv2geojson } from "./lib/csv2geojson"
 
+import Papa from 'papaparse';
+
 const sourceId = 'custom-geojson'
 
 const baseStyle = {
@@ -57,6 +59,7 @@ interface Props {
   className: string;
   map: any;
   dataCallback: Function;
+  csvDataCallback: Function;
 }
 
 const geojson = {
@@ -115,6 +118,11 @@ const Component = (props: Props) => {
         const el = document.querySelector('.uploader') as HTMLElement
         el.style.display = "none"
 
+        const csvData = Papa.parse(data, {
+          header: true,
+          skipEmptyLines: true,
+        }).data;
+        props.csvDataCallback(csvData)
         props.dataCallback(geojson)
 
         if (simpleStyle) {

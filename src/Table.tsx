@@ -4,7 +4,8 @@ import "@silevis/reactgrid/styles.css";
 
 interface Props {
   className?: string;
-  data: GeoJSON.FeatureCollection
+  data: GeoJSON.FeatureCollection;
+  csvData: TableData[];
 }
 
 interface TableData {
@@ -24,8 +25,7 @@ const applyChangesToData = (
 };
 
 const Component = (props: Props) => {
-  const properties = props.data.features.map((feature) => { return feature.properties as TableData })
-  const [tableData, setTableData] = React.useState<TableData[]>(properties);
+  const [tableData, setTableData] = React.useState<TableData[]>(props.csvData);
 
   const handleChanges = (changes: CellChange[]) => {
     const textCellChanges = changes.filter(x => x.type === 'text') as CellChange<TextCell>[];
@@ -34,7 +34,7 @@ const Component = (props: Props) => {
 
   const headerRow: Row = {
     rowId: "header",
-    cells: properties[0] ? Object.keys(properties[0]).map((key) => {
+    cells: tableData[0] ? Object.keys(tableData[0]).map((key) => {
       return { type: "header", text: key };
     }) : []
   };
@@ -47,7 +47,7 @@ const Component = (props: Props) => {
     }))
   ];
 
-  const getColumns = (): Column[] => properties[0] ? Object.keys(properties[0]).map((key) => {
+  const getColumns = (): Column[] => tableData[0] ? Object.keys(tableData[0]).map((key) => {
     return { columnId: key, width: 150 };
   }) : [];
   
@@ -56,7 +56,7 @@ const Component = (props: Props) => {
   return (
     <div className="main">
       <div className="container">
-        <p>{props.data.features.length}件のデータが登録されています。</p>
+        <p>{tableData.length}件のデータが登録されています。</p>
         <ReactGrid rows={rows} columns={columns} onCellsChanged={handleChanges}/>
       </div>
     </div>

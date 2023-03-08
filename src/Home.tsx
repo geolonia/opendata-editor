@@ -17,6 +17,10 @@ import Menu from './Menu'
 
 import './Home.scss';
 
+interface TableData {
+  [key: string]: string;
+}
+
 const geojson = {
   "type": "FeatureCollection",
   "features": []
@@ -25,17 +29,18 @@ const geojson = {
 const Home = () => {
   const [ map, setMap ] = React.useState()
   const [ data, setData ] = React.useState<GeoJSON.FeatureCollection>(geojson)
+  const [ csvData, setCsvData ] = React.useState<TableData[]>([])
 
   return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<></>} />
-        <Route path="/table" element={<Table data={data} />} />
+        <Route path="/table" element={<Table data={data} csvData={csvData} />} />
         <Route path="/download" element={<Download data={data} />} />
         <Route path="/settings" element={<Settings data={data} />} />
         <Route path="/edit/:id" element={<Edit data={data} />} />
       </Routes>
-      <Uploader className="uploader" map={map} dataCallback={setData}></Uploader>
+      <Uploader className="uploader" map={map} dataCallback={setData} csvDataCallback={setCsvData}></Uploader>
       <Menu className='menu'></Menu>
       <Map className="map" setmap={setMap} />
     </HashRouter>

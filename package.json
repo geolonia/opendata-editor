@@ -1,8 +1,8 @@
 {
-  "name": "opendata-viewer",
+  "name": "opendata-editor",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://geolonia.github.io/opendata-viewer/",
+  "homepage": "https://geolonia.github.io/opendata-editor/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-regular-svg-icons": "^6.2.0",

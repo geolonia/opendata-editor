@@ -36,7 +36,7 @@ const Home = () => {
       <Routes>
         <Route path="/" element={<></>} />
         <Route path="/table" element={<Table data={data} csvData={csvData} />} />
-        <Route path="/download" element={<Download data={data} />} />
+        <Route path="/download" element={<Download data={data} csvData={csvData} />} />
         <Route path="/settings" element={<Settings data={data} />} />
         <Route path="/edit/:id" element={<Edit data={data} />} />
       </Routes>

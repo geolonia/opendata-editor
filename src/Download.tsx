@@ -1,20 +1,44 @@
 import React from 'react';
+import Papa from 'papaparse';
 
+interface TableData {
+  [key: string]: string;
+}
 interface Props {
   className?: string;
-  data: GeoJSON.FeatureCollection
+  data: GeoJSON.FeatureCollection;
+  csvData: TableData[];
 }
 
 const Component = (props: Props) => {
-  const handleClick = () => {
-    console.log(props.data.features)
-  };
+  const ref = React.useRef<HTMLButtonElement>(null)
+
+  const onClick = React.useCallback((event: MouseEvent) => {
+    const output = Papa.unparse(props.csvData);
+    const el = document.createElement('a')
+    el.download = 'data.csv'
+    el.href = `data:application/csv;charset=UTF-8,${encodeURIComponent(output)}`
+
+    document.body.appendChild(el)
+    el.click()
+
+    document.body.removeChild(el)
+  }, [props])
+
+
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current.disabled = false
+      ref.current.style.cursor = 'pointer'
+      ref.current.onclick = onClick
+    }
+  }, [onClick])
 
   return (
     <div className="main">
       <div className="container">
         <h1>ダウンロード</h1>
-        <button onClick={handleClick}>ダウンロード</button>
+        <button className="download-button" ref={ref} disabled={true}>ダウンロード</button>
       </div>
     </div>
   );

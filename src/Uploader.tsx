@@ -87,6 +87,12 @@ const Component = (props: Props) => {
           fetch(query.data)
             .then((response) => response.text())
             .then((data) => {
+              const csvData = Papa.parse(data, {
+                header: true,
+                skipEmptyLines: true,
+              }).data;
+              props.csvDataCallback(csvData)
+
               const geojson = csv2geojson(data)
               simpleStyle.updateData(geojson).fitBounds()
             });

@@ -1,16 +1,11 @@
 import React from 'react'
 
 import {useDropzone} from 'react-dropzone'
-import queryString from "query-string"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons"
 
-import { csv2geojson } from "./lib/csv2geojson"
-
 import Papa from 'papaparse';
-
-const sourceId = 'custom-geojson'
 
 const baseStyle = {
   flex: 1,
@@ -57,55 +52,16 @@ const hideUploader = (event: DragEvent) => {
 
 interface Props {
   className: string;
-  map: any;
-  dataCallback: Function;
   csvDataCallback: Function;
 }
 
-const geojson = {
-  "type": "FeatureCollection",
-  "features": []
-} as GeoJSON.FeatureCollection
-
 const Component = (props: Props) => {
-  const [simpleStyle, setSimpleStyle] = React.useState()
-
   React.useEffect(() => {
     window.addEventListener('dragenter', showUploader)
     window.addEventListener('dragleave', hideUploader)
   })
 
-  React.useEffect(() => {
-    if (props.map && !simpleStyle) {
-      const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(props.map).fitBounds()
-      setSimpleStyle(simpleStyle)
-
-      if (window.location.search && simpleStyle) {
-        const query = queryString.parse(window.location.search)
-        if (query.data) {
-          // @ts-ignore
-          fetch(query.data)
-            .then((response) => response.text())
-            .then((data) => {
-              const csvData = Papa.parse(data, {
-                header: true,
-                skipEmptyLines: true,
-              }).data;
-              props.csvDataCallback(csvData)
-
-              const geojson = csv2geojson(data)
-              simpleStyle.updateData(geojson).fitBounds()
-            });
-        }
-      }
-    }
-  }, [props.map, simpleStyle])
-
   const onDrop = React.useCallback((acceptedFiles : any) => {
-    if (! props.map) {
-      return
-    }
-
     acceptedFiles.forEach((file: any) => {
       const reader = new FileReader()
 
@@ -113,13 +69,6 @@ const Component = (props: Props) => {
       reader.onerror = () => console.log('file reading has failed')
       reader.onload = () => {
         const data = reader.result as string
-
-        try {
-          geojson.features = JSON.parse(data).features
-        } catch(e) {
-          const _geojson = csv2geojson(data)
-          geojson.features = _geojson.features
-        }
 
         const el = document.querySelector('.uploader') as HTMLElement
         el.style.display = "none"
@@ -129,18 +78,12 @@ const Component = (props: Props) => {
           skipEmptyLines: true,
         }).data;
         props.csvDataCallback(csvData)
-        props.dataCallback(geojson)
-
-        if (simpleStyle) {
-          // @ts-ignore
-          simpleStyle.updateData(geojson).fitBounds()
-        }
       }
 
       reader.readAsText(file)
     })
 
-  }, [props, simpleStyle])
+  }, [props])
 
   const {
     getRootProps,
@@ -149,7 +92,6 @@ const Component = (props: Props) => {
     isDragAccept,
     isDragReject
   } = useDropzone({ accept: {
-    'application/json': ['.json', '.geojson'],
     'text/plain': ['.csv', '.txt'],
   }, onDrop, maxFiles: 1, });
 

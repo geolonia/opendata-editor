@@ -3,7 +3,9 @@ import React from 'react';
 import Table from './Table';
 import Download from './Download';
 import Settings from './Settings';
-import Edit from './Edit';
+
+import queryString from "query-string"
+import Papa from 'papaparse';
 
 import {
   HashRouter,
@@ -17,7 +19,7 @@ import Menu from './Menu'
 
 import './Home.scss';
 
-interface TableData {
+interface Feature {
   [key: string]: string;
 }
 
@@ -27,22 +29,39 @@ const geojson = {
 } as GeoJSON.FeatureCollection
 
 const Home = () => {
-  const [ map, setMap ] = React.useState()
   const [ data, setData ] = React.useState<GeoJSON.FeatureCollection>(geojson)
-  const [ csvData, setCsvData ] = React.useState<TableData[]>([])
+  const [ features, setFeatures ] = React.useState<Feature[]>([])
+
+  React.useEffect(() => {
+    if (window.location.search) {
+      const query = queryString.parse(window.location.search)
+      if (query.data) {
+        // @ts-ignore
+        fetch(query.data)
+          .then((response) => response.text())
+          .then((data) => {
+            const features = Papa.parse(data, {
+              header: true,
+              skipEmptyLines: true,
+            }).data as Feature[];
+  
+            setFeatures([...features]);
+          });
+      }
+    }
+  }, []);
 
   return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<></>} />
-        <Route path="/table" element={<Table data={data} csvData={csvData} />} />
-        <Route path="/download" element={<Download data={data} csvData={csvData} />} />
-        <Route path="/settings" element={<Settings data={data} />} />
-        <Route path="/edit/:id" element={<Edit data={data} />} />
+        <Route path="/table" element={<Table features={features} setFeatures={setFeatures} />} />
+        <Route path="/download" element={<Download features={features} />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
-      <Uploader className="uploader" map={map} dataCallback={setData} csvDataCallback={setCsvData}></Uploader>
+      <Uploader className="uploader" csvDataCallback={setFeatures}></Uploader>
       <Menu className='menu'></Menu>
-      <Map className="map" setmap={setMap} />
+      <Map className="map" features={features}/>
     </HashRouter>
   );
 }

@@ -2,7 +2,6 @@ import React from 'react';
 
 interface Props {
   className?: string;
-  data: GeoJSON.FeatureCollection
 }
 
 const Component = (props: Props) => {

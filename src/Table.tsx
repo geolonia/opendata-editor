@@ -4,18 +4,18 @@ import "@silevis/reactgrid/styles.css";
 
 interface Props {
   className?: string;
-  data: GeoJSON.FeatureCollection;
-  csvData: TableData[];
+  features: Feature[];
+  setFeatures: Function;
 }
 
-interface TableData {
+interface Feature {
   [key: string]: string;
 }
 
 const applyChangesToData = (
   changes: CellChange<TextCell>[],
-  prevTableData: TableData[]
-): TableData[] => {
+  prevTableData: Feature[]
+): Feature[] => {
   changes.forEach((change) => {
     const index = change.rowId as number;
     const fieldName = change.columnId;
@@ -25,11 +25,12 @@ const applyChangesToData = (
 };
 
 const Component = (props: Props) => {
-  const [tableData, setTableData] = React.useState<TableData[]>(props.csvData);
+  const [tableData, setTableData] = React.useState<Feature[]>(props.features);
 
   const handleChanges = (changes: CellChange[]) => {
     const textCellChanges = changes.filter(x => x.type === 'text') as CellChange<TextCell>[];
     setTableData((prevTableData) => applyChangesToData(textCellChanges, prevTableData));
+    props.setFeatures([...tableData]);
   };
 
   const headerRow: Row = {
@@ -39,7 +40,7 @@ const Component = (props: Props) => {
     }) : []
   };
 
-  const getRows = (tableData: TableData[]): Row[] => [
+  const getRows = (tableData: Feature[]): Row[] => [
     headerRow,
     ...tableData.map<Row>((rowData, idx) => ({
       rowId: idx,

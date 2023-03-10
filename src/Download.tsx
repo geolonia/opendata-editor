@@ -1,20 +1,19 @@
 import React from 'react';
 import Papa from 'papaparse';
 
-interface TableData {
+interface Feature {
   [key: string]: string;
 }
 interface Props {
   className?: string;
-  data: GeoJSON.FeatureCollection;
-  csvData: TableData[];
+  features: Feature[];
 }
 
 const Component = (props: Props) => {
   const ref = React.useRef<HTMLButtonElement>(null)
 
   const onClick = React.useCallback((event: MouseEvent) => {
-    const output = Papa.unparse(props.csvData);
+    const output = Papa.unparse(props.features);
     const el = document.createElement('a')
     el.download = 'data.csv'
     el.href = `data:application/csv;charset=UTF-8,${encodeURIComponent(output)}`

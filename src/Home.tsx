@@ -23,13 +23,7 @@ interface Feature {
   [key: string]: string;
 }
 
-const geojson = {
-  "type": "FeatureCollection",
-  "features": []
-} as GeoJSON.FeatureCollection
-
 const Home = () => {
-  const [ data, setData ] = React.useState<GeoJSON.FeatureCollection>(geojson)
   const [ features, setFeatures ] = React.useState<Feature[]>([])
 
   React.useEffect(() => {

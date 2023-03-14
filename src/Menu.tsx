@@ -38,10 +38,6 @@ const Component = (props: Props) => {
           }
         })}
       </ul>
-
-      <div className='settings'>
-        <Link to="/settings"><FontAwesomeIcon icon={faWrench} className="icons" /></Link>
-      </div>
     </div>
   );
 }

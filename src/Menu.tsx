@@ -3,7 +3,7 @@ import React from 'react';
 import { Link, useLocation } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faTable, faDownload } from "@fortawesome/free-solid-svg-icons";
+import { faMap, faTable, faDownload } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   className?: string;
@@ -15,7 +15,7 @@ const Component = (props: Props) => {
   const menu = [
     {
       path: '/',
-      icon: faHome,
+      icon: faMap,
     },
     {
       path: '/table',

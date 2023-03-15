@@ -32,7 +32,7 @@ const Component = (props: Props) => {
       <ul>
         {menu.map((item, i) => {
           if (item.path === location.pathname) {
-            return <li key={i}><Link to={item.path}><FontAwesomeIcon icon={item.icon} className="icons active" /></Link></li>
+            return <li key={i} className="active"><Link to={item.path}><FontAwesomeIcon icon={item.icon} className="icons active" /></Link></li>
           } else {
             return <li key={i}><Link to={item.path}><FontAwesomeIcon icon={item.icon} className="icons" /></Link></li>
           }

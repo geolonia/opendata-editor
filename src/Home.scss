@@ -26,23 +26,23 @@ p,h1{
     padding-top: 16px;
     text-align: center;
     background-color: #fff;
-    border-right: 1px solid #0079c4;
+    border-right: 1px solid #F39813;
     li
     {
       font-size: 24px;
       border-bottom: 1px solid #d5e8f5;
       a{
         display: block;
-        color: #0079c4;
+        color: #F39813;
         padding: 20px 0;
         &:hover{
-          background: #0079c4;
+          background: #F39813;
           color: #fff;
           transition: 0.3s;
         }
       }
       &.active{
-        background: #0079c4;
+        background: #F39813;
         a{
           color: #fff;
         }
@@ -75,7 +75,7 @@ p,h1{
   width: calc(100% - 50px);
   height: 100%;
   box-sizing: border-box;
-  box-shadow: 12px 0 8px -8px rgba(0, 121, 196, 0.1) inset;
+  box-shadow: 12px 0 8px -8px rgba(243, 152, 19, 0.1) inset;
   z-index: 9999;
 
   .container
@@ -141,13 +141,13 @@ button.download-button{
   margin-right: 8px;
 }
 .reactgrid-content .rg-pane .rg-cell{
-  border-color: #c7c7c7;
+  border-color: #2b2121;
   color: #2b2b2b;
   padding: 8px;
 }
 .reactgrid-content .rg-pane .rg-cell.rg-header-cell{
-  background-color: #ebf5fb!important;
-  color: #0079c4;
+  background-color: #fbf1e4!important;
+  color: #EE730D;
   font-weight: bold;
   padding: 12px 8px!important;
 }

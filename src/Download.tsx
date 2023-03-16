@@ -1,7 +1,7 @@
 import React from 'react';
 import Papa from 'papaparse';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMap, faTable, faDownload } from "@fortawesome/free-solid-svg-icons";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
 
 interface Feature {
   [key: string]: string;

@@ -1,5 +1,7 @@
 import React from 'react';
 import Papa from 'papaparse';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
 
 interface Feature {
   [key: string]: string;
@@ -37,7 +39,7 @@ const Component = (props: Props) => {
     <div className="main">
       <div className="container">
         <h1>ダウンロード</h1>
-        <button className="download-button" ref={ref} disabled={true}>ダウンロード</button>
+        <button className="download-button" ref={ref} disabled={true}><FontAwesomeIcon icon={faDownload} className="button-icon" />ダウンロード</button>
       </div>
     </div>
   );

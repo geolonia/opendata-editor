@@ -9,6 +9,7 @@ interface Feature {
 interface Props {
   className?: string;
   features: Feature[];
+  filename: string;
 }
 
 const Component = (props: Props) => {
@@ -17,7 +18,7 @@ const Component = (props: Props) => {
   const onClick = React.useCallback((event: MouseEvent) => {
     const output = Papa.unparse(props.features);
     const el = document.createElement('a')
-    el.download = 'data.csv'
+    el.download = props.filename;
     el.href = `data:application/csv;charset=UTF-8,${encodeURIComponent(output)}`
 
     document.body.appendChild(el)

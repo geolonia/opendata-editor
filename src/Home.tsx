@@ -25,11 +25,16 @@ interface Feature {
 
 const Home = () => {
   const [ features, setFeatures ] = React.useState<Feature[]>([])
+  const [ filename, setFilename ] = React.useState<string>('')
 
   React.useEffect(() => {
     if (window.location.search) {
       const query = queryString.parse(window.location.search)
       if (query.data) {
+        const path = query.data as string;
+        const filename = path.split('/').pop() || '';
+        setFilename(filename);
+
         // @ts-ignore
         fetch(query.data)
           .then((response) => response.text())
@@ -50,10 +55,10 @@ const Home = () => {
       <Routes>
         <Route path="/" element={<></>} />
         <Route path="/table" element={<Table features={features} setFeatures={setFeatures} />} />
-        <Route path="/download" element={<Download features={features} />} />
+        <Route path="/download" element={<Download features={features} filename={filename} />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
-      <Uploader className="uploader" csvDataCallback={setFeatures}></Uploader>
+      <Uploader className="uploader" setFeatures={setFeatures} setFilename={setFilename}></Uploader>
       <Menu className='menu'></Menu>
       <Map className="map" features={features}/>
     </HashRouter>

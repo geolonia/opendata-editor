@@ -52,7 +52,8 @@ const hideUploader = (event: DragEvent) => {
 
 interface Props {
   className: string;
-  csvDataCallback: Function;
+  setFeatures: Function;
+  setFilename: Function;
 }
 
 const Component = (props: Props) => {
@@ -63,6 +64,8 @@ const Component = (props: Props) => {
 
   const onDrop = React.useCallback((acceptedFiles : any) => {
     acceptedFiles.forEach((file: any) => {
+      props.setFilename(file.name)
+
       const reader = new FileReader()
 
       reader.onabort = () => () => {}
@@ -77,7 +80,7 @@ const Component = (props: Props) => {
           header: true,
           skipEmptyLines: true,
         }).data;
-        props.csvDataCallback(csvData)
+        props.setFeatures(csvData)
       }
 
       reader.readAsText(file)

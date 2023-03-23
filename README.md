@@ -1,4 +1,42 @@
-# Getting Started with Create React App
+# オープンデータ編集マップ
+
+位置情報座標を含む CSV をドラッグ・アンド・ドロップするか、URL で指定すると、地図とスプレッドシート形式で位置情報データを編集し、新しいCSVデータをダウンロードすることができます。
+
+<img width="1166" alt="スクリーンショット_2023-03-22_17_05_54" src="https://user-images.githubusercontent.com/1124652/226838649-d24c1d43-6832-461f-a74d-b50d2ceba455.png">
+
+## 機能、使い方
+
+- https://geolonia.github.io/opendata-editor/ を開きます
+- 位置情報座標を含む CSV を画面にドラッグ・アンド・ドロップすると、地図上にアイコンが表示されます
+  - アイコンをクリックすると、属性情報をみることができます
+- 編集マップの URL のクエリパラメータに csv を指定し、編集マップのリンクを作ることができます
+  - 例: 高松市のオープンデータ(AED一覧)を編集マップで開くためのリンク: https://geolonia.github.io/opendata-editor/?data=https://raw.githubusercontent.com/takamatsu-city/opendata/main/data/aed_location/0002.csv
+- 「スプレッドシート形式」タブで、csv の編集ができる。（現在、値の変更のみをサポートしています。）
+- CSV 出力タブで、編集済みの CSVファイルをダウンロードすることができる
+
+## 仕様
+
+### 出力されるCSV
+
+出力されるCSVの[サンプルをダウンロード](https://github.com/takamatsu-city/opendata/tree/main/data/aed_location)してください。
+
+### CSV の位置情報座標列のカラムタイトル
+
+以下の文字列があるデータをサポートしています。
+
+- `latitude`, `longitude` 
+
+## 追加予定の機能の案
+
+- 地図画面で、新しい点データを作成する、点の位置をずらす、点を削除する
+- 地図画面で、新しい点データの行を作成する、点を削除する
+
+## ライセンス、利用規約、フィードバック
+
+- ソースコードのライセンスは MIT ライセンスです。
+- 機能改善のための提案、アイディアを歓迎しています。
+
+# 開発者向け情報 / Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

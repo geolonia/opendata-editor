@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactGrid, Column, Row, CellChange, TextCell } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row, CellChange, TextCell, Id, MenuOption, SelectionMode } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 
 interface Props {
@@ -33,6 +33,30 @@ const Component = (props: Props) => {
     props.setFeatures([...tableData]);
   };
 
+  const handleContextMenu = (
+    selectedRowIds: Id[],
+    selectedColIds: Id[],
+    selectionMode: SelectionMode,
+    menuOptions: MenuOption[]
+  ): MenuOption[] => {
+    if (selectionMode === "row") {
+      menuOptions = [
+        {
+          id: "removeRow",
+          label: "この行を削除する",
+          handler: () => {
+            setTableData(prevTableData => {
+              const newTableData = [...prevTableData.filter((_tableData, idx) => !selectedRowIds.includes(idx))];
+              props.setFeatures([...newTableData]);
+              return newTableData
+            })
+          }
+        }
+      ];
+    }
+    return menuOptions;
+  }
+
   const headerRow: Row = {
     rowId: "header",
     cells: tableData[0] ? Object.keys(tableData[0]).map((key) => {
@@ -58,7 +82,13 @@ const Component = (props: Props) => {
     <div className="main">
       <div className="container">
         <p>{tableData.length}件のデータが登録されています。</p>
-        <ReactGrid rows={rows} columns={columns} onCellsChanged={handleChanges}/>
+        <ReactGrid
+          rows={rows}
+          columns={columns}
+          onCellsChanged={handleChanges}
+          onContextMenu={handleContextMenu}
+          enableRowSelection
+        />
       </div>
     </div>
   );

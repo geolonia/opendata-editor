@@ -53,6 +53,8 @@ const Component = (props: Props) => {
           }
         }
       ];
+    } else {
+      menuOptions = [];
     }
     return menuOptions;
   }
@@ -81,7 +83,7 @@ const Component = (props: Props) => {
   return (
     <div className="main">
       <div className="container">
-        <p>{tableData.length}件のデータが登録されています。</p>
+        <p>データを削除するには、行を選択して右クリックして下さい。</p>
         <ReactGrid
           rows={rows}
           columns={columns}

@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMap, faTable, faDownload } from "@fortawesome/free-solid-svg-icons";
 
+import './Menu.scss';
 interface Props {
   className?: string;
 }

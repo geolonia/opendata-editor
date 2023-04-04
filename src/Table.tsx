@@ -102,6 +102,7 @@ const Component = (props: Props) => {
           onCellsChanged={handleChanges}
           onContextMenu={handleContextMenu}
           enableRowSelection
+          stickyTopRows={1}
         />
       </div>
     </div>

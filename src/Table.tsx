@@ -26,6 +26,14 @@ const applyChangesToData = (
 
 const Component = (props: Props) => {
   const [tableData, setTableData] = React.useState<Feature[]>(props.features);
+  
+  const addData = () => {
+    let newTableData: Feature = {}
+    for(let key of Object.keys(tableData[0])) {
+      newTableData[key] = '';
+    }
+    setTableData([...tableData, newTableData]);
+  }
 
   const handleChanges = (changes: CellChange[]) => {
     const textCellChanges = changes.filter(x => x.type === 'text') as CellChange<TextCell>[];
@@ -47,7 +55,7 @@ const Component = (props: Props) => {
           handler: () => {
             setTableData(prevTableData => {
               const newTableData = [...prevTableData.filter((_tableData, idx) => !selectedRowIds.includes(idx))];
-              props.setFeatures([...newTableData]);
+              props.setFeatures(newTableData);
               return newTableData
             })
           }
@@ -83,7 +91,11 @@ const Component = (props: Props) => {
   return (
     <div className="main">
       <div className="container">
-        <p>データを削除するには、行を選択して右クリックして下さい。</p>
+        <p>
+          データを編集するには、セルの上でダブルクリックして下さい。<br />
+          データを削除するには、一番左のセルを選択して右クリックして下さい。<br />
+          <button onClick={addData}>データを追加</button><br />
+        </p>
         <ReactGrid
           rows={rows}
           columns={columns}

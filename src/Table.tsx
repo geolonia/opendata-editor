@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactGrid, Column, Row, CellChange, TextCell } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row, CellChange, TextCell, Id, MenuOption, SelectionMode } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 
 interface Props {
@@ -26,12 +26,46 @@ const applyChangesToData = (
 
 const Component = (props: Props) => {
   const [tableData, setTableData] = React.useState<Feature[]>(props.features);
+  
+  const addData = () => {
+    let newTableData: Feature = {}
+    for(let key of Object.keys(tableData[0])) {
+      newTableData[key] = '';
+    }
+    setTableData([...tableData, newTableData]);
+  }
 
   const handleChanges = (changes: CellChange[]) => {
     const textCellChanges = changes.filter(x => x.type === 'text') as CellChange<TextCell>[];
     setTableData((prevTableData) => applyChangesToData(textCellChanges, prevTableData));
     props.setFeatures([...tableData]);
   };
+
+  const handleContextMenu = (
+    selectedRowIds: Id[],
+    selectedColIds: Id[],
+    selectionMode: SelectionMode,
+    menuOptions: MenuOption[]
+  ): MenuOption[] => {
+    if (selectionMode === "row") {
+      menuOptions = [
+        {
+          id: "removeRow",
+          label: "この行を削除する",
+          handler: () => {
+            setTableData(prevTableData => {
+              const newTableData = [...prevTableData.filter((_tableData, idx) => !selectedRowIds.includes(idx))];
+              props.setFeatures(newTableData);
+              return newTableData
+            })
+          }
+        }
+      ];
+    } else {
+      menuOptions = [];
+    }
+    return menuOptions;
+  }
 
   const headerRow: Row = {
     rowId: "header",
@@ -57,8 +91,19 @@ const Component = (props: Props) => {
   return (
     <div className="main">
       <div className="container">
-        <p>{tableData.length}件のデータが登録されています。</p>
-        <ReactGrid stickyTopRows={1} rows={rows} columns={columns} onCellsChanged={handleChanges}/>
+        <p>
+          データを編集するには、セルの上でダブルクリックして下さい。<br />
+          データを削除するには、一番左のセルを選択して右クリックして下さい。<br />
+          <button onClick={addData}>データを追加</button><br />
+        </p>
+        <ReactGrid
+          rows={rows}
+          columns={columns}
+          onCellsChanged={handleChanges}
+          onContextMenu={handleContextMenu}
+          enableRowSelection
+          stickyTopRows={1}
+        />
       </div>
     </div>
   );

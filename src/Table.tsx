@@ -58,7 +58,7 @@ const Component = (props: Props) => {
     <div className="main">
       <div className="container">
         <p>{tableData.length}件のデータが登録されています。</p>
-        <ReactGrid rows={rows} columns={columns} onCellsChanged={handleChanges}/>
+        <ReactGrid stickyTopRows={1} rows={rows} columns={columns} onCellsChanged={handleChanges}/>
       </div>
     </div>
   );

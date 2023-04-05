@@ -2,6 +2,9 @@ import React from 'react';
 import { ReactGrid, Column, Row, CellChange, TextCell, Id, MenuOption, SelectionMode } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+
 interface Props {
   className?: string;
   features: Feature[];
@@ -26,7 +29,7 @@ const applyChangesToData = (
 
 const Component = (props: Props) => {
   const [tableData, setTableData] = React.useState<Feature[]>(props.features);
-  
+
   const addData = () => {
     let newTableData: Feature = {}
     for(let key of Object.keys(tableData[0])) {
@@ -88,24 +91,30 @@ const Component = (props: Props) => {
   
   const rows = getRows(tableData);
   const columns = getColumns();
+
+  React.useEffect(() => {
+    setTableData(props.features);
+  }, [props.features])
+
   return (
-    <div className="main">
-      <div className="container">
-        <p>
-          データを編集するには、セルの上でダブルクリックして下さい。<br />
-          データを削除するには、一番左のセルを選択して右クリックして下さい。<br />
-          <button onClick={addData}>データを追加</button><br />
-        </p>
-        <ReactGrid
-          rows={rows}
-          columns={columns}
-          onCellsChanged={handleChanges}
-          onContextMenu={handleContextMenu}
-          enableRowSelection
-          stickyTopRows={1}
-        />
-      </div>
-    </div>
+    <>
+      <p>
+        データを編集するには、セルの上でダブルクリックして下さい。<br />
+        データを削除するには、一番左のセルを選択して右クリックして下さい。<br />
+        <button className="add-data-button" onClick={addData}>
+          <FontAwesomeIcon icon={faPlusCircle} className="button-icon" />
+          データを追加
+        </button><br />
+      </p>
+      <ReactGrid
+        rows={rows}
+        columns={columns}
+        onCellsChanged={handleChanges}
+        onContextMenu={handleContextMenu}
+        enableRowSelection
+        stickyTopRows={1}
+      />
+    </>
   );
 }
 

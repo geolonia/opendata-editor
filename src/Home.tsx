@@ -2,20 +2,12 @@ import React from 'react';
 
 import Table from './Table';
 import Download from './Download';
-import Settings from './Settings';
 
 import queryString from "query-string"
 import Papa from 'papaparse';
 
-import {
-  HashRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
-
 import Map from './Map'
 import Uploader from './Uploader'
-import Menu from './Menu'
 
 import './Home.scss';
 
@@ -51,17 +43,14 @@ const Home = () => {
   }, []);
 
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<></>} />
-        <Route path="/table" element={<Table features={features} setFeatures={setFeatures} />} />
-        <Route path="/download" element={<Download features={features} filename={filename} />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
-      <Uploader className="uploader" setFeatures={setFeatures} setFilename={setFilename}></Uploader>
-      <Menu className='menu'></Menu>
-      <Map className="map" features={features}/>
-    </HashRouter>
+    <div className="main">
+      <div className="container">
+        <Uploader className="uploader" setFeatures={setFeatures} setFilename={setFilename}></Uploader>
+        <Download features={features} filename={filename} />
+        <Map className="map" features={features}/>
+        <Table features={features} setFeatures={setFeatures} />    
+      </div>
+    </div>
   );
 }
 

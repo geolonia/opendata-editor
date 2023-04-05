@@ -62,17 +62,16 @@ p,h1{
 
 .map
 {
-  margin-left: 50px;
-  width: calc(100% - 50px);
-  height: 100%;
+  position: relative;
+  width: 100%;
+  height: 400px;
   box-sizing: border-box;
 }
 
 .main
 {
   padding: 16px;
-  margin-left: 50px;
-  width: calc(100% - 50px);
+  width: 100%;
   height: 100%;
   box-sizing: border-box;
   box-shadow: 12px 0 8px -8px rgba(243, 152, 19, 0.1) inset;
@@ -120,7 +119,7 @@ p,h1{
 {
   width: 100%;
 }
-button.download-button{
+button.download-button, button.add-data-button{
   background: #F39813;
   border: none;
   padding: 8px 24px;

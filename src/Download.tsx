@@ -37,12 +37,7 @@ const Component = (props: Props) => {
   }, [onClick])
 
   return (
-    <div className="main">
-      <div className="container">
-        <h1>ダウンロード</h1>
-        <button className="download-button" ref={ref} disabled={true}><FontAwesomeIcon icon={faDownload} className="button-icon" />ダウンロード</button>
-      </div>
-    </div>
+    <button className="download-button" ref={ref} disabled={true}><FontAwesomeIcon icon={faDownload} className="button-icon" />エクスポート</button>
   );
 }
 

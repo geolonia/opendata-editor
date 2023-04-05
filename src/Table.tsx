@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactGrid, Column, Row, CellChange, TextCell, Id, MenuOption, SelectionMode } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row, CellChange, TextCell, Id, MenuOption, SelectionMode, CellLocation } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +9,7 @@ interface Props {
   className?: string;
   features: Feature[];
   setFeatures: Function;
+  setFeatureSelected: Function;
 }
 
 interface Feature {
@@ -42,6 +43,11 @@ const Component = (props: Props) => {
     const textCellChanges = changes.filter(x => x.type === 'text') as CellChange<TextCell>[];
     setTableData((prevTableData) => applyChangesToData(textCellChanges, prevTableData));
     props.setFeatures([...tableData]);
+  };
+
+  const handleFocusLocationChanged = (location: CellLocation) => {
+    const featureSelected = tableData[location.rowId as number];
+    props.setFeatureSelected(featureSelected);
   };
 
   const handleContextMenu = (
@@ -111,6 +117,7 @@ const Component = (props: Props) => {
         columns={columns}
         onCellsChanged={handleChanges}
         onContextMenu={handleContextMenu}
+        onFocusLocationChanged={handleFocusLocationChanged}
         enableRowSelection
         stickyTopRows={1}
       />

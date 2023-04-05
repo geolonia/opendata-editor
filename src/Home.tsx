@@ -18,6 +18,7 @@ interface Feature {
 const Home = () => {
   const [ features, setFeatures ] = React.useState<Feature[]>([])
   const [ filename, setFilename ] = React.useState<string>('')
+  const [ featureSelected, setFeatureSelected ] = React.useState<Feature | null>(null)
 
   React.useEffect(() => {
     if (window.location.search) {
@@ -47,8 +48,8 @@ const Home = () => {
       <div className="container">
         <Uploader className="uploader" setFeatures={setFeatures} setFilename={setFilename}></Uploader>
         <Download features={features} filename={filename} />
-        <Map className="map" features={features}/>
-        <Table features={features} setFeatures={setFeatures} />    
+        <Map className="map" features={features} featureSelected={featureSelected}/>
+        <Table features={features} setFeatures={setFeatures} setFeatureSelected={setFeatureSelected} />
       </div>
     </div>
   );

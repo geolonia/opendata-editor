@@ -18,11 +18,13 @@ interface Feature {
 interface Props {
     className: string;
     features: Feature[];
+    featureSelected: Feature | null;
 }
 
 const Component = (props: Props) => {
   const mapContainer = React.useRef<HTMLDivElement>(null)
   const [simpleStyle, setSimpleStyle] = React.useState()
+  const [map, setMap] = React.useState()
 
   React.useEffect(() => {
     const map = new window.geolonia.Map({
@@ -30,6 +32,7 @@ const Component = (props: Props) => {
       style: "geolonia/gsi",
       hash: true,
     })
+    setMap(map);
 
     map.on("load", () => {
       const sourceId = 'custom-geojson'
@@ -51,6 +54,17 @@ const Component = (props: Props) => {
       simpleStyle.updateData(geojson).fitBounds();
     }
   }, [simpleStyle, props.features])
+
+  React.useEffect(() => {
+    if (map && props.featureSelected) {
+
+      // @ts-ignore
+      map.flyTo({
+        center: [Number(props.featureSelected.longitude), Number(props.featureSelected.latitude)],
+        zoom: 17
+      })
+    }
+  }, [map, props.featureSelected])
 
   return (
     <>

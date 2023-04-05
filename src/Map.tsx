@@ -2,6 +2,9 @@ import React from 'react';
 
 import { csv2geojson } from "./lib/csv2geojson";
 import Papa from 'papaparse';
+
+import './Map.scss';
+
 declare global {
   interface Window {
     geolonia: any;

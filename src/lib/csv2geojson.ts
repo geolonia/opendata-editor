@@ -68,15 +68,6 @@ export function csv2geojson(csv: string) {
         coordinates: coordinates
       }
 
-      let description = '';
-      const obj: any = data[i];
-      for(let key in obj) {
-        description += `<strong>${key}:</strong> <span class='bw'>${obj[key]}</span><br />`
-      }
-
-      // @ts-ignore
-      data[i]['description'] = description;
-
       // @ts-ignore
       data[i]['title'] = data[i][titleColumn]
 

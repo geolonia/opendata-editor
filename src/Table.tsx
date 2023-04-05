@@ -9,7 +9,8 @@ interface Props {
   className?: string;
   features: Feature[];
   setFeatures: Function;
-  setFeatureSelected: Function;
+  setEditMode: Function;
+  setSelectedRowId: Function;
 }
 
 interface Feature {
@@ -46,8 +47,10 @@ const Component = (props: Props) => {
   };
 
   const handleFocusLocationChanged = (location: CellLocation) => {
-    const featureSelected = tableData[location.rowId as number];
-    props.setFeatureSelected(featureSelected);
+    if (location.columnId === '#property' || location.columnId === 'latitude' || location.columnId === 'longitude') {
+      props.setEditMode(location.columnId === 'latitude' || location.columnId === 'longitude');
+      props.setSelectedRowId(location.rowId);
+    }
   };
 
   const handleContextMenu = (

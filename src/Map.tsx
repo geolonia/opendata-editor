@@ -3,6 +3,8 @@ import React from 'react';
 import { csv2geojson } from "./lib/csv2geojson";
 import Papa from 'papaparse';
 
+import { Id } from "@silevis/reactgrid";
+
 import './Map.scss';
 
 declare global {
@@ -18,13 +20,16 @@ interface Feature {
 interface Props {
     className: string;
     features: Feature[];
-    featureSelected: Feature | null;
+    setFeatures: Function;
+    editMode: boolean;
+    selectedRowId: Id | null;
 }
 
 const Component = (props: Props) => {
-  const mapContainer = React.useRef<HTMLDivElement>(null)
-  const [simpleStyle, setSimpleStyle] = React.useState()
-  const [map, setMap] = React.useState()
+  const mapContainer = React.useRef<HTMLDivElement>(null);
+  const [simpleStyle, setSimpleStyle] = React.useState();
+  const [map, setMap] = React.useState();
+  const [draggableMarker, setDraggableMarker] = React.useState(null);
 
   React.useEffect(() => {
     const map = new window.geolonia.Map({
@@ -42,7 +47,11 @@ const Component = (props: Props) => {
       } as GeoJSON.FeatureCollection
       const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map).fitBounds()
       setSimpleStyle(simpleStyle)
-    })
+    });
+
+    map.on('click', 'custom-geojson-circle-points', (e: any) => {
+      console.log(e.features[0].properties.name);
+    });
   }, [mapContainer])
 
   React.useEffect(() => {
@@ -56,15 +65,38 @@ const Component = (props: Props) => {
   }, [simpleStyle, props.features])
 
   React.useEffect(() => {
-    if (map && props.featureSelected) {
+    if (map && props.selectedRowId !== null) {
+      const selectedFeature = props.features[props.selectedRowId as number];
+      const center = [Number(selectedFeature.longitude), Number(selectedFeature.latitude)];
+
+      if (draggableMarker) {
+        // @ts-ignore
+        draggableMarker.remove();
+      }
+
+      if (props.editMode) {
+        const marker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map);
+        setDraggableMarker(marker);
+
+        marker.on('dragend', () => {
+          const lngLat = marker.getLngLat();
+
+          const features = props.features
+          features[props.selectedRowId as number].longitude = lngLat.lng.toString();
+          features[props.selectedRowId as number].latitude = lngLat.lat.toString();
+          props.setFeatures([...features]);
+
+          marker.remove();
+        });
+      }
 
       // @ts-ignore
-      map.flyTo({
-        center: [Number(props.featureSelected.longitude), Number(props.featureSelected.latitude)],
-        zoom: 17
-      })
+      // map.flyTo({
+      //   center: center,
+      //   zoom: 17
+      // })
     }
-  }, [map, props.featureSelected])
+  }, [map, props.editMode, props.selectedRowId])
 
   return (
     <>

@@ -5,6 +5,8 @@ import "@silevis/reactgrid/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
+import './Table.scss';
+
 interface Props {
   className?: string;
   features: Feature[];
@@ -79,27 +81,28 @@ const Component = (props: Props) => {
     return menuOptions;
   }
 
-  const headerRow: Row = {
-    rowId: "header",
-    cells: tableData[0] ? Object.keys(tableData[0]).map((key) => {
-      return { type: "header", text: key };
-    }) : []
-  };
+  // const headerRow: Row = {
+  //   rowId: "header",
+  //   cells: tableData[0] ? Object.keys(tableData[0]).map((key) => {
+  //     return { type: "header", text: key };
+  //   }) : []
+  // };
+  const headers = tableData[0] ? Object.keys(tableData[0]) : [];
 
-  const getRows = (tableData: Feature[]): Row[] => [
-    headerRow,
-    ...tableData.map<Row>((rowData, idx) => ({
-      rowId: idx,
-      cells: Object.values(rowData).map((column) => { return {type: "text", text: column}})
-    }))
-  ];
+  // const getRows = (tableData: Feature[]): Row[] => [
+  //   headerRow,
+  //   ...tableData.map<Row>((rowData, idx) => ({
+  //     rowId: idx,
+  //     cells: Object.values(rowData).map((column) => { return {type: "text", text: column}})
+  //   }))
+  // ];
 
-  const getColumns = (): Column[] => tableData[0] ? Object.keys(tableData[0]).map((key) => {
-    return { columnId: key, width: 150 };
-  }) : [];
+  // const getColumns = (): Column[] => tableData[0] ? Object.keys(tableData[0]).map((key) => {
+  //   return { columnId: key, width: 150 };
+  // }) : [];
   
-  const rows = getRows(tableData);
-  const columns = getColumns();
+  // const rows = getRows(tableData);
+  // const columns = getColumns();
 
   React.useEffect(() => {
     setTableData(props.features);
@@ -115,15 +118,25 @@ const Component = (props: Props) => {
           データを追加
         </button><br />
       </p>
-      <ReactGrid
-        rows={rows}
-        columns={columns}
-        onCellsChanged={handleChanges}
-        onContextMenu={handleContextMenu}
-        onFocusLocationChanged={handleFocusLocationChanged}
-        enableRowSelection
-        stickyTopRows={1}
-      />
+      <table>
+        <thead>
+          <tr>
+            { headers.map((header) => (
+              <th>{header}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          { tableData.map((rowData, idx) => (
+            <tr>
+              { Object.values(rowData).map((column) => (
+                <td>{column}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+
+      </table>
     </>
   );
 }

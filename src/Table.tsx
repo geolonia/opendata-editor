@@ -55,31 +55,35 @@ const Component = (props: Props) => {
     }
   };
 
-  const handleContextMenu = (
-    selectedRowIds: Id[],
-    selectedColIds: Id[],
-    selectionMode: SelectionMode,
-    menuOptions: MenuOption[]
-  ): MenuOption[] => {
-    if (selectionMode === "row") {
-      menuOptions = [
-        {
-          id: "removeRow",
-          label: "この行を削除する",
-          handler: () => {
-            setTableData(prevTableData => {
-              const newTableData = [...prevTableData.filter((_tableData, idx) => !selectedRowIds.includes(idx))];
-              props.setFeatures(newTableData);
-              return newTableData
-            })
-          }
-        }
-      ];
-    } else {
-      menuOptions = [];
-    }
-    return menuOptions;
+  const jump = (id: Number) => {
+    props.setSelectedRowId(id);
   }
+
+  // const handleContextMenu = (
+  //   selectedRowIds: Id[],
+  //   selectedColIds: Id[],
+  //   selectionMode: SelectionMode,
+  //   menuOptions: MenuOption[]
+  // ): MenuOption[] => {
+  //   if (selectionMode === "row") {
+  //     menuOptions = [
+  //       {
+  //         id: "removeRow",
+  //         label: "この行を削除する",
+  //         handler: () => {
+  //           setTableData(prevTableData => {
+  //             const newTableData = [...prevTableData.filter((_tableData, idx) => !selectedRowIds.includes(idx))];
+  //             props.setFeatures(newTableData);
+  //             return newTableData
+  //           })
+  //         }
+  //       }
+  //     ];
+  //   } else {
+  //     menuOptions = [];
+  //   }
+  //   return menuOptions;
+  // }
 
   // const headerRow: Row = {
   //   rowId: "header",
@@ -108,6 +112,7 @@ const Component = (props: Props) => {
     setTableData(props.features);
   }, [props.features])
 
+
   return (
     <>
       <p>
@@ -121,6 +126,7 @@ const Component = (props: Props) => {
       <table>
         <thead>
           <tr>
+            <th></th>
             { headers.map((header) => (
               <th>{header}</th>
             ))}
@@ -129,6 +135,8 @@ const Component = (props: Props) => {
         <tbody>
           { tableData.map((rowData, idx) => (
             <tr>
+              <td><button onClick={() => jump(idx)}>ジャンプ</button></td>
+
               { Object.values(rowData).map((column) => (
                 <td>{column}</td>
               ))}

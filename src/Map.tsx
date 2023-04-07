@@ -66,6 +66,7 @@ const Component = (props: Props) => {
 
   React.useEffect(() => {
     if (map && props.selectedRowId !== null) {
+      console.log("selectedRowId", props.selectedRowId);
       const selectedFeature = props.features[props.selectedRowId as number];
       const center = [Number(selectedFeature.longitude), Number(selectedFeature.latitude)];
 
@@ -90,11 +91,11 @@ const Component = (props: Props) => {
         });
       }
 
-      // @ts-ignore
-      // map.flyTo({
-      //   center: center,
-      //   zoom: 17
-      // })
+      //@ts-ignore
+      map.flyTo({
+        center: center,
+        zoom: 17
+      })
     }
   }, [map, props.editMode, props.selectedRowId])
 

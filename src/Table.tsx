@@ -42,21 +42,34 @@ const Component = (props: Props) => {
     setTableData([...tableData, newTableData]);
   }
 
-  const handleChanges = (changes: CellChange[]) => {
-    const textCellChanges = changes.filter(x => x.type === 'text') as CellChange<TextCell>[];
-    setTableData((prevTableData) => applyChangesToData(textCellChanges, prevTableData));
-    props.setFeatures([...tableData]);
-  };
+  // const handleChanges = (changes: CellChange[]) => {
+  //   const textCellChanges = changes.filter(x => x.type === 'text') as CellChange<TextCell>[];
+  //   setTableData((prevTableData) => applyChangesToData(textCellChanges, prevTableData));
+  //   props.setFeatures([...tableData]);
+  // };
 
-  const handleFocusLocationChanged = (location: CellLocation) => {
-    if (location.columnId === '#property' || location.columnId === 'latitude' || location.columnId === 'longitude') {
-      props.setEditMode(location.columnId === 'latitude' || location.columnId === 'longitude');
-      props.setSelectedRowId(location.rowId);
-    }
-  };
+  // const handleFocusLocationChanged = (location: CellLocation) => {
+  //   if (location.columnId === '#property' || location.columnId === 'latitude' || location.columnId === 'longitude') {
+  //     props.setEditMode(location.columnId === 'latitude' || location.columnId === 'longitude');
+  //     props.setSelectedRowId(location.rowId);
+  //   }
+  // };
 
   const jump = (id: Number) => {
     props.setSelectedRowId(id);
+  }
+
+  const editTableData = (id: Number) => {
+    props.setEditMode(true);
+    props.setSelectedRowId(id);
+  }
+
+  const deleteTableData = (id: Number) => {
+    setTableData(prevTableData => {
+      const newTableData = [...prevTableData.filter((_tableData, idx) => idx !== id)];
+      props.setFeatures(newTableData);
+      return newTableData
+    })
   }
 
   // const handleContextMenu = (
@@ -135,7 +148,11 @@ const Component = (props: Props) => {
         <tbody>
           { tableData.map((rowData, idx) => (
             <tr>
-              <td><button onClick={() => jump(idx)}>ジャンプ</button></td>
+              <td>
+                <button onClick={() => jump(idx)}>ジャンプ</button>
+                <button onClick={() => editTableData(idx)}>編集</button>
+                <button onClick={() => deleteTableData(idx)}>削除</button>
+              </td>
 
               { Object.values(rowData).map((column) => (
                 <td>{column}</td>

@@ -50,7 +50,8 @@ const Component = (props: Props) => {
     });
 
     map.on('click', 'custom-geojson-circle-points', (e: any) => {
-      console.log(e.features[0].properties.name);
+      const id = e.features[0].properties['#property'];
+      document.getElementById(`table-data-${id}`)?.scrollIntoView();
     });
   }, [mapContainer])
 

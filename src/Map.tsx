@@ -22,7 +22,8 @@ interface Props {
     features: Feature[];
     setFeatures: Function;
     editMode: boolean;
-    selectedRowId: Id | null;
+    selectedRowId: Number | null;
+    setSelectedRowId: Function;
 }
 
 const Component = (props: Props) => {
@@ -52,8 +53,10 @@ const Component = (props: Props) => {
     map.on('click', 'custom-geojson-circle-points', (e: any) => {
       const id = e.features[0].properties['#property'];
       document.getElementById(`table-data-${id}`)?.scrollIntoView();
+
+      props.setSelectedRowId(Number(id) - 1);
     });
-  }, [mapContainer])
+  }, [mapContainer, props.setSelectedRowId, props])
 
   React.useEffect(() => {
     if (simpleStyle) {
@@ -67,7 +70,6 @@ const Component = (props: Props) => {
 
   React.useEffect(() => {
     if (map && props.selectedRowId !== null) {
-      console.log("selectedRowId", props.selectedRowId);
       const selectedFeature = props.features[props.selectedRowId as number];
       const center = [Number(selectedFeature.longitude), Number(selectedFeature.latitude)];
 

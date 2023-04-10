@@ -10,6 +10,7 @@ interface Props {
   setFeatures: Function;
   setEditMode: Function;
   setSelectedRowId: Function;
+  selectedRowId: Number | null;
 }
 
 interface Feature {
@@ -71,7 +72,7 @@ const Component = (props: Props) => {
         </thead>
         <tbody>
           { tableData.map((rowData, idx) => (
-            <tr id={`table-data-${rowData['#property']}`}>
+            <tr id={`table-data-${rowData['#property']}`} className={idx === props.selectedRowId ? 'selected' : ''}>
               <td>
                 <button onClick={() => jump(idx)}>ジャンプ</button>
                 <button onClick={() => editTableData(idx)}>編集</button>

@@ -11,9 +11,6 @@ import Uploader from './Uploader'
 
 import './Home.scss';
 
-import { Id } from "@silevis/reactgrid";
-
-
 interface Feature {
   [key: string]: string;
 }
@@ -22,7 +19,7 @@ const Home = () => {
   const [ features, setFeatures ] = React.useState<Feature[]>([]);
   const [ filename, setFilename ] = React.useState<string>('');
   const [ editMode, setEditMode ] = React.useState(false);
-  const [ selectedRowId, setSelectedRowId ] = React.useState<Id | null>(null);
+  const [ selectedRowId, setSelectedRowId ] = React.useState<Number | null>(null);
 
   React.useEffect(() => {
     if (window.location.search) {
@@ -52,8 +49,8 @@ const Home = () => {
       <div className="container">
         <Uploader className="uploader" setFeatures={setFeatures} setFilename={setFilename}></Uploader>
         <Download features={features} filename={filename} />
-        <Map className="map" features={features} editMode={editMode} selectedRowId={selectedRowId} setFeatures={setFeatures} />
-        <Table features={features} setFeatures={setFeatures} setEditMode={setEditMode} setSelectedRowId={setSelectedRowId} />
+        <Map className="map" features={features} editMode={editMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} setFeatures={setFeatures} />
+        <Table features={features} setFeatures={setFeatures} setEditMode={setEditMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} />
       </div>
     </div>
   );

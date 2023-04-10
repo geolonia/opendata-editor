@@ -3,8 +3,6 @@ import React from 'react';
 import { csv2geojson } from "./lib/csv2geojson";
 import Papa from 'papaparse';
 
-import { Id } from "@silevis/reactgrid";
-
 import './Map.scss';
 
 declare global {
@@ -22,8 +20,9 @@ interface Props {
     features: Feature[];
     setFeatures: Function;
     editMode: boolean;
-    selectedRowId: Number | null;
+    selectedRowId: String | null;
     setSelectedRowId: Function;
+    setEditMode: Function;
 }
 
 const Component = (props: Props) => {
@@ -51,12 +50,17 @@ const Component = (props: Props) => {
     });
 
     map.on('click', 'custom-geojson-circle-points', (e: any) => {
-      const id = e.features[0].properties['#property'];
-      document.getElementById(`table-data-${id}`)?.scrollIntoView();
-
-      props.setSelectedRowId(Number(id) - 1);
+      const id = e.features[0].properties['id'];
+      // console.log(document.getElementById(`table-data-${id}`));
+      
+      // const id = props.features.findIndex((feature) => feature['#property'] === e.features[0].properties['#property']);
+      // if (id > 0) {
+        props.setEditMode(false);
+        document.getElementById(`table-data-${id}`)?.scrollIntoView();
+        props.setSelectedRowId(id);
+      // }
     });
-  }, [mapContainer, props.setSelectedRowId, props])
+  }, [mapContainer, props.features, props])
 
   React.useEffect(() => {
     if (simpleStyle) {
@@ -70,7 +74,11 @@ const Component = (props: Props) => {
 
   React.useEffect(() => {
     if (map && props.selectedRowId !== null) {
-      const selectedFeature = props.features[props.selectedRowId as number];
+
+      const selectedFeature = props.features.find((feature) => feature.id === props.selectedRowId);
+      if (!selectedFeature) {
+        return;
+      }
       const center = [Number(selectedFeature.longitude), Number(selectedFeature.latitude)];
 
       if (draggableMarker) {
@@ -86,8 +94,12 @@ const Component = (props: Props) => {
           const lngLat = marker.getLngLat();
 
           const features = props.features
-          features[props.selectedRowId as number].longitude = lngLat.lng.toString();
-          features[props.selectedRowId as number].latitude = lngLat.lat.toString();
+          const feature = features.find((feature) => feature['id'] === props.selectedRowId);
+          if (!feature) {
+            return;
+          }
+          feature.longitude = lngLat.lng.toString();
+          feature.latitude = lngLat.lat.toString();
           props.setFeatures([...features]);
 
           marker.remove();

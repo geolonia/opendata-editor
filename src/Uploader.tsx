@@ -4,7 +4,7 @@ import {useDropzone} from 'react-dropzone'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons"
-
+import { addIdToFeatures } from "./lib/add-id-to-features";
 import Papa from 'papaparse';
 
 const baseStyle = {
@@ -80,7 +80,8 @@ const Component = (props: Props) => {
           header: true,
           skipEmptyLines: true,
         }).data;
-        props.setFeatures(csvData)
+
+        props.setFeatures(addIdToFeatures(csvData))
       }
 
       reader.readAsText(file)

@@ -9,6 +9,8 @@ import Papa from 'papaparse';
 import Map from './Map'
 import Uploader from './Uploader'
 
+import { addIdToFeatures } from "./lib/add-id-to-features";
+
 import './Home.scss';
 
 interface Feature {
@@ -19,7 +21,7 @@ const Home = () => {
   const [ features, setFeatures ] = React.useState<Feature[]>([]);
   const [ filename, setFilename ] = React.useState<string>('');
   const [ editMode, setEditMode ] = React.useState(false);
-  const [ selectedRowId, setSelectedRowId ] = React.useState<Number | null>(null);
+  const [ selectedRowId, setSelectedRowId ] = React.useState<String | null>(null);
 
   React.useEffect(() => {
     if (window.location.search) {
@@ -38,7 +40,7 @@ const Home = () => {
               skipEmptyLines: true,
             }).data as Feature[];
   
-            setFeatures([...features]);
+            setFeatures([...addIdToFeatures(features)]);
           });
       }
     }
@@ -49,7 +51,7 @@ const Home = () => {
       <div className="container">
         <Uploader className="uploader" setFeatures={setFeatures} setFilename={setFilename}></Uploader>
         <Download features={features} filename={filename} />
-        <Map className="map" features={features} editMode={editMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} setFeatures={setFeatures} />
+        <Map className="map" features={features} setEditMode={setEditMode} editMode={editMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} setFeatures={setFeatures} />
         <Table features={features} setFeatures={setFeatures} setEditMode={setEditMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} />
       </div>
     </div>

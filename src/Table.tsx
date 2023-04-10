@@ -10,7 +10,7 @@ interface Props {
   setFeatures: Function;
   setEditMode: Function;
   setSelectedRowId: Function;
-  selectedRowId: Number | null;
+  selectedRowId: String | null;
 }
 
 interface Feature {
@@ -28,7 +28,8 @@ const Component = (props: Props) => {
     setTableData([...tableData, newTableData]);
   }
 
-  const jump = (id: Number) => {
+  const jump = (id: String) => {
+    props.setEditMode(false);
     props.setSelectedRowId(id);
   }
 
@@ -64,23 +65,23 @@ const Component = (props: Props) => {
       <table>
         <thead>
           <tr>
-            <th></th>
-            { headers.map((header) => (
-              <th>{header}</th>
+            <th key='header'></th>
+            { headers.map((header, i) => (
+              <th key={`header-${i}`}>{header}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          { tableData.map((rowData, idx) => (
-            <tr id={`table-data-${rowData['#property']}`} className={idx === props.selectedRowId ? 'selected' : ''}>
-              <td>
-                <button onClick={() => jump(idx)}>ジャンプ</button>
-                <button onClick={() => editTableData(idx)}>編集</button>
-                <button onClick={() => deleteTableData(idx)}>削除</button>
+          { tableData.map((rowData, i) => (
+            <tr key={rowData['id']} id={`table-data-${rowData['id']}`} className={rowData['id'] === props.selectedRowId ? 'selected' : ''}>
+              <td key={`${rowData['id']}-action`}>
+                <button onClick={() => jump(rowData['id'])}>ジャンプ</button>
+                <button onClick={() => editTableData(i)}>編集</button>
+                <button onClick={() => deleteTableData(i)}>削除</button>
               </td>
 
-              { Object.values(rowData).map((column) => (
-                <td>{column}</td>
+              { Object.values(rowData).map((column, j) => (
+                <td key={`${rowData['id']}-${j}`}>{column}</td>
               ))}
             </tr>
           ))}

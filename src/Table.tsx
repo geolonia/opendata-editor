@@ -65,7 +65,8 @@ const Component = (props: Props) => {
           <tr>
             <th key='header'></th>
             { headers.map((header, i) => (
-              <th key={`header-${i}`}>{header}</th>
+              (i !== headers.length - 1) &&
+                <th key={`header-${i}-${headers.length}`}>{header}</th>
             ))}
           </tr>
         </thead>
@@ -79,7 +80,8 @@ const Component = (props: Props) => {
               </td>
 
               { Object.values(rowData).map((column, j) => (
-                <td key={`${rowData['id']}-${j}`}>{column}</td>
+                (j !== Object.values(rowData).length - 1) &&
+                  <td key={`${rowData['id']}-${j}`}>{column}</td>
               ))}
             </tr>
           ))}

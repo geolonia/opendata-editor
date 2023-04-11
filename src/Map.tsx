@@ -51,14 +51,9 @@ const Component = (props: Props) => {
 
     map.on('click', 'custom-geojson-circle-points', (e: any) => {
       const id = e.features[0].properties['id'];
-      // console.log(document.getElementById(`table-data-${id}`));
-      
-      // const id = props.features.findIndex((feature) => feature['#property'] === e.features[0].properties['#property']);
-      // if (id > 0) {
-        props.setEditMode(false);
-        document.getElementById(`table-data-${id}`)?.scrollIntoView();
-        props.setSelectedRowId(id);
-      // }
+      props.setEditMode(false);
+      document.getElementById(`table-data-${id}`)?.scrollIntoView();
+      props.setSelectedRowId(id);
     });
   }, [mapContainer, props.features, props])
 

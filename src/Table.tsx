@@ -2,6 +2,8 @@ import React from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
+import { ulid } from "ulid";
+
 import './Table.scss';
 
 interface Props {
@@ -27,7 +29,11 @@ const Component = (props: Props) => {
     for(let key of Object.keys(tableData[0])) {
       newTableData[key] = '';
     }
+    const id = ulid();
+    newTableData['id'] = id;
     setTableData([...tableData, newTableData]);
+    props.setEditMode(true);
+    props.setSelectedRowId(id);
   }
 
   const jump = (id: string) => {

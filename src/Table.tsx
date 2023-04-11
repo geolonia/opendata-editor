@@ -8,9 +8,10 @@ interface Props {
   className?: string;
   features: Feature[];
   setFeatures: Function;
+  editMode: boolean;
   setEditMode: Function;
+  selectedRowId: string | null;
   setSelectedRowId: Function;
-  selectedRowId: String | null;
 }
 
 interface Feature {
@@ -19,6 +20,7 @@ interface Feature {
 
 const Component = (props: Props) => {
   const [tableData, setTableData] = React.useState<Feature[]>(props.features);
+  const inputRef = React.useRef<Array<HTMLInputElement | null>>([]);
 
   const addData = () => {
     let newTableData: Feature = {}
@@ -28,21 +30,42 @@ const Component = (props: Props) => {
     setTableData([...tableData, newTableData]);
   }
 
-  const jump = (id: String) => {
+  const jump = (id: string) => {
     props.setEditMode(false);
     props.setSelectedRowId(id);
   }
 
-  const editTableData = (id: Number) => {
+  const editTableData = (id: string) => {
     props.setEditMode(true);
     props.setSelectedRowId(id);
   }
 
-  const deleteTableData = (id: Number) => {
+  const saveTableData = (id: string) => {
     setTableData(prevTableData => {
-      const newTableData = [...prevTableData.filter((_tableData, idx) => idx !== id)];
+      const newTableData = prevTableData.map((_tableData) => {
+        if (_tableData.id !== id) {
+          return _tableData;
+        } else {
+          const replacedTableData : Feature = {};
+          for(let i = 0; i < Object.keys(_tableData).length - 1; i++) {
+            const key: string = Object.keys(_tableData)[i];
+            replacedTableData[key] = inputRef.current[i]?.value as string;
+          }
+          replacedTableData['id'] = id;
+          return replacedTableData;
+        }
+      })
+      props.setFeatures([...newTableData]);
+      return newTableData;
+    })
+    props.setEditMode(false);
+  }
+
+  const deleteTableData = (id: string) => {
+    setTableData(prevTableData => {
+      const newTableData = [...prevTableData.filter((_tableData) => _tableData.id !== id)];
       props.setFeatures(newTableData);
-      return newTableData
+      return newTableData;
     })
   }
 
@@ -71,17 +94,25 @@ const Component = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          { tableData.map((rowData, i) => (
+          { tableData.map((rowData) => (
             <tr key={rowData['id']} id={`table-data-${rowData['id']}`} className={rowData['id'] === props.selectedRowId ? 'selected' : ''}>
               <td key={`${rowData['id']}-action`}>
-                <button onClick={() => jump(rowData['id'])}>ジャンプ</button>
-                <button onClick={() => editTableData(i)}>編集</button>
-                <button onClick={() => deleteTableData(i)}>削除</button>
+                {props.editMode && (rowData['id'] === props.selectedRowId) ?
+                  <button onClick={() => saveTableData(rowData['id'])}>保存</button>
+                  :
+                  <>
+                    <button onClick={() => jump(rowData['id'])} disabled={props.editMode}>ジャンプ</button>
+                    <button onClick={() => editTableData(rowData['id'])} disabled={props.editMode}>編集</button>
+                    <button onClick={() => deleteTableData(rowData['id'])} disabled={props.editMode}>削除</button>
+                  </>
+                }
               </td>
 
               { Object.values(rowData).map((column, j) => (
                 (j !== Object.values(rowData).length - 1) &&
-                  <td key={`${rowData['id']}-${j}`}>{column}</td>
+                  <td key={`${rowData['id']}-${j}`}>{
+                    props.editMode && rowData['id'] === props.selectedRowId ? <input ref={el => inputRef.current[j] = el} type="text" defaultValue={column} /> : column
+                  }</td>
               ))}
             </tr>
           ))}

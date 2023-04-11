@@ -1,3 +1,8 @@
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
 thead, tbody {
   display: block;
 }
@@ -6,16 +11,23 @@ tbody {
   overflow-y: scroll;
   height: 300px;
 }
-td{
-  border-color: #2b2121;
+td {
+  border: 1px solid #2b2121;
   color: #2b2b2b;
-  padding: 8px;
+  padding: 12px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 200px;
+  max-width: 200px;
+  min-width: 200px;
 }
-th{
+th {
+  border: 1px solid #EE730D;
   background-color: #fbf1e4;
   color: #EE730D;
-  font-weight: bold;
-  padding: 12px 8px;
+  padding: 12px 6px;
+  width: 200px;
 }
 tr.selected td {
   color: #fbf1e4;

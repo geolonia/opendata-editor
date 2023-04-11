@@ -21,7 +21,7 @@ const Home = () => {
   const [ features, setFeatures ] = React.useState<Feature[]>([]);
   const [ filename, setFilename ] = React.useState<string>('');
   const [ editMode, setEditMode ] = React.useState(false);
-  const [ selectedRowId, setSelectedRowId ] = React.useState<String | null>(null);
+  const [ selectedRowId, setSelectedRowId ] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (window.location.search) {
@@ -51,8 +51,8 @@ const Home = () => {
       <div className="container">
         <Uploader className="uploader" setFeatures={setFeatures} setFilename={setFilename}></Uploader>
         <Download features={features} filename={filename} />
-        <Map className="map" features={features} setEditMode={setEditMode} editMode={editMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} setFeatures={setFeatures} />
-        <Table features={features} setFeatures={setFeatures} setEditMode={setEditMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} />
+        <Map className="map" features={features} setFeatures={setFeatures} editMode={editMode} setEditMode={setEditMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} />
+        <Table features={features} setFeatures={setFeatures} editMode={editMode} setEditMode={setEditMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} />
       </div>
     </div>
   );

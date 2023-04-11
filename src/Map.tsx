@@ -20,7 +20,7 @@ interface Props {
     features: Feature[];
     setFeatures: Function;
     editMode: boolean;
-    selectedRowId: String | null;
+    selectedRowId: string | null;
     setSelectedRowId: Function;
     setEditMode: Function;
 }
@@ -96,6 +96,7 @@ const Component = (props: Props) => {
           feature.longitude = lngLat.lng.toString();
           feature.latitude = lngLat.lat.toString();
           props.setFeatures([...features]);
+          props.setEditMode(false);
 
           marker.remove();
         });

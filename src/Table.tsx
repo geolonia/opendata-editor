@@ -55,8 +55,6 @@ const Component = (props: Props) => {
   return (
     <>
       <p>
-        データを編集するには、セルの上でダブルクリックして下さい。<br />
-        データを削除するには、一番左のセルを選択して右クリックして下さい。<br />
         <button className="add-data-button" onClick={addData}>
           <FontAwesomeIcon icon={faPlusCircle} className="button-icon" />
           データを追加

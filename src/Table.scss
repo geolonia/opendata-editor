@@ -1,3 +1,11 @@
+thead, tbody {
+  display: block;
+}
+tbody {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 300px;
+}
 td{
   border-color: #2b2121;
   color: #2b2b2b;
@@ -9,7 +17,6 @@ th{
   font-weight: bold;
   padding: 12px 8px;
 }
-
 tr.selected td {
   color: #fbf1e4;
   background-color: #EE730D;

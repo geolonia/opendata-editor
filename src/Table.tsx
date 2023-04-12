@@ -82,6 +82,10 @@ const Component = (props: Props) => {
     setTableData(props.features);
   }, [props.features])
 
+  React.useEffect(() => {
+    document.getElementById(`table-data-${props.selectedRowId}`)?.scrollIntoView();
+  }, [props.selectedRowId])
+
   return (
     <>
       <p>

@@ -52,7 +52,6 @@ const Component = (props: Props) => {
     map.on('click', 'custom-geojson-circle-points', (e: any) => {
       const id = e.features[0].properties['id'];
       props.setEditMode(false);
-      document.getElementById(`table-data-${id}`)?.scrollIntoView();
       props.setSelectedRowId(id);
     });
   }, [mapContainer, props.features, props])
@@ -69,12 +68,13 @@ const Component = (props: Props) => {
 
   React.useEffect(() => {
     if (map && props.selectedRowId !== null) {
-
       const selectedFeature = props.features.find((feature) => feature.id === props.selectedRowId);
-      if (!selectedFeature) {
-        return;
+
+      // @ts-ignore
+      let center = map.getCenter();
+      if (selectedFeature?.longitude && selectedFeature?.latitude) {
+        center = [Number(selectedFeature.longitude), Number(selectedFeature.latitude)];
       }
-      const center = [Number(selectedFeature.longitude), Number(selectedFeature.latitude)];
 
       if (draggableMarker) {
         // @ts-ignore

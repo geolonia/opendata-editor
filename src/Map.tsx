@@ -45,7 +45,7 @@ const Component = (props: Props) => {
         "type": "FeatureCollection",
         "features": []
       } as GeoJSON.FeatureCollection
-      const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map).fitBounds()
+      const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map).fitBounds();
       setSimpleStyle(simpleStyle)
     });
 

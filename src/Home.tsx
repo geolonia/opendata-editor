@@ -39,7 +39,6 @@ const Home = () => {
               header: true,
               skipEmptyLines: true,
             }).data as Feature[];
-  
             setFeatures([...addIdToFeatures(features)]);
           });
       }

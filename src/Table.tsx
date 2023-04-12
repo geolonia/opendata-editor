@@ -107,8 +107,8 @@ const Component = (props: Props) => {
                   <button onClick={() => saveTableData(rowData['id'])}>保存</button>
                   :
                   <>
-                    <button onClick={() => jump(rowData['id'])} disabled={props.editMode}>ジャンプ</button>
                     <button onClick={() => editTableData(rowData['id'])} disabled={props.editMode}>編集</button>
+                    &nbsp;
                     <button onClick={() => deleteTableData(rowData['id'])} disabled={props.editMode}>削除</button>
                   </>
                 }
@@ -116,7 +116,7 @@ const Component = (props: Props) => {
 
               { Object.values(rowData).map((column, j) => (
                 (j !== Object.keys(rowData).findIndex((e) => e === 'id')) &&
-                  <td key={`${rowData['id']}-${j}`}>{
+                  <td onClick={() => jump(rowData['id'])} key={`${rowData['id']}-${j}`}>{
                     props.editMode && rowData['id'] === props.selectedRowId ? <input ref={el => inputRef.current[j] = el} type="text" defaultValue={column} /> : column
                   }</td>
               ))}

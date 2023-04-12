@@ -12,22 +12,24 @@ tbody {
   height: 300px;
 }
 td {
+  font-size: 12px;
   border: 1px solid #2b2121;
   color: #2b2b2b;
-  padding: 12px 6px;
+  padding: 6px 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 200px;
-  max-width: 200px;
-  min-width: 200px;
+  width: 130px;
+  max-width: 130px;
+  min-width: 130px;
 }
 th {
+  font-size: 12px;
   border: 1px solid #EE730D;
   background-color: #fbf1e4;
   color: #EE730D;
-  padding: 12px 6px;
-  width: 200px;
+  padding: 6px 6px;
+  width: 130px;
 }
 tr.selected td {
   color: #fbf1e4;

@@ -97,11 +97,10 @@ const Component = (props: Props) => {
         setDraggableMarker(marker);
 
         marker.on('dragend', () => {
-          const lngLat = marker.getLngLat();
-
           const features = props.features
           const feature = features.find((feature) => feature['id'] === props.selectedRowId);
-          
+          const lngLat = marker.getLngLat();
+
           // 新規データ追加の場合
           if (!feature) {
             const latField = document.querySelector(`tr#table-data-${props.selectedRowId} td:nth-child(3) input`);
@@ -114,9 +113,15 @@ const Component = (props: Props) => {
               lngField.value = lngLat.lng.toString()
             }
             return;
-          } 
-          
+          }
+
           // 既存データ編集の場合
+          if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
+            props.setEditMode(false);
+            marker.remove();
+            return;
+          }
+
           feature.longitude = lngLat.lng.toString();
           feature.latitude = lngLat.lat.toString();
           props.setFeatures([...features]);

@@ -69,11 +69,15 @@ const Component = (props: Props) => {
   }
 
   const deleteTableData = (id: string) => {
-    setTableData(prevTableData => {
-      const newTableData = [...prevTableData.filter((_tableData) => _tableData.id !== id)];
-      props.setFeatures(newTableData);
-      return newTableData;
-    })
+    const tableData = props.features.find((feature) => feature.id === id);
+
+    if (window.confirm(`「${tableData?.name}」のデータを削除しても良いですか?`)) {
+      setTableData(prevTableData => {
+        const newTableData = [...prevTableData.filter((_tableData) => _tableData.id !== id)];
+        props.setFeatures(newTableData);
+        return newTableData;
+      })
+    }
   }
 
   const headers = tableData[0] ? Object.keys(tableData[0]) : [];

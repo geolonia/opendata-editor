@@ -88,49 +88,52 @@ const Component = (props: Props) => {
 
   return (
     <>
-      <p>
-        <button className="add-data-button" onClick={addData}>
+      {tableData.length > 0 && (
+        <>
+          <button className="add-data-button" onClick={addData}>
           <FontAwesomeIcon icon={faPlusCircle} className="button-icon" />
           データを追加
-        </button><br />
-      </p>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th key='header'></th>
-              { headers.map((header, i) => (
-                (header !== 'id') &&
-                  <th key={`header-${i}-${headers.length}`}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            { tableData.map((rowData) => (
-              <tr onClick={(e) => jump(e, rowData['id'])} key={rowData['id']} id={`table-data-${rowData['id']}`} className={rowData['id'] === props.selectedRowId ? 'selected' : ''}>
-                <td key={`${rowData['id']}-action`}>
-                  {props.editMode && (rowData['id'] === props.selectedRowId) ?
-                    <button onClick={() => saveTableData(rowData['id'])}>保存</button>
-                    :
-                    <>
-                      <button onClick={() => editTableData(rowData['id'])} disabled={props.editMode}>編集</button>
-                      &nbsp;
-                      <button onClick={() => deleteTableData(rowData['id'])} disabled={props.editMode}>削除</button>
-                    </>
-                  }
-                </td>
+          </button>
 
-                { Object.values(rowData).map((column, j) => (
-                  (j !== Object.keys(rowData).findIndex((e) => e === 'id')) &&
-                    <td key={`${rowData['id']}-${j}`}>{
-                      props.editMode && rowData['id'] === props.selectedRowId ? <input ref={el => inputRef.current[j] = el} type="text" defaultValue={column} /> : column
-                    }</td>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th key='header'></th>
+                  { headers.map((header, i) => (
+                    (header !== 'id') &&
+                      <th key={`header-${i}-${headers.length}`}>{header}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                { tableData.map((rowData) => (
+                  <tr onClick={(e) => jump(e, rowData['id'])} key={rowData['id']} id={`table-data-${rowData['id']}`} className={rowData['id'] === props.selectedRowId ? 'selected' : ''}>
+                    <td key={`${rowData['id']}-action`}>
+                      {props.editMode && (rowData['id'] === props.selectedRowId) ?
+                        <button onClick={() => saveTableData(rowData['id'])}>保存</button>
+                        :
+                        <>
+                          <button onClick={() => editTableData(rowData['id'])} disabled={props.editMode}>編集</button>
+                          &nbsp;
+                          <button onClick={() => deleteTableData(rowData['id'])} disabled={props.editMode}>削除</button>
+                        </>
+                      }
+                    </td>
+
+                    { Object.values(rowData).map((column, j) => (
+                      (j !== Object.keys(rowData).findIndex((e) => e === 'id')) &&
+                        <td key={`${rowData['id']}-${j}`}>{
+                          props.editMode && rowData['id'] === props.selectedRowId ? <input ref={el => inputRef.current[j] = el} type="text" defaultValue={column} /> : column
+                        }</td>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </>
   );
 }

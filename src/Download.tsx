@@ -37,7 +37,10 @@ const Component = (props: Props) => {
   }, [onClick])
 
   return (
-    <button className="download-button" ref={ref} disabled={true}><FontAwesomeIcon icon={faDownload} className="button-icon" />エクスポート</button>
+    <div className="download">
+      {props.filename ? props.filename : 'CSVファイルを地図上にドラッグ&ドロップしてください'}
+      <button className="download-button" ref={ref} disabled={true}><FontAwesomeIcon icon={faDownload} className="button-icon" />エクスポート</button>
+    </div>
   );
 }
 

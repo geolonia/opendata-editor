@@ -54,6 +54,7 @@ interface Props {
   className: string;
   setFeatures: Function;
   setFilename: Function;
+  setFitBounds: Function;
 }
 
 const Component = (props: Props) => {
@@ -81,7 +82,8 @@ const Component = (props: Props) => {
           skipEmptyLines: true,
         }).data;
 
-        props.setFeatures(addIdToFeatures(csvData))
+        props.setFitBounds(true);
+        props.setFeatures(addIdToFeatures(csvData));
       }
 
       reader.readAsText(file)

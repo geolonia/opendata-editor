@@ -20,9 +20,11 @@ interface Props {
     features: Feature[];
     setFeatures: Function;
     editMode: boolean;
+    setEditMode: Function;
     selectedRowId: string | null;
     setSelectedRowId: Function;
-    setEditMode: Function;
+    fitBounds: boolean;
+    setFitBounds: Function;
 }
 
 const Component = (props: Props) => {
@@ -47,7 +49,7 @@ const Component = (props: Props) => {
           "type": "FeatureCollection",
           "features": []
         } as GeoJSON.FeatureCollection
-        const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map).fitBounds();
+        const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map);
         setSimpleStyle(simpleStyle)
       });
 
@@ -64,8 +66,14 @@ const Component = (props: Props) => {
       const string = Papa.unparse(props.features);
       const geojson = csv2geojson(string);
 
-      // @ts-ignore
-      simpleStyle.updateData(geojson).fitBounds();
+      if (props.fitBounds) {
+        // @ts-ignore
+        simpleStyle.updateData(geojson).fitBounds();
+        props.setFitBounds(false);
+      } else {
+        // @ts-ignore
+        simpleStyle.updateData(geojson)
+      }
     }
   }, [simpleStyle, props.features])
 

@@ -93,14 +93,26 @@ const Component = (props: Props) => {
 
           const features = props.features
           const feature = features.find((feature) => feature['id'] === props.selectedRowId);
+          
+          // 新規データ追加の場合
           if (!feature) {
+            const latField = document.querySelector(`tr#table-data-${props.selectedRowId} td:nth-child(3) input`);
+            const lngField = document.querySelector(`tr#table-data-${props.selectedRowId} td:nth-child(4) input`);
+
+            if (latField && lngField) {
+              //@ts-ignore
+              latField.value = lngLat.lat.toString()
+              //@ts-ignore
+              lngField.value = lngLat.lng.toString()
+            }
             return;
-          }
+          } 
+          
+          // 既存データ編集の場合
           feature.longitude = lngLat.lng.toString();
           feature.latitude = lngLat.lat.toString();
           props.setFeatures([...features]);
           props.setEditMode(false);
-
           marker.remove();
         });
       }

@@ -25,6 +25,41 @@ interface Props {
     setEditMode: Function;
 }
 
+class AddDataControl {
+  map: any;
+  container: any;
+
+  onAdd(map: any) {
+    this.map = map;
+    this.container = document.createElement('div');
+    this.container.className = 'maplibregl-ctrl';
+
+    const button = document.createElement('button');
+    button.className = 'maplibregl-ctrl-zoom-in';
+    button.type = 'button';
+    button.title = 'Add Data';
+    button.onclick = () => {
+
+      // Add your custom functionality here.
+      alert('Custom control clicked!');
+    };
+
+    const span = document.createElement('span');
+    span.className = 'maplibregl-ctrl-icon';
+    button.appendChild(span);
+
+    this.container.appendChild(button);
+    button.appendChild(span);
+
+    return this.container;
+  }
+
+  onRemove() {
+    this.container.parentNode.removeChild(this.container);
+    this.map = undefined;
+  }
+}
+
 const Component = (props: Props) => {
   const mapContainer = React.useRef<HTMLDivElement>(null);
   const [simpleStyle, setSimpleStyle] = React.useState();
@@ -32,29 +67,35 @@ const Component = (props: Props) => {
   const [draggableMarker, setDraggableMarker] = React.useState(null);
 
   React.useEffect(() => {
-    const map = new window.geolonia.Map({
-      container: mapContainer.current,
-      style: "geolonia/gsi",
-      hash: true,
-    })
-    setMap(map);
+    if (!map) {
+      const map = new window.geolonia.Map({
+        container: mapContainer.current,
+        style: "geolonia/gsi",
+        hash: true,
+      });
 
-    map.on("load", () => {
-      const sourceId = 'custom-geojson'
-      const geojson = {
-        "type": "FeatureCollection",
-        "features": []
-      } as GeoJSON.FeatureCollection
-      const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map).fitBounds();
-      setSimpleStyle(simpleStyle)
-    });
+      const addDataControl = new AddDataControl();
+      map.addControl(addDataControl, 'bottom-right');
 
-    map.on('click', 'custom-geojson-circle-points', (e: any) => {
-      const id = e.features[0].properties['id'];
-      props.setEditMode(false);
-      props.setSelectedRowId(id);
-    });
-  }, [mapContainer, props.features, props])
+      setMap(map);
+
+      map.on("load", () => {
+        const sourceId = 'custom-geojson'
+        const geojson = {
+          "type": "FeatureCollection",
+          "features": []
+        } as GeoJSON.FeatureCollection
+        const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map).fitBounds();
+        setSimpleStyle(simpleStyle)
+      });
+
+      map.on('click', 'custom-geojson-circle-points', (e: any) => {
+        const id = e.features[0].properties['id'];
+        props.setEditMode(false);
+        props.setSelectedRowId(id);
+      });
+    }
+  }, [mapContainer, props.features, props, map])
 
   React.useEffect(() => {
     if (simpleStyle) {

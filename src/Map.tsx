@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { csv2geojson } from "./lib/csv2geojson";
-import Papa from 'papaparse';
+import { rows2geojson } from "./lib/csv2geojson";
 
 import './Map.scss';
 
@@ -75,8 +74,7 @@ const Component = (props: Props) => {
   React.useEffect(() => {
     if (!simpleStyle) { return; }
 
-    const string = Papa.unparse(features);
-    const geojson = csv2geojson(string);
+    const geojson = rows2geojson(features);
 
     setFitBounds((fitBounds) => {
       if (fitBounds) {
@@ -87,7 +85,7 @@ const Component = (props: Props) => {
         return fitBounds;
       }
     });
-  }, [simpleStyle, features, setFitBounds])
+  }, [simpleStyle, features, setFitBounds]);
 
   React.useEffect(() => {
     let draggableMarker: any = null;

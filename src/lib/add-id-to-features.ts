@@ -1,11 +1,13 @@
 import { ulid } from "ulid";
+import { Row } from "./csv2geojson";
 
-export function addIdToFeatures(array: any) {
-  const features = []
-  for(let row of array) {
-    const feature = row as any;
-    feature['id'] = ulid();
-    features.push(feature);
+export function addIdToFeatures(array: Row[]) {
+  const features: Row[] = [];
+  for (let row of array) {
+    features.push({
+      ...row,
+      id: ulid(),
+    });
   }
   return features;
 }

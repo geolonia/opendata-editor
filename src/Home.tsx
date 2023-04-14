@@ -4,7 +4,6 @@ import Table from './Table';
 import Download from './Download';
 
 import queryString from "query-string"
-import Papa from 'papaparse';
 
 import Map from './Map'
 import Uploader from './Uploader'
@@ -12,16 +11,13 @@ import Uploader from './Uploader'
 import { addIdToFeatures } from "./lib/add-id-to-features";
 
 import './Home.scss';
-
-interface Feature {
-  [key: string]: string;
-}
+import { Row, csv2rows } from './lib/csv2geojson';
 
 const Home = () => {
-  const [ features, setFeatures ] = React.useState<Feature[]>([]);
+  const [ features, setFeatures ] = React.useState<Row[]>([]);
   const [ filename, setFilename ] = React.useState<string>('');
   const [ editMode, setEditMode ] = React.useState(false);
-  const [ fitBounds, setFitBounds ] = React.useState(false);
+  const [ , setFitBounds ] = React.useState(false);
   const [ selectedRowId, setSelectedRowId ] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -37,12 +33,9 @@ const Home = () => {
     fetch(path)
       .then((response) => response.text())
       .then((data) => {
-        const features = Papa.parse(data, {
-          header: true,
-          skipEmptyLines: true,
-        }).data as Feature[];
+        const features = csv2rows(data);
         setFitBounds(true);
-        setFeatures([...addIdToFeatures(features)]);
+        setFeatures(addIdToFeatures(features));
       });
   }, []);
 

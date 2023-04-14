@@ -33,14 +33,16 @@ const Component = (props: Props) => {
   const [map, setMap] = React.useState<any>();
   const [draggableMarker, setDraggableMarker] = React.useState<any>(null);
 
-  const editMode = props.editMode;
-  const setEditMode = props.setEditMode;
-  const selectedRowId = props.selectedRowId;
-  const setSelectedRowId = props.setSelectedRowId;
-  const features = props.features;
-  const setFeatures = props.setFeatures;
-  const fitBounds = props.fitBounds;
-  const setFitBounds = props.setFitBounds;
+  const {
+    editMode,
+    setEditMode,
+    selectedRowId,
+    setSelectedRowId,
+    features,
+    setFeatures,
+    fitBounds,
+    setFitBounds,
+  } = props;
 
   React.useEffect(() => {
     if (!map) {

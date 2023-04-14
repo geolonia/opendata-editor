@@ -29,9 +29,9 @@ interface Props {
 
 const Component = (props: Props) => {
   const mapContainer = React.useRef<HTMLDivElement>(null);
-  const [simpleStyle, setSimpleStyle] = React.useState();
-  const [map, setMap] = React.useState();
-  const [draggableMarker, setDraggableMarker] = React.useState(null);
+  const [simpleStyle, setSimpleStyle] = React.useState<any>();
+  const [map, setMap] = React.useState<any>();
+  const [draggableMarker, setDraggableMarker] = React.useState<any>(null);
 
   const editMode = props.editMode;
   const setEditMode = props.setEditMode;
@@ -58,7 +58,7 @@ const Component = (props: Props) => {
           "type": "FeatureCollection",
           "features": []
         } as GeoJSON.FeatureCollection
-        const simpleStyle = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map);
+        const simpleStyle: any = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map);
         setSimpleStyle(simpleStyle)
       });
 
@@ -76,11 +76,9 @@ const Component = (props: Props) => {
       const geojson = csv2geojson(string);
 
       if (fitBounds) {
-        // @ts-ignore
         simpleStyle.updateData(geojson).fitBounds();
         setFitBounds(false);
       } else {
-        // @ts-ignore
         simpleStyle.updateData(geojson)
       }
     }
@@ -90,14 +88,12 @@ const Component = (props: Props) => {
     if (map && selectedRowId !== null) {
       const selectedFeature = features.find((feature) => feature.id === selectedRowId);
 
-      // @ts-ignore
       let center = map.getCenter();
       if (selectedFeature?.longitude && selectedFeature?.latitude) {
         center = [Number(selectedFeature.longitude), Number(selectedFeature.latitude)];
       }
 
       if (draggableMarker) {
-        // @ts-ignore
         draggableMarker.remove();
       }
 
@@ -111,13 +107,11 @@ const Component = (props: Props) => {
 
           // 新規データ追加の場合
           if (!feature) {
-            const latField = document.querySelector(`tr#table-data-${selectedRowId} td:nth-child(3) input`);
-            const lngField = document.querySelector(`tr#table-data-${selectedRowId} td:nth-child(4) input`);
+            const latField = document.querySelector(`tr#table-data-${selectedRowId} td.latitude input`) as HTMLInputElement;
+            const lngField = document.querySelector(`tr#table-data-${selectedRowId} td.longitude input`) as HTMLInputElement;
 
             if (latField && lngField) {
-              //@ts-ignore
               latField.value = lngLat.lat.toString()
-              //@ts-ignore
               lngField.value = lngLat.lng.toString()
             }
             return;
@@ -138,12 +132,12 @@ const Component = (props: Props) => {
         });
       }
 
-      //@ts-ignore
       map.flyTo({
         center: center,
         zoom: 17
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, editMode, selectedRowId, setEditMode, features, setFeatures])
 
   return (

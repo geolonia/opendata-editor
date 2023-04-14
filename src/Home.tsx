@@ -27,13 +27,11 @@ const Home = () => {
   React.useEffect(() => {
     if (window.location.search) {
       const query = queryString.parse(window.location.search)
-      if (query.data) {
-        const path = query.data as string;
+      const path = query.data as string;
+      if (path) {
         const filename = path.split('/').pop() || '';
         setFilename(filename);
-
-        // @ts-ignore
-        fetch(query.data)
+        fetch(path)
           .then((response) => response.text())
           .then((data) => {
             const features = Papa.parse(data, {

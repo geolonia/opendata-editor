@@ -25,24 +25,25 @@ const Home = () => {
   const [ selectedRowId, setSelectedRowId ] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    if (window.location.search) {
-      const query = queryString.parse(window.location.search)
-      const path = query.data as string;
-      if (path) {
-        const filename = path.split('/').pop() || '';
-        setFilename(filename);
-        fetch(path)
-          .then((response) => response.text())
-          .then((data) => {
-            const features = Papa.parse(data, {
-              header: true,
-              skipEmptyLines: true,
-            }).data as Feature[];
-            setFitBounds(true);
-            setFeatures([...addIdToFeatures(features)]);
-          });
-      }
-    }
+    if (!window.location.search) return;
+
+    const query = queryString.parse(window.location.search);
+    const path = query.data as string;
+
+    if (!path) return;
+
+    const filename = path.split('/').pop() || '';
+    setFilename(filename);
+    fetch(path)
+      .then((response) => response.text())
+      .then((data) => {
+        const features = Papa.parse(data, {
+          header: true,
+          skipEmptyLines: true,
+        }).data as Feature[];
+        setFitBounds(true);
+        setFeatures([...addIdToFeatures(features)]);
+      });
   }, []);
 
   return (

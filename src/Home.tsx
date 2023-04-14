@@ -21,7 +21,7 @@ const Home = () => {
   const [ features, setFeatures ] = React.useState<Feature[]>([]);
   const [ filename, setFilename ] = React.useState<string>('');
   const [ editMode, setEditMode ] = React.useState(false);
-  const [ fitBounds, setFitBounds ] = React.useState(false);  
+  const [ fitBounds, setFitBounds ] = React.useState(false);
   const [ selectedRowId, setSelectedRowId ] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -51,8 +51,26 @@ const Home = () => {
       <div className="container">
         <Uploader className="uploader" setFeatures={setFeatures} setFilename={setFilename} setFitBounds={setFitBounds}></Uploader>
         <Download features={features} filename={filename} />
-        <Map className="map" features={features} setFeatures={setFeatures} editMode={editMode} setEditMode={setEditMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} fitBounds={fitBounds} setFitBounds={setFitBounds} />
-        <Table features={features} setFeatures={setFeatures} editMode={editMode} setEditMode={setEditMode} selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} />
+
+        <Map
+          className="map"
+          features={features}
+          setFeatures={setFeatures}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          selectedRowId={selectedRowId}
+          setSelectedRowId={setSelectedRowId}
+          setFitBounds={setFitBounds}
+        />
+
+        <Table
+          features={features}
+          setFeatures={setFeatures}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          selectedRowId={selectedRowId}
+          setSelectedRowId={setSelectedRowId}
+        />
       </div>
     </div>
   );

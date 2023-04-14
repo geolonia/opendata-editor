@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import classNames from 'classnames';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
@@ -9,11 +10,11 @@ import './Table.scss';
 interface Props {
   className?: string;
   features: Feature[];
-  setFeatures: Function;
+  setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>;
   editMode: boolean;
-  setEditMode: Function;
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   selectedRowId: string | null;
-  setSelectedRowId: Function;
+  setSelectedRowId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 interface Feature {
@@ -24,7 +25,15 @@ const Component = (props: Props) => {
   const [tableData, setTableData] = React.useState<Feature[]>(props.features);
   const inputRef = React.useRef<Array<HTMLInputElement | null>>([]);
 
-  const addData = () => {
+  const {
+    setEditMode,
+    setSelectedRowId,
+    setFeatures,
+    features,
+    selectedRowId,
+  } = props;
+
+  const addData = useCallback(() => {
     let newTableData: Feature = {}
     for(let key of Object.keys(tableData[0])) {
       newTableData[key] = '';
@@ -32,63 +41,63 @@ const Component = (props: Props) => {
     const id = ulid();
     newTableData['id'] = id;
     setTableData([...tableData, newTableData]);
-    props.setEditMode(true);
-    props.setSelectedRowId(id);
-  }
+    setEditMode(true);
+    setSelectedRowId(id);
+  }, [tableData, setEditMode, setSelectedRowId]);
 
-  const jump = (e: any, id: string) => {
+  const jump = useCallback((e: any, id: string) => {
     if ((e.target.localName === 'button') || (e.target.localName === 'input')) return;
-    props.setEditMode(false);
-    props.setSelectedRowId(id);
-  }
+    setEditMode(false);
+    setSelectedRowId(id);
+  }, [setEditMode, setSelectedRowId]);
 
-  const editTableData = (id: string) => {
-    props.setEditMode(true);
-    props.setSelectedRowId(id);
-  }
+  const editTableData = useCallback((id: string) => {
+    setEditMode(true);
+    setSelectedRowId(id);
+  }, [setEditMode, setSelectedRowId]);
 
-  const saveTableData = (id: string) => {
+  const saveTableData = useCallback((id: string) => {
     setTableData(prevTableData => {
       const newTableData = prevTableData.map((_tableData) => {
         if (_tableData.id !== id) {
           return _tableData;
-        } else {
-          const replacedTableData : Feature = {};
-          for(let i = 0; i < Object.keys(_tableData).length - 1; i++) {
-            const key: string = Object.keys(_tableData)[i];
-            replacedTableData[key] = inputRef.current[i]?.value as string;
-          }
-          replacedTableData['id'] = id;
-          return replacedTableData;
         }
-      })
-      props.setFeatures([...newTableData]);
-      return newTableData;
-    })
-    props.setEditMode(false);
-  }
 
-  const deleteTableData = (id: string) => {
-    const tableData = props.features.find((feature) => feature.id === id);
+        const replacedTableData : Feature = {};
+        for (let i = 0; i < Object.keys(_tableData).length - 1; i++) {
+          const key: string = Object.keys(_tableData)[i];
+          replacedTableData[key] = inputRef.current[i]?.value as string;
+        }
+        replacedTableData['id'] = id;
+        return replacedTableData;
+      });
+      setFeatures(newTableData);
+      return newTableData;
+    });
+    setEditMode(false);
+  }, [setFeatures, setEditMode]);
+
+  const deleteTableData = useCallback((id: string) => {
+    const tableData = features.find((feature) => feature.id === id);
 
     if (window.confirm(`「${tableData?.name}」のデータを削除しても良いですか?`)) {
       setTableData(prevTableData => {
         const newTableData = [...prevTableData.filter((_tableData) => _tableData.id !== id)];
-        props.setFeatures(newTableData);
+        setFeatures(newTableData);
         return newTableData;
       })
     }
-  }
+  }, [features, setFeatures]);
 
   const headers = tableData[0] ? Object.keys(tableData[0]) : [];
 
   React.useEffect(() => {
-    setTableData(props.features);
-  }, [props.features])
+    setTableData(features);
+  }, [features])
 
   React.useEffect(() => {
-    document.getElementById(`table-data-${props.selectedRowId}`)?.scrollIntoView({behavior: 'smooth'});
-  }, [props.selectedRowId])
+    document.getElementById(`table-data-${selectedRowId}`)?.scrollIntoView({behavior: 'smooth'});
+  }, [selectedRowId])
 
   return (
     <>
@@ -112,7 +121,14 @@ const Component = (props: Props) => {
               </thead>
               <tbody>
                 { tableData.map((rowData) => (
-                  <tr onClick={(e) => jump(e, rowData['id'])} key={rowData['id']} id={`table-data-${rowData['id']}`} className={rowData['id'] === props.selectedRowId ? 'selected' : ''}>
+                  <tr
+                    onClick={(e) => jump(e, rowData['id'])}
+                    key={rowData['id']}
+                    id={`table-data-${rowData['id']}`}
+                    className={classNames({
+                      selected: rowData['id'] === props.selectedRowId,
+                    })}
+                  >
                     <td key={`${rowData['id']}-action`}>
                       {props.editMode && (rowData['id'] === props.selectedRowId) ?
                         <button onClick={() => saveTableData(rowData['id'])}>保存</button>

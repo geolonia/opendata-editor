@@ -87,7 +87,7 @@ const Component = (props: Props) => {
   }, [props.features])
 
   React.useEffect(() => {
-    document.getElementById(`table-data-${props.selectedRowId}`)?.scrollIntoView();
+    document.getElementById(`table-data-${props.selectedRowId}`)?.scrollIntoView({behavior: 'smooth'});
   }, [props.selectedRowId])
 
   return (

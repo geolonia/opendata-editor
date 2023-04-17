@@ -13,35 +13,47 @@ interface Props {
 }
 
 const Component = (props: Props) => {
-  const ref = React.useRef<HTMLButtonElement>(null)
+  const ref = React.useRef<HTMLButtonElement>(null);
+
+  const {
+    features,
+    filename,
+  } = props;
 
   const onClick = React.useCallback((event: MouseEvent) => {
-    const output = Papa.unparse(props.features);
-    const el = document.createElement('a')
-    el.download = props.filename;
-    el.href = `data:application/csv;charset=UTF-8,${encodeURIComponent(output)}`
+    event.preventDefault();
 
-    document.body.appendChild(el)
-    el.click()
+    const output = Papa.unparse(features);
+    const el = document.createElement('a');
+    el.download = filename;
+    el.href = `data:application/csv;charset=UTF-8,${encodeURIComponent(output)}`;
 
-    document.body.removeChild(el)
-  }, [props])
+    document.body.appendChild(el);
+    el.click();
+
+    document.body.removeChild(el);
+  }, [features, filename]);
 
 
   React.useEffect(() => {
     if (ref.current) {
-      ref.current.disabled = false
-      ref.current.style.cursor = 'pointer'
-      ref.current.onclick = onClick
+      ref.current.disabled = false;
+      ref.current.style.cursor = 'pointer';
+      ref.current.onclick = onClick;
     }
-  }, [onClick])
+  }, [onClick]);
 
   return (
-    <div className="main">
-      <div className="container">
-        <h1>ダウンロード</h1>
-        <button className="download-button" ref={ref} disabled={true}><FontAwesomeIcon icon={faDownload} className="button-icon" />ダウンロード</button>
-      </div>
+    <div className="download">
+      {props.filename ? props.filename : 'CSVファイルを地図上にドラッグ&ドロップしてください'}
+      <button
+        className="download-button"
+        ref={ref}
+        disabled={true}
+      >
+        <FontAwesomeIcon icon={faDownload} className="button-icon" />
+        エクスポート
+      </button>
     </div>
   );
 }

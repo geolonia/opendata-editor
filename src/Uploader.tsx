@@ -4,8 +4,8 @@ import {useDropzone} from 'react-dropzone'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons"
-
-import Papa from 'papaparse';
+import { addIdToFeatures } from "./lib/add-id-to-features";
+import { csv2rows } from './lib/csv2geojson';
 
 const baseStyle = {
   flex: 1,
@@ -54,6 +54,7 @@ interface Props {
   className: string;
   setFeatures: Function;
   setFilename: Function;
+  setFitBounds: Function;
 }
 
 const Component = (props: Props) => {
@@ -76,11 +77,10 @@ const Component = (props: Props) => {
         const el = document.querySelector('.uploader') as HTMLElement
         el.style.display = "none"
 
-        const csvData = Papa.parse(data, {
-          header: true,
-          skipEmptyLines: true,
-        }).data;
-        props.setFeatures(csvData)
+        const csvData = csv2rows(data);
+
+        props.setFitBounds(true);
+        props.setFeatures(addIdToFeatures(csvData));
       }
 
       reader.readAsText(file)

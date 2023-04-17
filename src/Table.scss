@@ -1,0 +1,39 @@
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.table-wrap {
+  overflow-x: scroll;
+}
+thead, tbody {
+  display: block;
+}
+tbody {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 300px;
+}
+td {
+  font-size: 12px;
+  border: 1px solid #2b2121;
+  color: #2b2b2b;
+  padding: 6px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 130px;
+  max-width: 130px;
+  min-width: 130px;
+}
+th {
+  font-size: 12px;
+  border: 1px solid #EE730D;
+  background-color: #fbf1e4;
+  color: #EE730D;
+  padding: 6px 6px;
+  width: 130px;
+}
+tr.selected td {
+  color: #fbf1e4;
+  background-color: #EE730D;
+}

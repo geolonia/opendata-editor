@@ -1,111 +1,160 @@
-import React from 'react';
-import { ReactGrid, Column, Row, CellChange, TextCell, Id, MenuOption, SelectionMode } from "@silevis/reactgrid";
-import "@silevis/reactgrid/styles.css";
+import React, { useCallback } from 'react';
+import classNames from 'classnames';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+
+import { ulid } from "ulid";
+
+import './Table.scss';
 
 interface Props {
   className?: string;
   features: Feature[];
-  setFeatures: Function;
+  setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>;
+  editMode: boolean;
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedRowId: string | null;
+  setSelectedRowId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 interface Feature {
   [key: string]: string;
 }
 
-const applyChangesToData = (
-  changes: CellChange<TextCell>[],
-  prevTableData: Feature[]
-): Feature[] => {
-  changes.forEach((change) => {
-    const index = change.rowId as number;
-    const fieldName = change.columnId;
-    prevTableData[index][fieldName] = change.newCell.text;
-  });
-  return [...prevTableData];
-};
-
 const Component = (props: Props) => {
   const [tableData, setTableData] = React.useState<Feature[]>(props.features);
-  
-  const addData = () => {
+  const inputRef = React.useRef<Array<HTMLInputElement | null>>([]);
+
+  const {
+    setEditMode,
+    setSelectedRowId,
+    setFeatures,
+    features,
+    selectedRowId,
+  } = props;
+
+  const addData = useCallback(() => {
     let newTableData: Feature = {}
     for(let key of Object.keys(tableData[0])) {
       newTableData[key] = '';
     }
+    const id = ulid();
+    newTableData['id'] = id;
     setTableData([...tableData, newTableData]);
-  }
+    setEditMode(true);
+    setSelectedRowId(id);
+  }, [tableData, setEditMode, setSelectedRowId]);
 
-  const handleChanges = (changes: CellChange[]) => {
-    const textCellChanges = changes.filter(x => x.type === 'text') as CellChange<TextCell>[];
-    setTableData((prevTableData) => applyChangesToData(textCellChanges, prevTableData));
-    props.setFeatures([...tableData]);
-  };
+  const jump = useCallback((e: any, id: string) => {
+    if ((e.target.localName === 'button') || (e.target.localName === 'input')) return;
+    setEditMode(false);
+    setSelectedRowId(id);
+  }, [setEditMode, setSelectedRowId]);
 
-  const handleContextMenu = (
-    selectedRowIds: Id[],
-    selectedColIds: Id[],
-    selectionMode: SelectionMode,
-    menuOptions: MenuOption[]
-  ): MenuOption[] => {
-    if (selectionMode === "row") {
-      menuOptions = [
-        {
-          id: "removeRow",
-          label: "この行を削除する",
-          handler: () => {
-            setTableData(prevTableData => {
-              const newTableData = [...prevTableData.filter((_tableData, idx) => !selectedRowIds.includes(idx))];
-              props.setFeatures(newTableData);
-              return newTableData
-            })
-          }
+  const editTableData = useCallback((id: string) => {
+    setEditMode(true);
+    setSelectedRowId(id);
+  }, [setEditMode, setSelectedRowId]);
+
+  const saveTableData = useCallback((id: string) => {
+    setTableData(prevTableData => {
+      const newTableData = prevTableData.map((_tableData) => {
+        if (_tableData.id !== id) {
+          return _tableData;
         }
-      ];
-    } else {
-      menuOptions = [];
+
+        const replacedTableData : Feature = {};
+        for (let i = 0; i < Object.keys(_tableData).length - 1; i++) {
+          const key: string = Object.keys(_tableData)[i];
+          replacedTableData[key] = inputRef.current[i]?.value as string;
+        }
+        replacedTableData['id'] = id;
+        return replacedTableData;
+      });
+      setFeatures(newTableData);
+      return newTableData;
+    });
+    setEditMode(false);
+  }, [setFeatures, setEditMode]);
+
+  const deleteTableData = useCallback((id: string) => {
+    const tableData = features.find((feature) => feature.id === id);
+
+    if (window.confirm(`「${tableData?.name}」のデータを削除しても良いですか?`)) {
+      setTableData(prevTableData => {
+        const newTableData = [...prevTableData.filter((_tableData) => _tableData.id !== id)];
+        setFeatures(newTableData);
+        return newTableData;
+      })
     }
-    return menuOptions;
-  }
+  }, [features, setFeatures]);
 
-  const headerRow: Row = {
-    rowId: "header",
-    cells: tableData[0] ? Object.keys(tableData[0]).map((key) => {
-      return { type: "header", text: key };
-    }) : []
-  };
+  const headers = tableData[0] ? Object.keys(tableData[0]) : [];
 
-  const getRows = (tableData: Feature[]): Row[] => [
-    headerRow,
-    ...tableData.map<Row>((rowData, idx) => ({
-      rowId: idx,
-      cells: Object.values(rowData).map((column) => { return {type: "text", text: column}})
-    }))
-  ];
+  React.useEffect(() => {
+    setTableData(features);
+  }, [features])
 
-  const getColumns = (): Column[] => tableData[0] ? Object.keys(tableData[0]).map((key) => {
-    return { columnId: key, width: 150 };
-  }) : [];
-  
-  const rows = getRows(tableData);
-  const columns = getColumns();
+  React.useEffect(() => {
+    document.getElementById(`table-data-${selectedRowId}`)?.scrollIntoView({behavior: 'smooth'});
+  }, [selectedRowId])
+
   return (
-    <div className="main">
-      <div className="container">
-        <p>
-          データを編集するには、セルの上でダブルクリックして下さい。<br />
-          データを削除するには、一番左のセルを選択して右クリックして下さい。<br />
-          <button onClick={addData}>データを追加</button><br />
-        </p>
-        <ReactGrid
-          rows={rows}
-          columns={columns}
-          onCellsChanged={handleChanges}
-          onContextMenu={handleContextMenu}
-          enableRowSelection
-          stickyTopRows={1}
-        />
-      </div>
-    </div>
+    <>
+      {tableData.length > 0 && (
+        <>
+          <button className="add-data-button" onClick={addData}>
+          <FontAwesomeIcon icon={faPlusCircle} className="button-icon" />
+          データを追加
+          </button>
+
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th key='header-action'></th>
+                  { headers.map((header, i) => (
+                    (header !== 'id') &&
+                      <th key={`header-${headers[i]}`}>{header}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                { tableData.map((rowData) => (
+                  <tr
+                    onClick={(e) => jump(e, rowData['id'])}
+                    key={rowData['id']}
+                    id={`table-data-${rowData['id']}`}
+                    className={classNames({
+                      selected: rowData['id'] === props.selectedRowId,
+                    })}
+                  >
+                    <td key={`${rowData['id']}-action`}>
+                      {props.editMode && (rowData['id'] === props.selectedRowId) ?
+                        <button onClick={() => saveTableData(rowData['id'])}>保存</button>
+                        :
+                        <>
+                          <button onClick={() => editTableData(rowData['id'])} disabled={props.editMode}>編集</button>
+                          &nbsp;
+                          <button onClick={() => deleteTableData(rowData['id'])} disabled={props.editMode}>削除</button>
+                        </>
+                      }
+                    </td>
+
+                    { Object.values(rowData).map((column, j) => (
+                      (j !== Object.keys(rowData).findIndex((e) => e === 'id')) &&
+                        <td key={`${rowData['id']}-${headers[j]}`} className={headers[j]}>{
+                          props.editMode && rowData['id'] === props.selectedRowId ? <input ref={el => inputRef.current[j] = el} type="text" defaultValue={column} /> : column
+                        }</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </>
   );
 }
 

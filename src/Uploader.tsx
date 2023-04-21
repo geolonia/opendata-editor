@@ -7,6 +7,9 @@ import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons"
 import { addIdToFeatures } from "./lib/add-id-to-features";
 import { csv2rows } from './lib/csv2geojson';
 
+import { Buffer } from 'buffer';
+import Encoding from 'encoding-japanese';
+
 const baseStyle = {
   flex: 1,
   display: 'flex',
@@ -72,18 +75,23 @@ const Component = (props: Props) => {
       reader.onabort = () => () => {}
       reader.onerror = () => console.log('file reading has failed')
       reader.onload = () => {
-        const data = reader.result as string
-
+        const fileContent = reader.result as ArrayBuffer;
+        const data = Buffer.from(fileContent);
+        const unicodeData = Encoding.convert(data, {
+          to: 'UNICODE',
+          from: 'AUTO',
+          type: 'string'
+        });
         const el = document.querySelector('.uploader') as HTMLElement
         el.style.display = "none"
 
-        const csvData = csv2rows(data);
+        const csvData = csv2rows(unicodeData);
 
         props.setFitBounds(true);
         props.setFeatures(addIdToFeatures(csvData));
       }
 
-      reader.readAsText(file)
+      reader.readAsArrayBuffer(file)
     })
 
   }, [props])

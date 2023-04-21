@@ -45,7 +45,7 @@ const Component = (props: Props) => {
 
   return (
     <div className="download">
-      {props.filename ? props.filename : 'CSVファイルを地図上にドラッグ&ドロップしてください'}
+      {props.filename ? props.filename : ''}
       <button
         className="download-button"
         ref={ref}

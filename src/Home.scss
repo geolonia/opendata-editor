@@ -8,9 +8,6 @@ html, body, #root, .map, .main, .uploader
   margin: 0;
   background-color: #ffffff;
 }
-p,h1{
-  color: #272727;
-}
 .menu
 {
   ul
@@ -94,7 +91,7 @@ p,h1{
 
 .uploader
 {
-  display: none;
+  //display: none;
   z-index: 9999;
   background-color: rgba(0, 0, 0, 0.7);
 }

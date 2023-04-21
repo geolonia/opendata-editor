@@ -123,7 +123,7 @@ const Component = (props: Props) => {
         <input {...getInputProps()} />
         <div>
           <p style={{ fontSize: '144px', margin: 0, lineHeight: '144px' }}><FontAwesomeIcon icon={ faCloudArrowUp } /></p>
-          <p>CSV または GeoJSON フォーマットの位置情報データをドラッグ＆ドロップしてください。<br />
+          <p>CSVフォーマットの位置情報データをドラッグ＆ドロップしてください。<br />
             ※ データをアップロードするとこれまでの作業内容は失われます。</p>
         </div>
       </div>

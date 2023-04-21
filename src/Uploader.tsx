@@ -75,9 +75,9 @@ const Component = (props: Props) => {
       reader.onabort = () => () => {}
       reader.onerror = () => console.log('file reading has failed')
       reader.onload = () => {
-        const fileContent = reader.result as ArrayBuffer;
-        const data = Buffer.from(fileContent);
-        const unicodeData = Encoding.convert(data, {
+        const data = reader.result as ArrayBuffer;
+        const buffer = Buffer.from(data);
+        const unicodeData = Encoding.convert(buffer, {
           to: 'UNICODE',
           from: 'AUTO',
           type: 'string'

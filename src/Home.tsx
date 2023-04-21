@@ -5,6 +5,9 @@ import Download from './Download';
 
 import queryString from "query-string"
 
+import { Buffer } from 'buffer';
+import Encoding from 'encoding-japanese';
+
 import Map from './Map'
 import Uploader from './Uploader'
 
@@ -31,9 +34,15 @@ const Home = () => {
     const filename = path.split('/').pop() || '';
     setFilename(filename);
     fetch(path)
-      .then((response) => response.text())
+      .then((response) => response.arrayBuffer())
       .then((data) => {
-        const features = csv2rows(data);
+        const buffer = Buffer.from(data);
+        const unicodeData = Encoding.convert(buffer, {
+          to: 'UNICODE',
+          from: 'AUTO',
+          type: 'string'
+        });
+        const features = csv2rows(unicodeData);
         setFitBounds(true);
         setFeatures(addIdToFeatures(features));
       });

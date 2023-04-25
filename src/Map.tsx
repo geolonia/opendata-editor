@@ -78,7 +78,7 @@ const Component = (props: Props) => {
 
     setFitBounds((fitBounds) => {
       if (fitBounds) {
-        simpleStyle.updateData(geojson).fitBounds();
+        simpleStyle.updateData(geojson).fitBounds({duration: 0});
         return false;
       } else {
         simpleStyle.updateData(geojson);
@@ -135,7 +135,8 @@ const Component = (props: Props) => {
 
     map.flyTo({
       center: center,
-      zoom: 17
+      zoom: 17,
+      speed: 3
     });
 
     return () => {

@@ -42,6 +42,8 @@ const Home = () => {
           from: 'AUTO',
           type: 'string'
         });
+        const el = document.querySelector('.uploader') as HTMLElement
+        el.style.display = "none"
         const features = csv2rows(unicodeData);
         setFitBounds(true);
         setFeatures(addIdToFeatures(features));

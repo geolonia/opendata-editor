@@ -56,6 +56,7 @@ const hideUploader = (event: DragEvent) => {
 interface Props {
   className: string;
   setFeatures: Function;
+  filename: string;
   setFilename: Function;
   setFitBounds: Function;
 }
@@ -63,7 +64,9 @@ interface Props {
 const Component = (props: Props) => {
   React.useEffect(() => {
     window.addEventListener('dragenter', showUploader)
-    window.addEventListener('dragleave', hideUploader)
+    if (props.filename) {
+      window.addEventListener('dragleave', hideUploader)
+    }
   })
 
   const onDrop = React.useCallback((acceptedFiles : any) => {

@@ -53,7 +53,7 @@ const Home = () => {
   return (
     <div className="main">
       <div className="container">
-        <Uploader className="uploader" setFeatures={setFeatures} setFilename={setFilename} setFitBounds={setFitBounds}></Uploader>
+        <Uploader className="uploader" setFeatures={setFeatures} filename={filename} setFilename={setFilename} setFitBounds={setFitBounds}></Uploader>
         <Download features={features} filename={filename} />
 
         <Map

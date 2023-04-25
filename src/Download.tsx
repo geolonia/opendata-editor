@@ -23,7 +23,17 @@ const Component = (props: Props) => {
   const onClick = React.useCallback((event: MouseEvent) => {
     event.preventDefault();
 
-    const output = Papa.unparse(features);
+    const exportData = features.map((feature) => {
+      const newFeature: Feature = {}
+      for(let i = 0; i < Object.keys(feature).length; i++) {
+        if (Object.keys(feature)[i] !== 'id' && Object.keys(feature)[i] !== 'title') {
+          newFeature[Object.keys(feature)[i]] = Object.values(feature)[i];
+        }
+      }
+      return newFeature;
+    })
+
+    const output = Papa.unparse(exportData);
     const el = document.createElement('a');
     el.download = filename;
     el.href = `data:application/csv;charset=UTF-8,${encodeURIComponent(output)}`;

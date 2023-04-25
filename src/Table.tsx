@@ -114,7 +114,7 @@ const Component = (props: Props) => {
                 <tr>
                   <th key='header-action'></th>
                   { headers.map((header, i) => (
-                    (header !== 'id') &&
+                    (header !== 'id') && (header !== 'title') &&
                       <th key={`header-${headers[i]}`}>{header}</th>
                   ))}
                 </tr>
@@ -142,7 +142,7 @@ const Component = (props: Props) => {
                     </td>
 
                     { Object.values(rowData).map((column, j) => (
-                      (j !== Object.keys(rowData).findIndex((e) => e === 'id')) &&
+                      (j !== Object.keys(rowData).findIndex((e) => e === 'id')) && (j !== Object.keys(rowData).findIndex((e) => e === 'title')) &&
                         <td key={`${rowData['id']}-${headers[j]}`} className={headers[j]}>{
                           props.editMode && rowData['id'] === props.selectedRowId ? <input ref={el => inputRef.current[j] = el} type="text" defaultValue={column} /> : column
                         }</td>

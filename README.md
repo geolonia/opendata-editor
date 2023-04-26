@@ -6,19 +6,21 @@
 
 ## 機能、使い方
 
-- https://geolonia.github.io/opendata-editor/ を開きます
-- 位置情報座標を含む CSV を画面にドラッグ・アンド・ドロップすると、地図上にアイコンが表示されます
-  - アイコンをクリックすると、属性情報をみることができます
-- 編集マップの URL のクエリパラメータに csv を指定し、編集マップのリンクを作ることができます
-  - 例: 高松市のオープンデータ(AED一覧)を編集マップで開くためのリンク: https://geolonia.github.io/opendata-editor/?data=https://raw.githubusercontent.com/takamatsu-city/opendata/main/data/aed_location/0002.csv
-- 「スプレッドシート形式」タブで、csv の編集ができる。（現在、値の変更のみをサポートしています。）
-- CSV 出力タブで、編集済みの CSVファイルをダウンロードすることができる
+- https://geolonia.github.io/opendata-editor/ を開きます。
+- 位置情報座標を含むCSVファイルを画面にドラッグ・アンド・ドロップすると、地図上にアイコンが表示され、画面下にはスプレッドシート形式で各データが表示されます。
+  - アイコンをクリックするとスプレッドシート上の対応するデータがハイライトされます。
+  - 反対にスプレッドシート上のデータをクリックすると、地図上で対応するポイントがハイライトされます。
+- 編集マップのURLのクエリパラメータにCSVファイルのURLを指定し、編集マップのリンクを作ることができます
+  - 例: 高松市のオープンデータ(AED一覧)を編集マップで開くためのリンク: https://geolonia.github.io/opendata-editor/?data=https://opendata.takamatsu-fact.com/aed_location/data.csv
+- スプレッドシートの左端の「編集」または「削除」ボタンで、各データの編集ができます。
+- 地図左下の「データを追加」ボタンで、新規データを追加することができます。
+- 右上の「エクスポート」ボタンを押せば、編集済みの CSVファイルをダウンロードすることができます。
 
 ## 仕様
 
 ### 出力されるCSV
 
-出力されるCSVの[サンプルをダウンロード](https://github.com/takamatsu-city/opendata/tree/main/data/aed_location)してください。
+出力されるCSVの[サンプルをダウンロード](https://opendata.takamatsu-fact.com/aed_location/data.csv)してください。
 
 ### CSV の位置情報座標列のカラムタイトル
 

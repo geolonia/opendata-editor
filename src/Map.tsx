@@ -97,8 +97,37 @@ const Component = (props: Props) => {
     const selectedFeature = features.find((feature) => feature.id === selectedRowId);
 
     let center = map.getCenter();
-    if (selectedFeature?.longitude && selectedFeature?.latitude) {
+
+    const mapLayer = map.getLayer('selected-point');
+    if(typeof mapLayer !== 'undefined') {
+      map.removeLayer('selected-point').removeSource('selected-point');
+    }
+
+    if (selectedFeature && selectedFeature.longitude && selectedFeature.latitude) {
       center = [Number(selectedFeature.longitude), Number(selectedFeature.latitude)];
+
+      // 選択されたポイントをハイライトする。
+      map.addSource('selected-point', {
+        type: 'geojson',
+        data: {
+          "type": "Feature",
+          "geometry": {
+              "type": "Point",
+              "coordinates": center
+          }
+        }
+      });
+      map.addLayer({
+          "id": "selected-point",
+          "type": "circle",
+          "source": "selected-point",
+          "layout": {},
+          "paint": {
+              'circle-color': "#ff0000",
+              'circle-radius': 10,
+              'circle-stroke-width': 2
+          }
+      });
     }
 
     if (editMode) {

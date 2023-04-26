@@ -118,16 +118,18 @@ const Component = (props: Props) => {
         }
       });
       map.addLayer({
-          "id": "selected-point",
-          "type": "circle",
-          "source": "selected-point",
-          "layout": {},
-          "paint": {
-              'circle-color': "#ff0000",
-              'circle-radius': 10,
-              'circle-stroke-width': 2
-          }
+        "id": "selected-point",
+        "type": "circle",
+        "source": "selected-point",
+        "layout": {},
+        "paint": {
+            'circle-radius': 21,
+            'circle-color': '#ff0000',
+            'circle-opacity': 0.5,
+            'circle-blur': 0.5,
+        }
       });
+      map.moveLayer('selected-point', 'custom-geojson-circle-points');
     }
 
     if (editMode) {

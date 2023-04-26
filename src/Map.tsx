@@ -133,9 +133,9 @@ const Component = (props: Props) => {
       });
     }
 
-    map.flyTo({
+    map.jumpTo({
       center: center,
-      zoom: 17,
+      zoom: 15,
       speed: 3
     });
 

@@ -23,6 +23,8 @@ interface Props {
   selectedRowId: string | null;
   setSelectedRowId: React.Dispatch<React.SetStateAction<string | null>>;
   setFitBounds: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedOn: string | null;
+  setSelectedOn: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const Component = (props: Props) => {
@@ -38,6 +40,8 @@ const Component = (props: Props) => {
     features,
     setFeatures,
     setFitBounds,
+    selectedOn,
+    setSelectedOn,
   } = props;
 
   React.useLayoutEffect(() => {
@@ -68,8 +72,9 @@ const Component = (props: Props) => {
       const id = e.features[0].properties['id'];
       setEditMode(false);
       setSelectedRowId(id);
+      setSelectedOn('map');
     });
-  }, [mapContainer, setEditMode, setSelectedRowId]);
+  }, [mapContainer, setEditMode, setSelectedRowId, setSelectedOn]);
 
   React.useEffect(() => {
     if (!simpleStyle) { return; }
@@ -164,18 +169,26 @@ const Component = (props: Props) => {
       });
     }
 
-    map.jumpTo({
-      center: center,
-      zoom: 17,
-      speed: 3
-    });
+    console.log("selectedOn", selectedOn);
+    if (selectedOn === 'map') {
+      map.flyTo({
+        center: center,
+        speed: 3
+      });
+    } else {
+      map.jumpTo({
+        center: center,
+        speed: 3,
+        zoom: 17
+      });
+    }
 
     return () => {
       if (draggableMarker) {
         draggableMarker.remove();
       }
     }
-  }, [map, selectedRowId, editMode, setEditMode, features, setFeatures])
+  }, [map, selectedRowId, editMode, setEditMode, features, setFeatures, selectedOn]);
 
   return (
     <>

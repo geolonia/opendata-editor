@@ -22,6 +22,7 @@ const Home = () => {
   const [ editMode, setEditMode ] = React.useState(false);
   const [ , setFitBounds ] = React.useState(false);
   const [ selectedRowId, setSelectedRowId ] = React.useState<string | null>(null);
+  const [ selectedOn, setSelectedOn ] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!window.location.search) return;
@@ -65,6 +66,8 @@ const Home = () => {
           selectedRowId={selectedRowId}
           setSelectedRowId={setSelectedRowId}
           setFitBounds={setFitBounds}
+          selectedOn={selectedOn}
+          setSelectedOn={setSelectedOn}
         />
 
         <Table
@@ -74,6 +77,7 @@ const Home = () => {
           setEditMode={setEditMode}
           selectedRowId={selectedRowId}
           setSelectedRowId={setSelectedRowId}
+          setSelectedOn={setSelectedOn}
         />
       </div>
     </div>

@@ -15,6 +15,7 @@ interface Props {
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   selectedRowId: string | null;
   setSelectedRowId: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedOn: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 interface Feature {
@@ -31,6 +32,7 @@ const Component = (props: Props) => {
     setFeatures,
     features,
     selectedRowId,
+    setSelectedOn,
   } = props;
 
   const addData = useCallback(() => {
@@ -49,7 +51,8 @@ const Component = (props: Props) => {
     if ((e.target.localName === 'button') || (e.target.localName === 'input')) return;
     setEditMode(false);
     setSelectedRowId(id);
-  }, [setEditMode, setSelectedRowId]);
+    setSelectedOn('table');
+  }, [setEditMode, setSelectedRowId, setSelectedOn]);
 
   const editTableData = useCallback((id: string) => {
     setEditMode(true);
@@ -96,7 +99,7 @@ const Component = (props: Props) => {
   }, [features])
 
   React.useEffect(() => {
-    document.getElementById(`table-data-${selectedRowId}`)?.scrollIntoView({behavior: 'smooth'});
+    document.getElementById(`table-data-${selectedRowId}`)?.scrollIntoView();
   }, [selectedRowId])
 
   return (

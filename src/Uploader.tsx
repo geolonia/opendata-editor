@@ -9,6 +9,7 @@ import { csv2rows } from './lib/csv2geojson';
 
 import { Buffer } from 'buffer';
 import Encoding from 'encoding-japanese';
+import { xlsParser } from './lib/xlsParser';
 
 const baseStyle = {
   flex: 1,
@@ -77,18 +78,24 @@ const Component = (props: Props) => {
 
       reader.onabort = () => () => {}
       reader.onerror = () => console.log('file reading has failed')
-      reader.onload = () => {
+      reader.onload = async () => {
         const data = reader.result as ArrayBuffer;
-        const buffer = Buffer.from(data);
-        const unicodeData = Encoding.convert(buffer, {
-          to: 'UNICODE',
-          from: 'AUTO',
-          type: 'string'
-        });
-        const el = document.querySelector('.uploader') as HTMLElement
-        el.style.display = "none"
 
-        const csvData = csv2rows(unicodeData);
+        let csvData;
+        if (file.type === 'text/csv') {
+          const buffer = Buffer.from(data);
+          const unicodeData = Encoding.convert(buffer, {
+            to: 'UNICODE',
+            from: 'AUTO',
+            type: 'string'
+          });
+          csvData = csv2rows(unicodeData);
+        } else {
+          csvData = await xlsParser(data);
+        }
+
+        const el = document.querySelector('.uploader') as HTMLElement;
+        el.style.display = "none";
 
         props.setFitBounds(true);
         props.setFeatures(addIdToFeatures(csvData));
@@ -106,7 +113,8 @@ const Component = (props: Props) => {
     isDragAccept,
     isDragReject
   } = useDropzone({ accept: {
-    'text/plain': ['.csv', '.txt'],
+    'text/csv': ['.csv'],
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
   }, onDrop, maxFiles: 1, });
 
   const style = React.useMemo(() => ({
@@ -126,7 +134,7 @@ const Component = (props: Props) => {
         <input {...getInputProps()} />
         <div>
           <p style={{ fontSize: '144px', margin: 0, lineHeight: '144px' }}><FontAwesomeIcon icon={ faCloudArrowUp } /></p>
-          <p>CSVフォーマットの位置情報データをドラッグ＆ドロップしてください。<br />
+          <p>位置情報データを含むCSVファイルまたはExcelファイルをドラッグ＆ドロップしてください。<br />
             ※ データをアップロードするとこれまでの作業内容は失われます。</p>
         </div>
       </div>

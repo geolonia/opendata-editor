@@ -94,12 +94,14 @@ const Component = (props: Props) => {
 
   React.useEffect(() => {
     let draggableMarker: any = null;
-
+    const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
+    const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
+  
     if (!map || selectedRowId === null) {
       return;
     }
 
-    const selectedFeature = features.find((feature) => feature.id === selectedRowId);
+    const selectedFeature = features.find((feature) => feature.id === selectedRowId) as Feature;
 
     let center = map.getCenter();
 
@@ -108,8 +110,21 @@ const Component = (props: Props) => {
       map.removeLayer('selected-point').removeSource('selected-point');
     }
 
-    if (selectedFeature && selectedFeature.longitude && selectedFeature.latitude) {
-      center = [Number(selectedFeature.longitude), Number(selectedFeature.latitude)];
+    let latColumn = 'latitude';
+    let lngColumn = 'longitude';
+    for (let i = 0; i < latColumns.length; i++) {
+      if (Object.keys(selectedFeature).includes(latColumns[i])) {
+        latColumn = latColumns[i];
+      }
+    }
+    for (let i = 0; i < lngColumns.length; i++) {
+      if (Object.keys(selectedFeature).includes(lngColumns[i])) {
+        lngColumn = lngColumns[i];
+      }
+    }
+
+    if (selectedFeature && selectedFeature[lngColumn] && selectedFeature[latColumn]) {
+      center = [Number(selectedFeature[lngColumn]), Number(selectedFeature[latColumn])];
 
       // 選択されたポイントをハイライトする。
       map.addSource('selected-point', {
@@ -169,7 +184,6 @@ const Component = (props: Props) => {
       });
     }
 
-    console.log("selectedOn", selectedOn);
     if (selectedOn === 'map') {
       map.flyTo({
         center: center,

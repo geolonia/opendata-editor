@@ -1,7 +1,7 @@
 import Papa from 'papaparse';
 
-const latColumns = [ '緯度', 'lat', 'latitude' ] as const;
-const lngColumns = [ '経度', 'lng', 'longitude' ] as const;
+const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
+const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
 const titleColumns = [ '名称', '名前', 'タイトル', 'title', 'name' ] as const;
 
 export type Row = { [key: string]: string };

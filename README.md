@@ -4,6 +4,10 @@
 
 <img width="1166" alt="スクリーンショット_2023-03-22_17_05_54" src="https://user-images.githubusercontent.com/1124652/226838649-d24c1d43-6832-461f-a74d-b50d2ceba455.png">
 
+表組みと地図を組み合わせて使えるようになりました。
+
+![表組みと地図を組み合わせて使える位置情報エディター](https://github.com/geolonia/opendata-editor/assets/1124652/a3fff2e9-c76f-4781-9abf-874148bb2262)
+
 ## 機能、使い方
 
 - https://geolonia.github.io/opendata-editor/ を開きます。

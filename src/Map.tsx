@@ -120,7 +120,6 @@ const Component = (props: Props) => {
           latColumn = latColumns[i];
         }
       }
-
       for (let i = 0; i < lngColumns.length; i++) {
         if (Object.keys(selectedFeature).includes(lngColumns[i])) {
           lngColumn = lngColumns[i];
@@ -136,8 +135,8 @@ const Component = (props: Props) => {
           data: {
             "type": "Feature",
             "geometry": {
-              "type": "Point",
-              "coordinates": center
+                "type": "Point",
+                "coordinates": center
             }
           }
         });
@@ -147,10 +146,10 @@ const Component = (props: Props) => {
           "source": "selected-point",
           "layout": {},
           "paint": {
-            'circle-radius': 21,
-            'circle-color': '#ff0000',
-            'circle-opacity': 0.5,
-            'circle-blur': 0.5,
+              'circle-radius': 21,
+              'circle-color': '#ff0000',
+              'circle-opacity': 0.5,
+              'circle-blur': 0.5,
           }
         });
         map.moveLayer('selected-point', 'custom-geojson-circle-points');

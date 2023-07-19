@@ -96,7 +96,7 @@ const Component = (props: Props) => {
     let draggableMarker: any = null;
     const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
     const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
-  
+
     if (!map || selectedRowId === null) {
       return;
     }
@@ -113,11 +113,21 @@ const Component = (props: Props) => {
     let latColumn = 'latitude';
     let lngColumn = 'longitude';
     for (let i = 0; i < latColumns.length; i++) {
+
+      if (!selectedFeature) {
+        continue;
+      }
+
       if (Object.keys(selectedFeature).includes(latColumns[i])) {
         latColumn = latColumns[i];
       }
     }
     for (let i = 0; i < lngColumns.length; i++) {
+
+      if (!selectedFeature) {
+        continue;
+      }
+
       if (Object.keys(selectedFeature).includes(lngColumns[i])) {
         lngColumn = lngColumns[i];
       }

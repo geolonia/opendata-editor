@@ -2,7 +2,7 @@ import React from 'react';
 import Papa from 'papaparse';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
-import { utils, write } from 'xlsx';
+import { write, read } from 'xlsx';
 
 interface Feature {
   [key: string]: string;
@@ -36,6 +36,7 @@ const Component = (props: Props) => {
 
     const output = Papa.unparse(exportData);
 
+    // CSV ダウンロード
     const csvAtag = document.createElement('a');
     csvAtag.download = filename;
     csvAtag.href = `data:application/csv;charset=UTF-8,${encodeURIComponent(output)}`;
@@ -44,12 +45,12 @@ const Component = (props: Props) => {
     csvAtag.click();
     document.body.removeChild(csvAtag);
 
-    const worksheet = utils.json_to_sheet(exportData);
-    const workbook = utils.book_new();
-    utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    // Excel ダウンロード
+    const workbook = read(output, {type:'binary'});
+    const wbout = write(workbook, {bookType:'xlsx', type: 'array'});
 
     const excelAtag = document.createElement('a');
-    const blob = new Blob([write(workbook, {type: 'binary', bookType: 'xlsx'})], {type: 'application/octet-stream'});
+    const blob = new Blob([wbout], {type:'application/octet-stream'});
     excelAtag.href = URL.createObjectURL(blob);
 
     // filename の拡張子を削除して .xlsx にする

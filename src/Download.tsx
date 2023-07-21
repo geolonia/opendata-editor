@@ -2,6 +2,7 @@ import React from 'react';
 import Papa from 'papaparse';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import { utils, write } from 'xlsx';
 
 interface Feature {
   [key: string]: string;
@@ -34,14 +35,32 @@ const Component = (props: Props) => {
     })
 
     const output = Papa.unparse(exportData);
-    const el = document.createElement('a');
-    el.download = filename;
-    el.href = `data:application/csv;charset=UTF-8,${encodeURIComponent(output)}`;
 
-    document.body.appendChild(el);
-    el.click();
+    const csvAtag = document.createElement('a');
+    csvAtag.download = filename;
+    csvAtag.href = `data:application/csv;charset=UTF-8,${encodeURIComponent(output)}`;
 
-    document.body.removeChild(el);
+    document.body.appendChild(csvAtag);
+    csvAtag.click();
+    document.body.removeChild(csvAtag);
+
+    const worksheet = utils.json_to_sheet(exportData);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    const excelAtag = document.createElement('a');
+    const blob = new Blob([write(workbook, {type: 'binary', bookType: 'xlsx'})], {type: 'application/octet-stream'});
+    excelAtag.href = URL.createObjectURL(blob);
+
+    // filename の拡張子を削除して .xlsx にする
+    const filenameArray = filename.split('.');
+    filenameArray.pop();
+    excelAtag.download = filenameArray.join('.') + '.xlsx';
+
+    document.body.appendChild(excelAtag);
+    excelAtag.click();
+    document.body.removeChild(excelAtag);
+
   }, [features, filename]);
 
 

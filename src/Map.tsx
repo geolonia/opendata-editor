@@ -96,7 +96,7 @@ const Component = (props: Props) => {
     let draggableMarker: any = null;
     const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
     const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
-  
+
     if (!map || selectedRowId === null) {
       return;
     }
@@ -110,46 +110,50 @@ const Component = (props: Props) => {
       map.removeLayer('selected-point').removeSource('selected-point');
     }
 
-    let latColumn = 'latitude';
-    let lngColumn = 'longitude';
-    for (let i = 0; i < latColumns.length; i++) {
-      if (Object.keys(selectedFeature).includes(latColumns[i])) {
-        latColumn = latColumns[i];
-      }
-    }
-    for (let i = 0; i < lngColumns.length; i++) {
-      if (Object.keys(selectedFeature).includes(lngColumns[i])) {
-        lngColumn = lngColumns[i];
-      }
-    }
+    // 既存データ編集の場合
+    if (selectedFeature) {
 
-    if (selectedFeature && selectedFeature[lngColumn] && selectedFeature[latColumn]) {
-      center = [Number(selectedFeature[lngColumn]), Number(selectedFeature[latColumn])];
+      let latColumn = 'latitude';
+      let lngColumn = 'longitude';
+      for (let i = 0; i < latColumns.length; i++) {
+        if (Object.keys(selectedFeature).includes(latColumns[i])) {
+          latColumn = latColumns[i];
+        }
+      }
+      for (let i = 0; i < lngColumns.length; i++) {
+        if (Object.keys(selectedFeature).includes(lngColumns[i])) {
+          lngColumn = lngColumns[i];
+        }
+      }
 
-      // 選択されたポイントをハイライトする。
-      map.addSource('selected-point', {
-        type: 'geojson',
-        data: {
-          "type": "Feature",
-          "geometry": {
-              "type": "Point",
-              "coordinates": center
+      if (selectedFeature[lngColumn] && selectedFeature[latColumn]) {
+        center = [Number(selectedFeature[lngColumn]), Number(selectedFeature[latColumn])];
+
+        // 選択されたポイントをハイライトする。
+        map.addSource('selected-point', {
+          type: 'geojson',
+          data: {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": center
+            }
           }
-        }
-      });
-      map.addLayer({
-        "id": "selected-point",
-        "type": "circle",
-        "source": "selected-point",
-        "layout": {},
-        "paint": {
-            'circle-radius': 21,
-            'circle-color': '#ff0000',
-            'circle-opacity': 0.5,
-            'circle-blur': 0.5,
-        }
-      });
-      map.moveLayer('selected-point', 'custom-geojson-circle-points');
+        });
+        map.addLayer({
+          "id": "selected-point",
+          "type": "circle",
+          "source": "selected-point",
+          "layout": {},
+          "paint": {
+              'circle-radius': 21,
+              'circle-color': '#ff0000',
+              'circle-opacity': 0.5,
+              'circle-blur': 0.5,
+          }
+        });
+        map.moveLayer('selected-point', 'custom-geojson-circle-points');
+      }
     }
 
     if (editMode) {

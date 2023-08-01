@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 
 import './index.css';
-import Home from './Home';
+import OpenDataEditor from '../lib/OpenDataEditor';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <Home />
+  <OpenDataEditor />
 );
 
 // If you want to start measuring performance in your app, pass a function

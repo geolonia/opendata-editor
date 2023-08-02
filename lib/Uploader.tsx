@@ -14,7 +14,7 @@ import { xlsParser } from './utils/xlsParser';
 const baseStyle = {
   flex: 1,
   display: 'flex',
-  flexDirection: 'column' as 'column',
+  flexDirection: 'column' as const,
   alignItems: 'center',
   padding: '20px',
   borderWidth: 2,

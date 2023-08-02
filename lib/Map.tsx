@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { rows2geojson } from "./utils/csv2geojson";
+import { rows2geojson } from './utils/csv2geojson';
 
 import './Map.scss';
 
@@ -51,18 +51,18 @@ const Component = (props: Props) => {
 
     const map = new window.geolonia.Map({
       container: mapContainer.current,
-      style: "geolonia/gsi",
+      style: 'geolonia/gsi',
       hash: true,
     });
 
     (mapContainer.current as any).__initialized = true;
     setMap(map);
 
-    map.on("load", () => {
+    map.on('load', () => {
       const sourceId = 'custom-geojson';
       const geojson = {
-        "type": "FeatureCollection",
-        "features": [],
+        type: 'FeatureCollection',
+        features: [],
       } as GeoJSON.FeatureCollection;
       const simpleStyle: any = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map);
       setSimpleStyle(simpleStyle);
@@ -106,7 +106,7 @@ const Component = (props: Props) => {
     let center = map.getCenter();
 
     const mapLayer = map.getLayer('selected-point');
-    if(typeof mapLayer !== 'undefined') {
+    if (typeof mapLayer !== 'undefined') {
       map.removeLayer('selected-point').removeSource('selected-point');
     }
 
@@ -133,24 +133,24 @@ const Component = (props: Props) => {
         map.addSource('selected-point', {
           type: 'geojson',
           data: {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": center
-            }
-          }
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: center,
+            },
+          },
         });
         map.addLayer({
-          "id": "selected-point",
-          "type": "circle",
-          "source": "selected-point",
-          "layout": {},
-          "paint": {
-              'circle-radius': 21,
-              'circle-color': '#ff0000',
-              'circle-opacity': 0.5,
-              'circle-blur': 0.5,
-          }
+          id: 'selected-point',
+          type: 'circle',
+          source: 'selected-point',
+          layout: {},
+          paint: {
+            'circle-radius': 21,
+            'circle-color': '#ff0000',
+            'circle-opacity': 0.5,
+            'circle-blur': 0.5,
+          },
         });
         map.moveLayer('selected-point', 'custom-geojson-circle-points');
       }
@@ -191,13 +191,13 @@ const Component = (props: Props) => {
     if (selectedOn === 'map') {
       map.flyTo({
         center: center,
-        speed: 3
+        speed: 3,
       });
     } else {
       map.jumpTo({
         center: center,
         speed: 3,
-        zoom: 17
+        zoom: 17,
       });
     }
 
@@ -205,7 +205,7 @@ const Component = (props: Props) => {
       if (draggableMarker) {
         draggableMarker.remove();
       }
-    }
+    };
   }, [map, selectedRowId, editMode, setEditMode, features, setFeatures, selectedOn]);
 
   return (
@@ -218,6 +218,6 @@ const Component = (props: Props) => {
       ></div>
     </>
   );
-}
+};
 
 export default Component;

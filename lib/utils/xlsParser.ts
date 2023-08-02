@@ -1,4 +1,4 @@
-import readXlsxFile from 'read-excel-file'
+import readXlsxFile from 'read-excel-file';
 
 interface Feature {
   [key: string]: string;
@@ -22,5 +22,5 @@ export const xlsParser = async (buffer: ArrayBuffer) => {
     data.push(object);
   }
 
-  return data
-}
+  return data;
+};

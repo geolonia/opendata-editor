@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
-import { ulid } from "ulid";
+import { ulid } from 'ulid';
 
 import './Table.scss';
 
@@ -36,8 +36,8 @@ const Component = (props: Props) => {
   } = props;
 
   const addData = useCallback(() => {
-    let newTableData: Feature = {}
-    for(let key of Object.keys(tableData[0])) {
+    let newTableData: Feature = {};
+    for (let key of Object.keys(tableData[0])) {
       newTableData[key] = '';
     }
     const id = ulid();
@@ -60,7 +60,7 @@ const Component = (props: Props) => {
   }, [setEditMode, setSelectedRowId]);
 
   const saveTableData = useCallback((id: string) => {
-    setTableData(prevTableData => {
+    setTableData((prevTableData) => {
       const newTableData = prevTableData.map((_tableData) => {
         if (_tableData.id !== id) {
           return _tableData;
@@ -84,11 +84,11 @@ const Component = (props: Props) => {
     const tableData = features.find((feature) => feature.id === id);
 
     if (window.confirm(`「${tableData?.name}」のデータを削除しても良いですか?`)) {
-      setTableData(prevTableData => {
+      setTableData((prevTableData) => {
         const newTableData = [...prevTableData.filter((_tableData) => _tableData.id !== id)];
         setFeatures(newTableData);
         return newTableData;
-      })
+      });
     }
   }, [features, setFeatures]);
 
@@ -96,19 +96,19 @@ const Component = (props: Props) => {
 
   React.useEffect(() => {
     setTableData(features);
-  }, [features])
+  }, [features]);
 
   React.useEffect(() => {
     document.getElementById(`table-data-${selectedRowId}`)?.scrollIntoView();
-  }, [selectedRowId])
+  }, [selectedRowId]);
 
   return (
     <>
       {tableData.length > 0 && (
         <>
           <button className="add-data-button" onClick={addData}>
-          <FontAwesomeIcon icon={faPlusCircle} className="button-icon" />
-          データを追加
+            <FontAwesomeIcon icon={faPlusCircle} className="button-icon" />
+            データを追加
           </button>
 
           <div className="table-wrap">
@@ -147,7 +147,7 @@ const Component = (props: Props) => {
                     { Object.values(rowData).map((column, j) => (
                       (j !== Object.keys(rowData).findIndex((e) => e === 'id')) && (j !== Object.keys(rowData).findIndex((e) => e === 'title')) &&
                         <td key={`${rowData['id']}-${headers[j]}`} className={headers[j]}>{
-                          props.editMode && rowData['id'] === props.selectedRowId ? <input ref={el => inputRef.current[j] = el} type="text" defaultValue={column} /> : column
+                          props.editMode && rowData['id'] === props.selectedRowId ? <input ref={(el) => inputRef.current[j] = el} type="text" defaultValue={column} /> : column
                         }</td>
                     ))}
                   </tr>
@@ -159,6 +159,6 @@ const Component = (props: Props) => {
       )}
     </>
   );
-}
+};
 
 export default Component;

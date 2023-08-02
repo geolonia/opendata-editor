@@ -1,7 +1,7 @@
 import React from 'react';
 import Papa from 'papaparse';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { write, read } from 'xlsx';
 
 interface Feature {
@@ -25,14 +25,14 @@ const Component = (props: Props) => {
     event.preventDefault();
 
     const exportData = features.map((feature) => {
-      const newFeature: Feature = {}
-      for(let i = 0; i < Object.keys(feature).length; i++) {
+      const newFeature: Feature = {};
+      for (let i = 0; i < Object.keys(feature).length; i++) {
         if (Object.keys(feature)[i] !== 'id' && Object.keys(feature)[i] !== 'title') {
           newFeature[Object.keys(feature)[i]] = Object.values(feature)[i];
         }
       }
       return newFeature;
-    })
+    });
 
     const output = Papa.unparse(exportData);
 
@@ -46,17 +46,17 @@ const Component = (props: Props) => {
     document.body.removeChild(csvAtag);
 
     // Excel ダウンロード
-    const workbook = read(output, {type:'binary'});
-    const wbout = write(workbook, {bookType:'xlsx', type: 'array'});
+    const workbook = read(output, {type: 'binary'});
+    const wbout = write(workbook, {bookType: 'xlsx', type: 'array'});
 
     const excelAtag = document.createElement('a');
-    const blob = new Blob([wbout], {type:'application/octet-stream'});
+    const blob = new Blob([wbout], {type: 'application/octet-stream'});
     excelAtag.href = URL.createObjectURL(blob);
 
     // filename の拡張子を削除して .xlsx にする
     const filenameArray = filename.split('.');
     filenameArray.pop();
-    excelAtag.download = filenameArray.join('.') + '.xlsx';
+    excelAtag.download = `${filenameArray.join('.')}.xlsx`;
 
     document.body.appendChild(excelAtag);
     excelAtag.click();
@@ -86,6 +86,6 @@ const Component = (props: Props) => {
       </button>
     </div>
   );
-}
+};
 
 export default Component;

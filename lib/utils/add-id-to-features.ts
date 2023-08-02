@@ -1,5 +1,5 @@
-import { ulid } from "ulid";
-import { Row } from "./csv2geojson";
+import { ulid } from 'ulid';
+import { Row } from './csv2geojson';
 
 export function addIdToFeatures(array: Row[]) {
   const features: Row[] = [];

@@ -3,15 +3,15 @@ import React from 'react';
 import Table from './Table';
 import Download from './Download';
 
-import queryString from "query-string"
+import queryString from 'query-string';
 
 import { Buffer } from 'buffer';
 import Encoding from 'encoding-japanese';
 
-import Map from './Map'
-import Uploader from './Uploader'
+import Map from './Map';
+import Uploader from './Uploader';
 
-import { addIdToFeatures } from "./utils/add-id-to-features";
+import { addIdToFeatures } from './utils/add-id-to-features';
 
 import './OpenDataEditor.scss';
 import { Row, csv2rows } from './utils/csv2geojson';
@@ -41,10 +41,10 @@ const OpenDataEditor = (): JSX.Element => {
         const unicodeData = Encoding.convert(buffer, {
           to: 'UNICODE',
           from: 'AUTO',
-          type: 'string'
+          type: 'string',
         });
-        const el = document.querySelector('.uploader') as HTMLElement
-        el.style.display = "none"
+        const el = document.querySelector('.uploader') as HTMLElement;
+        el.style.display = 'none';
         const features = csv2rows(unicodeData);
         setFitBounds(true);
         setFeatures(addIdToFeatures(features));
@@ -82,6 +82,6 @@ const OpenDataEditor = (): JSX.Element => {
       </div>
     </div>
   );
-}
+};
 
 export { OpenDataEditor };

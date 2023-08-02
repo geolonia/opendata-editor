@@ -36,6 +36,12 @@ jobs:
           name: web
           path: dist/web/
 
+      - uses: actions/download-artifact@v3
+        if: github.event_name == 'release'
+        with:
+          name: lib
+          path: ./
+
   deploy:
     # We only need to deploy if we're on the main branch
     if: github.ref == 'refs/heads/main'
@@ -77,3 +83,21 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
+
+  publish:
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: lib
+          path: ./
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: set npm auth token
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" > ~/.npmrc
+      - run: npm publish . --access public

@@ -24,6 +24,12 @@ jobs:
       - name: Build the app
         run: npm run build
 
+      - name: Test
+        run: npm test
+
+      - name: Type check & lint
+        run: npm run lint
+
       - uses: actions/upload-artifact@v3
         with:
           name: build

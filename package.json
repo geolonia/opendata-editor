@@ -25,7 +25,8 @@
     "build": "npm run build:lib && npm run build:web",
     "build:lib": "vite build --config ./vite.config.lib.ts",
     "build:web": "vite build --config ./vite.config.web.ts",
-    "test": "jest"
+    "test": "jest",
+    "lint": "tsc --noEmit && eslint . --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.0",

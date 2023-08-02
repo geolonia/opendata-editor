@@ -45,7 +45,6 @@
     "read-excel-file": "^5.6.1",
     "sass": "^1.54.8",
     "ulid": "^2.3.0",
-    "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

@@ -36,8 +36,8 @@ const Component = (props: Props) => {
   } = props;
 
   const addData = useCallback(() => {
-    let newTableData: Feature = {};
-    for (let key of Object.keys(tableData[0])) {
+    const newTableData: Feature = {};
+    for (const key of Object.keys(tableData[0])) {
       newTableData[key] = '';
     }
     const id = ulid();

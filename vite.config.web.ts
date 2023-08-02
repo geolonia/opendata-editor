@@ -6,4 +6,5 @@ export default defineConfig({
     outDir: './dist/web',
   },
   plugins: [react()],
+  publicDir: './web/public',
 });

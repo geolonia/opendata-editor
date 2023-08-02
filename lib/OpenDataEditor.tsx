@@ -16,7 +16,7 @@ import { addIdToFeatures } from "./utils/add-id-to-features";
 import './OpenDataEditor.scss';
 import { Row, csv2rows } from './utils/csv2geojson';
 
-const OpenDataEditor = () => {
+const OpenDataEditor = (): JSX.Element => {
   const [ features, setFeatures ] = React.useState<Row[]>([]);
   const [ filename, setFilename ] = React.useState<string>('');
   const [ editMode, setEditMode ] = React.useState(false);

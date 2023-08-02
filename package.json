@@ -1,9 +1,25 @@
 {
   "name": "opendata-editor",
   "version": "0.1.0",
-  "private": true,
   "homepage": "https://geolonia.github.io/opendata-editor/",
   "type": "module",
+  "files": [
+    "dist/lib",
+    "lib",
+    "LICENSE.txt"
+  ],
+  "main": "./dist/lib/opendata-editor.cjs",
+  "module": "./dist/lib/opendata-editor.js",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./dist/lib/opendata-editor.js",
+        "types": "./dist/lib/types/OpenDataEditor.d.ts"
+      },
+      "require": "./dist/lib/opendata-editor.cjs"
+    }
+  },
+  "types": "./dist/lib/types/OpenDataEditor.d.ts",
   "scripts": {
     "dev": "vite --config ./vite.config.web.ts",
     "build": "npm run build:lib && npm run build:web",

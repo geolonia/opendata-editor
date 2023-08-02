@@ -17,11 +17,6 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "@types/geojson": "^7946.0.10",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.11.56",
-    "@types/react": "^18.0.18",
-    "@types/react-dom": "^18.0.6",
     "buffer": "^6.0.3",
     "classnames": "^2.3.2",
     "encoding-japanese": "^2.0.0",
@@ -34,14 +29,19 @@
     "react-scripts": "5.0.1",
     "read-excel-file": "^5.6.1",
     "sass": "^1.54.8",
-    "typescript": "^4.8.2",
     "ulid": "^2.3.0",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/encoding-japanese": "^2.0.1",
-    "@types/papaparse": "^5.3.5"
+    "@types/geojson": "^7946.0.10",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.11.56",
+    "@types/papaparse": "^5.3.5",
+    "@types/react": "^18.0.18",
+    "@types/react-dom": "^18.0.6",
+    "typescript": "^4.8.2"
   },
   "eslintConfig": {
     "extends": [

@@ -27,7 +27,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: build
-          path: build/
+          path: dist/web/
 
   deploy:
     # We only need to deploy if we're on the main branch
@@ -57,7 +57,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: build
-          path: build/
+          path: dist/web/
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -65,7 +65,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: build
+          path: dist/web/
 
       - name: Deploy to GitHub Pages
         id: deployment

@@ -81,9 +81,9 @@ const Component = (props: Props) => {
   }, [setFeatures, setEditMode]);
 
   const deleteTableData = useCallback((id: string) => {
-    const tableData = features.find((feature) => feature.id === id);
+    const tableDataToDelete = features.find((feature) => feature.id === id);
 
-    if (window.confirm(`「${tableData?.name}」のデータを削除しても良いですか?`)) {
+    if (window.confirm(`「${tableDataToDelete?.name}」のデータを削除しても良いですか?`)) {
       setTableData((prevTableData) => {
         const newTableData = [...prevTableData.filter((_tableData) => _tableData.id !== id)];
         setFeatures(newTableData);

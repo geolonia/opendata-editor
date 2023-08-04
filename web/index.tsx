@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 
 import './index.css';
-import OpenDataEditor from '../lib/OpenDataEditor';
+import { OpenDataEditor } from '../lib/OpenDataEditor';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

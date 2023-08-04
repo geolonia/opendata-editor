@@ -84,4 +84,4 @@ const OpenDataEditor = (): JSX.Element => {
   );
 }
 
-export default OpenDataEditor;
+export { OpenDataEditor };

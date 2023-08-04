@@ -101,7 +101,7 @@ const Component = (props: Props) => {
       return;
     }
 
-    const selectedFeature = features.find((feature) => feature.id === selectedRowId) as Feature;
+    const selectedFeature = features.find((feature) => feature.id === selectedRowId);
 
     let center = map.getCenter();
 

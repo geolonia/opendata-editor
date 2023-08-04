@@ -68,7 +68,7 @@ $ npm install
 以下のコマンドで起動します。
 
 ```
-$ npm run start
+$ npm run dev
 ```
 
 http://localhost:3000/opendata-editor またはポート番号3000が使えないときは、コンソール上に表示されるURLにアクセスして下さい。

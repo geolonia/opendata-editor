@@ -15,11 +15,14 @@ import { addIdToFeatures } from './utils/add-id-to-features';
 import './OpenDataEditor.scss';
 import { Row, csv2rows } from './utils/csv2geojson';
 
+import type { Feature } from './types';
+
 type Props = {
   data?: string[][];
+  onDataUpdate?: (tableData: Feature[]) => void;
 };
 
-const OpenDataEditor = ({ data }: Props): JSX.Element => {
+const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   const [ features, setFeatures ] = React.useState<Row[]>([]);
   const [ filename, setFilename ] = React.useState<string>('');
   const [ editMode, setEditMode ] = React.useState(false);
@@ -92,6 +95,7 @@ const OpenDataEditor = ({ data }: Props): JSX.Element => {
           selectedRowId={selectedRowId}
           setSelectedRowId={setSelectedRowId}
           setSelectedOn={setSelectedOn}
+          onDataUpdate={onDataUpdate}
         />
       </div>
     </div>

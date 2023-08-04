@@ -2,8 +2,6 @@ import React from 'react';
 
 import { rows2geojson } from './utils/csv2geojson';
 
-import './Map.scss';
-
 declare global {
   interface Window {
     geolonia: any;

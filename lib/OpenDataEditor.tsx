@@ -3,8 +3,6 @@ import React from 'react';
 import Table from './Table';
 import Download from './Download';
 
-import queryString from 'query-string';
-
 import { Buffer } from 'buffer';
 import Encoding from 'encoding-japanese';
 
@@ -25,10 +23,8 @@ const OpenDataEditor = (): JSX.Element => {
   const [ selectedOn, setSelectedOn ] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    if (!window.location.search) return;
-
-    const query = queryString.parse(window.location.search);
-    const path = query.data as string;
+    const params = new URLSearchParams(location.search);
+    const path = params.get('data');
 
     if (!path) return;
 

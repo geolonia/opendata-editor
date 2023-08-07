@@ -4,12 +4,12 @@ import {useDropzone} from 'react-dropzone'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons"
-import { addIdToFeatures } from "./lib/add-id-to-features";
-import { csv2rows } from './lib/csv2geojson';
+import { addIdToFeatures } from "./utils/add-id-to-features";
+import { csv2rows } from './utils/csv2geojson';
 
 import { Buffer } from 'buffer';
 import Encoding from 'encoding-japanese';
-import { xlsParser } from './lib/xlsParser';
+import { xlsParser } from './utils/xlsParser';
 
 const baseStyle = {
   flex: 1,

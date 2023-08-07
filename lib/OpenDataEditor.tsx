@@ -11,12 +11,12 @@ import Encoding from 'encoding-japanese';
 import Map from './Map'
 import Uploader from './Uploader'
 
-import { addIdToFeatures } from "./lib/add-id-to-features";
+import { addIdToFeatures } from "./utils/add-id-to-features";
 
-import './Home.scss';
-import { Row, csv2rows } from './lib/csv2geojson';
+import './OpenDataEditor.scss';
+import { Row, csv2rows } from './utils/csv2geojson';
 
-const Home = () => {
+const OpenDataEditor = (): JSX.Element => {
   const [ features, setFeatures ] = React.useState<Row[]>([]);
   const [ filename, setFilename ] = React.useState<string>('');
   const [ editMode, setEditMode ] = React.useState(false);
@@ -84,4 +84,4 @@ const Home = () => {
   );
 }
 
-export default Home;
+export { OpenDataEditor };

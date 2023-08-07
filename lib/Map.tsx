@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { rows2geojson } from "./lib/csv2geojson";
+import { rows2geojson } from "./utils/csv2geojson";
 
 import './Map.scss';
 

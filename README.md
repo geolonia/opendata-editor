@@ -4,7 +4,7 @@
 
 <img width="1166" alt="スクリーンショット_2023-03-22_17_05_54" src="https://user-images.githubusercontent.com/1124652/226838649-d24c1d43-6832-461f-a74d-b50d2ceba455.png">
 
-## 機能、使い方
+## Web アプリケーション版の機能、使い方 (一般ユーザー向け)
 
 - https://geolonia.github.io/opendata-editor/ を開きます。
 - 位置情報座標を含むCSVファイルまたはExcelファイルを画面にドラッグ・アンド・ドロップすると、地図上にアイコンが表示され、画面下にはスプレッドシート形式で各データが表示されます。
@@ -28,6 +28,28 @@
 
 - `latitude`, `longitude` 
 
+## コンポーネントとして使う (開発者向け)
+
+### インストール
+
+```shell
+npm install @geolonia/opendata-editor
+```
+
+### 使い方
+
+```typescript
+import { OpenDataEditor } from '@geolonia/opendata-editor';
+
+export const Page = (): JSX.Element => {
+  return (
+    <>
+      <OpenDataEditor />
+    </>
+  );
+};
+```
+
 ## ライセンス、利用規約、フィードバック
 
 - ソースコードのライセンスは MIT ライセンスです。
@@ -46,7 +68,7 @@ $ npm install
 以下のコマンドで起動します。
 
 ```
-$ npm run start
+$ npm run dev
 ```
 
 http://localhost:3000/opendata-editor またはポート番号3000が使えないときは、コンソール上に表示されるURLにアクセスして下さい。

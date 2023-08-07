@@ -42,32 +42,32 @@ export function rows2geojson(data: Row[]) {
   }
 
   const geojson = {
-    "type": "FeatureCollection",
-    "features": [],
+    type: 'FeatureCollection',
+    features: [],
   } as GeoJSON.FeatureCollection;
 
   for (let i = 0; i < data.length; i++) {
     const feature = {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [],
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [],
       },
-      "properties": {},
+      properties: {},
     } as GeoJSON.Feature;
 
     if (data[i]) {
       let coordinates = [];
 
       if (data[i]['location']) {
-        const [latitude, longitude] = data[i]['location'].split(',')
-        coordinates = [Number(longitude), Number(latitude)]
+        const [latitude, longitude] = data[i]['location'].split(',');
+        coordinates = [Number(longitude), Number(latitude)];
       } else {
-        coordinates = [Number(data[i][lngColumn]), Number(data[i][latColumn])]
+        coordinates = [Number(data[i][lngColumn]), Number(data[i][latColumn])];
       }
 
       feature.geometry = {
-        type: "Point",
+        type: 'Point',
         coordinates: coordinates,
       };
 

@@ -10,4 +10,5 @@ export default defineConfig({
   },
   plugins: [react()],
   publicDir: './web/public',
+  base: './',
 });

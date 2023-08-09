@@ -3,6 +3,12 @@ import Papa from 'papaparse';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { write, read } from 'xlsx';
+import { styled } from 'styled-components';
+
+const DownloadWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 interface Feature {
   [key: string]: string;
@@ -74,7 +80,7 @@ const Component = (props: Props) => {
   }, [onClick]);
 
   return (
-    <div className="download">
+    <DownloadWrapper>
       {props.filename ? props.filename : ''}
       <button
         className="download-button"
@@ -84,7 +90,7 @@ const Component = (props: Props) => {
         <FontAwesomeIcon icon={faDownload} className="button-icon" />
         エクスポート
       </button>
-    </div>
+    </DownloadWrapper>
   );
 };
 

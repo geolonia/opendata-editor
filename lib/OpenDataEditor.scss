@@ -43,11 +43,6 @@ html, body, #root, .map, .main, .uploader
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-div.download {
-  display: flex;
-  justify-content:space-between
-}
-
 button.download-button, button.add-data-button{
   background: #F39813;
   border: none;

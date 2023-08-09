@@ -1,14 +1,47 @@
 import React, { useCallback } from 'react';
-import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-
+import { styled } from 'styled-components';
 import { ulid } from 'ulid';
-
-import './Table.scss';
 
 import type { Feature } from './types';
 
+const TWrapper = styled.div`
+  overflow-x: scroll;
+`;
+const Table = styled.table`
+  border-collapse: collapse;
+  table-layout: fixed;
+`;
+const THead = styled.thead`
+  display: block;
+`;
+const Th = styled.th`
+  font-size: 12px;
+  border: 1px solid #EE730D;
+  background-color: #fbf1e4;
+  color: #EE730D;
+  padding: 6px 6px;
+  width: 130px;
+`;
+const TBody = styled.tbody`
+  display: block;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 300px;
+`;
+const Td = styled.td`
+  font-size: 12px;
+  border: 1px solid #2b2121;
+  color: #2b2b2b;
+  padding: 6px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 130px;
+  max-width: 130px;
+  min-width: 130px;
+`;
 
 interface Props {
   className?: string;
@@ -121,50 +154,57 @@ const Component = (props: Props) => {
             データを追加
           </button>
 
-          <div className="table-wrap">
-            <table>
-              <thead>
+          <TWrapper>
+            <Table>
+              <THead>
                 <tr>
-                  <th key='header-action'></th>
+                  <Th key='header-action'></Th>
                   { headers.map((header, i) => (
                     (header !== 'id') && (header !== 'title') &&
-                      <th key={`header-${headers[i]}`}>{header}</th>
+                      <Th key={`header-${headers[i]}`}>{header}</Th>
                   ))}
                 </tr>
-              </thead>
-              <tbody>
-                { tableData.map((rowData) => (
-                  <tr
-                    onClick={(e) => jump(e, rowData['id'])}
-                    key={rowData['id']}
-                    id={`table-data-${rowData['id']}`}
-                    className={classNames({
-                      selected: rowData['id'] === props.selectedRowId,
-                    })}
-                  >
-                    <td key={`${rowData['id']}-action`}>
-                      {props.editMode && (rowData['id'] === props.selectedRowId) ?
-                        <button onClick={() => saveTableData(rowData['id'])}>保存</button>
-                        :
-                        <>
-                          <button onClick={() => editTableData(rowData['id'])} disabled={props.editMode}>編集</button>
-                          &nbsp;
-                          <button onClick={() => deleteTableData(rowData['id'])} disabled={props.editMode}>削除</button>
-                        </>
-                      }
-                    </td>
+              </THead>
+              <TBody>
+                { tableData.map((rowData) => {
+                  const selected = rowData['id'] === props.selectedRowId;
 
-                    { Object.values(rowData).map((column, j) => (
-                      (j !== Object.keys(rowData).findIndex((e) => e === 'id')) && (j !== Object.keys(rowData).findIndex((e) => e === 'title')) &&
-                        <td key={`${rowData['id']}-${headers[j]}`} className={headers[j]}>{
-                          props.editMode && rowData['id'] === props.selectedRowId ? <input ref={(el) => inputRef.current[j] = el} type="text" defaultValue={column} /> : column
-                        }</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                  return (
+                    <tr
+                      onClick={(e) => jump(e, rowData['id'])}
+                      key={rowData['id']}
+                      id={`table-data-${rowData['id']}`}
+                    >
+                      <Td key={`${rowData['id']}-action`}>
+                        {props.editMode && selected ?
+                          <button onClick={() => saveTableData(rowData['id'])}>保存</button>
+                          :
+                          <>
+                            <button onClick={() => editTableData(rowData['id'])} disabled={props.editMode}>編集</button>
+                            &nbsp;
+                            <button onClick={() => deleteTableData(rowData['id'])} disabled={props.editMode}>削除</button>
+                          </>
+                        }
+                      </Td>
+
+                      { Object.values(rowData).map((column, j) => (
+                        (j !== Object.keys(rowData).findIndex((e) => e === 'id')) && (j !== Object.keys(rowData).findIndex((e) => e === 'title')) &&
+                          <Td
+                            key={`${rowData['id']}-${headers[j]}`}
+                            className={headers[j]}
+                            style={ selected ? { color: '#fbf1e4', backgroundColor: '#EE730D' } : {}}
+                          >
+                            {
+                              props.editMode && selected ? <input ref={(el) => inputRef.current[j] = el} type="text" defaultValue={column} /> : column
+                            }
+                          </Td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </TBody>
+            </Table>
+          </TWrapper>
         </>
       )}
     </>

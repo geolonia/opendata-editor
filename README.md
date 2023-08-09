@@ -57,6 +57,8 @@ export const Page = (): JSX.Element => {
 
 # 開発者向け情報
 
+## ローカル環境構築
+
 以下のコマンドで環境を用意してください。
 
 ```
@@ -72,3 +74,9 @@ $ npm run dev
 ```
 
 http://localhost:3000/opendata-editor またはポート番号3000が使えないときは、コンソール上に表示されるURLにアクセスして下さい。
+
+## リリース
+
+Web 版は main ブランチに変更がマージされたタイミングでリリースされます。
+
+ライブラリー版は Release が作成されたタイミングで npmjs.com に publish されます。事前に package.json の `version` を上げることを忘れないで下さい。

@@ -14,7 +14,6 @@ interface Feature {
   [key: string]: string;
 }
 interface Props {
-  className?: string;
   features: Feature[];
   filename: string;
 }

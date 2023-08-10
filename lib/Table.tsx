@@ -44,7 +44,6 @@ const Td = styled.td`
 `;
 
 interface Props {
-  className?: string;
   features: Feature[];
   setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>;
   editMode: boolean;

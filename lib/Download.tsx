@@ -19,14 +19,12 @@ interface Props {
 }
 
 const Component = (props: Props) => {
-  const ref = React.useRef<HTMLButtonElement>(null);
-
   const {
     features,
     filename,
   } = props;
 
-  const onClick = React.useCallback((event: MouseEvent) => {
+  const onClick = React.useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     const exportData = features.map((feature) => {
@@ -69,22 +67,12 @@ const Component = (props: Props) => {
 
   }, [features, filename]);
 
-
-  React.useEffect(() => {
-    if (ref.current) {
-      ref.current.disabled = false;
-      ref.current.style.cursor = 'pointer';
-      ref.current.onclick = onClick;
-    }
-  }, [onClick]);
-
   return (
     <DownloadWrapper>
       {props.filename ? props.filename : ''}
       <Button
-        ref={ref}
         icon={faDownload}
-        disabled={true}
+        onClick={onClick}
       >
         エクスポート
       </Button>

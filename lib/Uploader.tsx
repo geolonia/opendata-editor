@@ -56,7 +56,7 @@ const hideUploader = (event: DragEvent) => {
 };
 
 interface Props {
-  className: string;
+  className: string; // Required to apply styles by styled-components
   setFeatures: Function;
   filename: string;
   setFilename: Function;

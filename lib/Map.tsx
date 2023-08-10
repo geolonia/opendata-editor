@@ -13,7 +13,7 @@ interface Feature {
 }
 
 interface Props {
-  className: string;
+  className?: string; // Required to apply styles by styled-components
   features: Feature[];
   setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>;
   editMode: boolean;

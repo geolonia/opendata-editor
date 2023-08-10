@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { type MouseEvent } from 'react';
 import Papa from 'papaparse';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { write, read } from 'xlsx';
 import { styled } from 'styled-components';
+import Button from './Button';
 
 const DownloadWrapper = styled.div`
   display: flex;
@@ -81,14 +81,13 @@ const Component = (props: Props) => {
   return (
     <DownloadWrapper>
       {props.filename ? props.filename : ''}
-      <button
-        className="download-button"
+      <Button
         ref={ref}
+        icon={faDownload}
         disabled={true}
       >
-        <FontAwesomeIcon icon={faDownload} className="button-icon" />
         エクスポート
-      </button>
+      </Button>
     </DownloadWrapper>
   );
 };

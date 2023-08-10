@@ -1,11 +1,16 @@
 import React, { useCallback } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { styled } from 'styled-components';
 import { ulid } from 'ulid';
+import Button from './Button';
 
 import type { Feature } from './types';
 
+const StyledButton = styled(Button)`
+  position: absolute;
+  top: 385px;
+  right: 35px;
+`;
 const TWrapper = styled.div`
   overflow-x: scroll;
 `;
@@ -148,10 +153,9 @@ const Component = (props: Props) => {
     <>
       {tableData.length > 0 && (
         <>
-          <button className="add-data-button" onClick={addData}>
-            <FontAwesomeIcon icon={faPlusCircle} className="button-icon" />
+          <StyledButton icon={faPlusCircle} onClick={addData}>
             データを追加
-          </button>
+          </StyledButton>
 
           <TWrapper>
             <Table>

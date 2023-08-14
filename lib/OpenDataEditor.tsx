@@ -87,20 +87,21 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
 
       const filename = path.split('/').pop() || '';
       setFilename(filename);
-      fetch(path)
-        .then((response) => response.arrayBuffer())
-        .then((data) => {
-          const buffer = Buffer.from(data);
-          const unicodeData = Encoding.convert(buffer, {
-            to: 'UNICODE',
-            from: 'AUTO',
-            type: 'string',
-          });
-          hideUploader();
-          const features = csv2rows(unicodeData);
-          setFitBounds(true);
-          setFeatures(addIdToFeatures(features));
+
+      (async () => {
+        const res = await fetch(path);
+        const data = await res.arrayBuffer();
+        const buffer = Buffer.from(data);
+        const unicodeData = Encoding.convert(buffer, {
+          to: 'UNICODE',
+          from: 'AUTO',
+          type: 'string',
         });
+        hideUploader();
+        const features = csv2rows(unicodeData);
+        setFitBounds(true);
+        setFeatures(addIdToFeatures(features));
+      })();
     }
   }, [data]);
 

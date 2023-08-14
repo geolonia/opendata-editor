@@ -101,7 +101,7 @@ const Component = (props: Props) => {
       return;
     }
 
-    const selectedFeature = features.find((feature) => feature.id === selectedRowId) as Feature;
+    const selectedFeature = features.find((feature) => feature.id === selectedRowId);
 
     let center = map.getCenter();
 
@@ -112,16 +112,17 @@ const Component = (props: Props) => {
 
     // 既存データ編集の場合
     if (selectedFeature) {
-
+      const selectedFeatureKeys = Object.keys(selectedFeature);
       let latColumn = 'latitude';
       let lngColumn = 'longitude';
+
       for (let i = 0; i < latColumns.length; i++) {
-        if (Object.keys(selectedFeature).includes(latColumns[i])) {
+        if (selectedFeatureKeys.includes(latColumns[i])) {
           latColumn = latColumns[i];
         }
       }
       for (let i = 0; i < lngColumns.length; i++) {
-        if (Object.keys(selectedFeature).includes(lngColumns[i])) {
+        if (selectedFeatureKeys.includes(lngColumns[i])) {
           lngColumn = lngColumns[i];
         }
       }

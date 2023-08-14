@@ -7,6 +7,9 @@ import { ulid } from 'ulid';
 
 import './Table.scss';
 
+import type { Feature } from './types';
+
+
 interface Props {
   className?: string;
   features: Feature[];
@@ -16,10 +19,7 @@ interface Props {
   selectedRowId: string | null;
   setSelectedRowId: React.Dispatch<React.SetStateAction<string | null>>;
   setSelectedOn: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-interface Feature {
-  [key: string]: string;
+  onDataUpdate?: (tableData: Feature[]) => void;
 }
 
 const Component = (props: Props) => {
@@ -33,6 +33,7 @@ const Component = (props: Props) => {
     features,
     selectedRowId,
     setSelectedOn,
+    onDataUpdate,
   } = props;
 
   const addData = useCallback(() => {
@@ -77,20 +78,29 @@ const Component = (props: Props) => {
       setFeatures(newTableData);
       return newTableData;
     });
+
+    if (onDataUpdate) {
+      onDataUpdate(tableData);
+    }
+
     setEditMode(false);
-  }, [setFeatures, setEditMode]);
+  }, [tableData, onDataUpdate, setEditMode, setFeatures]);
 
   const deleteTableData = useCallback((id: string) => {
-    const tableData = features.find((feature) => feature.id === id);
+    const tableDataToDelete = features.find((feature) => feature.id === id);
 
-    if (window.confirm(`「${tableData?.name}」のデータを削除しても良いですか?`)) {
+    if (window.confirm(`「${tableDataToDelete?.name}」のデータを削除しても良いですか?`)) {
       setTableData((prevTableData) => {
         const newTableData = [...prevTableData.filter((_tableData) => _tableData.id !== id)];
         setFeatures(newTableData);
         return newTableData;
       });
+
+      if (onDataUpdate) {
+        onDataUpdate(tableData);
+      }
     }
-  }, [features, setFeatures]);
+  }, [features, tableData, onDataUpdate, setFeatures]);
 
   const headers = tableData[0] ? Object.keys(tableData[0]) : [];
 

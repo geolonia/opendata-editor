@@ -6,16 +6,52 @@ import Download from './Download';
 import { Buffer } from 'buffer';
 import Encoding from 'encoding-japanese';
 import Papa from 'papaparse';
+import { styled } from 'styled-components';
 
 import Map from './Map';
 import Uploader from './Uploader';
 
 import { addIdToFeatures } from './utils/add-id-to-features';
-
-import './OpenDataEditor.scss';
 import { Row, csv2rows } from './utils/csv2geojson';
 
 import type { Feature } from './types';
+
+const baseStyle = `
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #ffffff;
+`;
+const OuterWrapper = styled.div`
+  ${baseStyle}
+  padding: 16px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  box-shadow: 12px 0 8px -8px rgba(243, 152, 19, 0.1) inset;
+  z-index: 9999;
+`;
+const InnerWrapper = styled.div`
+  box-sizing: border-box;
+  color: #2b2b2b;
+  width: 98%;
+  margin: 0 auto;
+`;
+const StyledUploader = styled(Uploader)`
+  ${baseStyle}
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.7);
+`;
+const StyledMap = styled(Map)`
+  ${baseStyle}
+  position: relative;
+  width: 100%;
+  height: 400px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+`;
 
 type Props = {
   data?: string[][];
@@ -69,13 +105,12 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   }, [data]);
 
   return (
-    <div className="main">
-      <div className="container">
-        <Uploader className="uploader" setFeatures={setFeatures} filename={filename} setFilename={setFilename} setFitBounds={setFitBounds}></Uploader>
+    <OuterWrapper>
+      <InnerWrapper>
+        <StyledUploader className="uploader" setFeatures={setFeatures} filename={filename} setFilename={setFilename} setFitBounds={setFitBounds}></StyledUploader>
         <Download features={features} filename={filename} />
 
-        <Map
-          className="map"
+        <StyledMap
           features={features}
           setFeatures={setFeatures}
           editMode={editMode}
@@ -97,8 +132,8 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
           setSelectedOn={setSelectedOn}
           onDataUpdate={onDataUpdate}
         />
-      </div>
-    </div>
+      </InnerWrapper>
+    </OuterWrapper>
   );
 };
 

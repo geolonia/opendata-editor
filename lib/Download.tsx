@@ -1,27 +1,30 @@
-import React from 'react';
+import React, { type MouseEvent } from 'react';
 import Papa from 'papaparse';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { write, read } from 'xlsx';
+import { styled } from 'styled-components';
+import Button from './Button';
+
+const DownloadWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 interface Feature {
   [key: string]: string;
 }
 interface Props {
-  className?: string;
   features: Feature[];
   filename: string;
 }
 
 const Component = (props: Props) => {
-  const ref = React.useRef<HTMLButtonElement>(null);
-
   const {
     features,
     filename,
   } = props;
 
-  const onClick = React.useCallback((event: MouseEvent) => {
+  const onClick = React.useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     const exportData = features.map((feature) => {
@@ -64,27 +67,16 @@ const Component = (props: Props) => {
 
   }, [features, filename]);
 
-
-  React.useEffect(() => {
-    if (ref.current) {
-      ref.current.disabled = false;
-      ref.current.style.cursor = 'pointer';
-      ref.current.onclick = onClick;
-    }
-  }, [onClick]);
-
   return (
-    <div className="download">
+    <DownloadWrapper>
       {props.filename ? props.filename : ''}
-      <button
-        className="download-button"
-        ref={ref}
-        disabled={true}
+      <Button
+        icon={faDownload}
+        onClick={onClick}
       >
-        <FontAwesomeIcon icon={faDownload} className="button-icon" />
         エクスポート
-      </button>
-    </div>
+      </Button>
+    </DownloadWrapper>
   );
 };
 

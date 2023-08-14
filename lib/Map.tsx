@@ -2,8 +2,6 @@ import React from 'react';
 
 import { rows2geojson } from './utils/csv2geojson';
 
-import './Map.scss';
-
 declare global {
   interface Window {
     geolonia: any;
@@ -15,7 +13,7 @@ interface Feature {
 }
 
 interface Props {
-  className: string;
+  className?: string; // Required to apply styles by styled-components
   features: Feature[];
   setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>;
   editMode: boolean;

@@ -4,6 +4,7 @@ import {useDropzone} from 'react-dropzone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { styled } from 'styled-components';
 import { addIdToFeatures } from './utils/add-id-to-features';
 import { csv2rows } from './utils/csv2geojson';
 
@@ -11,33 +12,33 @@ import { Buffer } from 'buffer';
 import Encoding from 'encoding-japanese';
 import { xlsParser } from './utils/xlsParser';
 
-const baseStyle = {
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column' as const,
-  alignItems: 'center',
-  padding: '20px',
-  borderWidth: 2,
-  borderRadius: 2,
-  borderColor: '##FFFFFF',
-  borderStyle: 'dashed',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  color: '#FFFFFF',
-  outline: 'none',
-  transition: 'border .24s ease-in-out',
-};
+const Dropzone = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: 90%;
+  height: 80%;
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-const focusedStyle = {
-  // borderColor: '#FF0000'
-};
-
-const acceptStyle = {
-  // borderColor: '#FF0000'
-};
-
-const rejectStyle = {
-  // borderColor: '#FF0000',
-};
+  flex: 1;
+  flex-direction: column;
+  padding: 20px;
+  border-width: 2px;
+  border-radius: 2px;
+  border-color: #FFFFFF;
+  border-style: dashed;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #FFFFFF;
+  outline: none;
+  transition: border .24s ease-in-out;
+`;
 
 let lastTarget: any = null; // cache the last target here
 
@@ -55,7 +56,7 @@ const hideUploader = (event: DragEvent) => {
 };
 
 interface Props {
-  className: string;
+  className: string; // Required to apply styles by styled-components
   setFeatures: Function;
   filename: string;
   setFilename: Function;
@@ -109,9 +110,6 @@ const Component = (props: Props) => {
   const {
     getRootProps,
     getInputProps,
-    isFocused,
-    isDragAccept,
-    isDragReject,
   } = useDropzone({
     accept: {
       'text/csv': ['.csv'],
@@ -121,27 +119,16 @@ const Component = (props: Props) => {
     maxFiles: 1,
   });
 
-  const style = React.useMemo(() => ({
-    ...baseStyle,
-    ...(isFocused ? focusedStyle : {}),
-    ...(isDragAccept ? acceptStyle : {}),
-    ...(isDragReject ? rejectStyle : {}),
-  }), [
-    isFocused,
-    isDragAccept,
-    isDragReject,
-  ]);
-
   return (
     <div className={props.className}>
-      <div {...getRootProps({className: 'dropzone', style})}>
+      <Dropzone {...getRootProps()}>
         <input {...getInputProps()} />
         <div>
           <p style={{ fontSize: '144px', margin: 0, lineHeight: '144px' }}><FontAwesomeIcon icon={ faCloudArrowUp } /></p>
           <p>位置情報データを含むCSVファイルまたはExcelファイルをドラッグ＆ドロップしてください。<br />
             ※ データをアップロードするとこれまでの作業内容は失われます。</p>
         </div>
-      </div>
+      </Dropzone>
     </div>
   );
 };

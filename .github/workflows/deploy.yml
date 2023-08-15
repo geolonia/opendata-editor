@@ -41,7 +41,9 @@ jobs:
         if: github.event_name == 'release'
         with:
           name: lib
-          path: ./
+          path: |
+            ./
+            !./node_modules/**/*
 
   deploy:
     # We only need to deploy if we're on the main branch

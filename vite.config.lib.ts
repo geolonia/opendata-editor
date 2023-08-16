@@ -5,7 +5,7 @@ import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   build: {
-    outDir: './dist/lib',
+    outDir: resolve(__dirname, 'dist/lib'),
     lib: {
       entry: resolve(__dirname, 'lib/OpenDataEditor.tsx'),
       name: 'OpenDataEditor',
@@ -19,8 +19,8 @@ export default defineConfig({
   plugins: [
     react(),
     dts({
-      outDir: './dist/lib/types',
-      entryRoot: './libs',
+      outDir: resolve(__dirname, 'dist/lib/types'),
+      entryRoot: resolve(__dirname, 'lib'),
     }),
   ],
 });

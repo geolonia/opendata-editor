@@ -138,4 +138,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   );
 };
 
-export { OpenDataEditor };
+export {
+  OpenDataEditor,
+  type Feature,
+};

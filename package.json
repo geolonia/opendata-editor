@@ -1,6 +1,6 @@
 {
   "name": "@geolonia/opendata-editor",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "homepage": "https://geolonia.github.io/opendata-editor/",
   "type": "module",
   "files": [

@@ -11,5 +11,5 @@ export default defineConfig({
   },
   plugins: [react()],
   publicDir: resolve(__dirname, 'web/public'),
-  base: __dirname,
+  base: '/opendata-editor/',
 });

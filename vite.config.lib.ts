@@ -2,6 +2,9 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
+import { dependencies, devDependencies } from './package.json';
+
+const deps = Object.keys(dependencies).concat(Object.keys(devDependencies));
 
 export default defineConfig({
   build: {
@@ -13,7 +16,7 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: [/node_modules/],
+      external: deps,
     },
   },
   plugins: [

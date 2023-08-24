@@ -26,18 +26,18 @@ const baseStyle = `
 `;
 const OuterWrapper = styled.div`
   ${baseStyle}
-  padding: 16px;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  box-shadow: 12px 0 8px -8px rgba(243, 152, 19, 0.1) inset;
   z-index: 9999;
 `;
 const InnerWrapper = styled.div`
   box-sizing: border-box;
   color: #2b2b2b;
-  width: 98%;
-  margin: 0 auto;
+  width: 100%;
+  padding-left: 2.25rem;
+  padding-right: 2.25rem;
+  padding-top: 1rem;
 `;
 const StyledUploader = styled(Uploader)`
   ${baseStyle}
@@ -107,8 +107,8 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
 
   return (
     <OuterWrapper>
+      <StyledUploader className="uploader" setFeatures={setFeatures} filename={filename} setFilename={setFilename} setFitBounds={setFitBounds} />
       <InnerWrapper>
-        <StyledUploader className="uploader" setFeatures={setFeatures} filename={filename} setFilename={setFilename} setFitBounds={setFitBounds}></StyledUploader>
         <Download features={features} filename={filename} />
 
         <StyledMap

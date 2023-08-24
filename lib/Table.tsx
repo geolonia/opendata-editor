@@ -12,14 +12,13 @@ const StyledButton = styled(Button)`
   right: 35px;
 `;
 const TWrapper = styled.div`
-  overflow-x: scroll;
+  overflow: scroll;
+  max-width: 100%;
+  max-height: 300px;
 `;
 const Table = styled.table`
   border-collapse: collapse;
   table-layout: fixed;
-`;
-const THead = styled.thead`
-  display: block;
 `;
 const Th = styled.th`
   font-size: 12px;
@@ -28,12 +27,6 @@ const Th = styled.th`
   color: #EE730D;
   padding: 6px 6px;
   width: 130px;
-`;
-const TBody = styled.tbody`
-  display: block;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  height: 300px;
 `;
 const Td = styled.td`
   font-size: 12px;
@@ -159,7 +152,7 @@ const Component = (props: Props) => {
 
           <TWrapper>
             <Table>
-              <THead>
+              <thead>
                 <tr>
                   <Th key='header-action'></Th>
                   { headers.map((header, i) => (
@@ -167,8 +160,8 @@ const Component = (props: Props) => {
                       <Th key={`header-${headers[i]}`}>{header}</Th>
                   ))}
                 </tr>
-              </THead>
-              <TBody>
+              </thead>
+              <tbody>
                 { tableData.map((rowData) => {
                   const selected = rowData['id'] === props.selectedRowId;
 
@@ -205,7 +198,7 @@ const Component = (props: Props) => {
                     </tr>
                   );
                 })}
-              </TBody>
+              </tbody>
             </Table>
           </TWrapper>
         </>

@@ -12,32 +12,32 @@ const StyledButton = styled(Button)`
   right: 35px;
 `;
 const TWrapper = styled.div`
-  overflow-x: scroll;
+  overflow: scroll;
+  max-width: 100%;
+  max-height: 300px;
 `;
 const Table = styled.table`
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   table-layout: fixed;
 `;
-const THead = styled.thead`
-  display: block;
-`;
 const Th = styled.th`
+  position: sticky;
+  top: 0;
   font-size: 12px;
   border: 1px solid #EE730D;
+  border-left: none;
   background-color: #fbf1e4;
   color: #EE730D;
   padding: 6px 6px;
   width: 130px;
-`;
-const TBody = styled.tbody`
-  display: block;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  height: 300px;
+  z-index: 100; // ThFreezed has to be over Th
 `;
 const Td = styled.td`
   font-size: 12px;
   border: 1px solid #2b2121;
+  border-top: none;
+  border-left: none;
   color: #2b2b2b;
   padding: 6px 6px;
   white-space: nowrap;
@@ -46,6 +46,19 @@ const Td = styled.td`
   width: 130px;
   max-width: 130px;
   min-width: 130px;
+`;
+const ThFreezed = styled(Th)`
+  position: sticky;
+  left: 0;
+  border-left: 1px solid #EE730D;
+  z-index: 200; // ThFreezed has to be over Th
+`;
+const TdFreezed = styled(Td)`
+  position: sticky;
+  left: 0;
+  border-left: 1px solid #2b2121;
+  background-color: #FFFFFF;
+  z-index: 100; // ThFreezed has to be over TdFreezed
 `;
 
 interface Props {
@@ -159,16 +172,16 @@ const Component = (props: Props) => {
 
           <TWrapper>
             <Table>
-              <THead>
+              <thead>
                 <tr>
-                  <Th key='header-action'></Th>
+                  <ThFreezed key='header-action'></ThFreezed>
                   { headers.map((header, i) => (
                     (header !== 'id') && (header !== 'title') &&
                       <Th key={`header-${headers[i]}`}>{header}</Th>
                   ))}
                 </tr>
-              </THead>
-              <TBody>
+              </thead>
+              <tbody>
                 { tableData.map((rowData) => {
                   const selected = rowData['id'] === props.selectedRowId;
 
@@ -178,7 +191,7 @@ const Component = (props: Props) => {
                       key={rowData['id']}
                       id={`table-data-${rowData['id']}`}
                     >
-                      <Td key={`${rowData['id']}-action`}>
+                      <TdFreezed key={`${rowData['id']}-action`}>
                         {props.editMode && selected ?
                           <button onClick={() => saveTableData(rowData['id'])}>保存</button>
                           :
@@ -188,7 +201,7 @@ const Component = (props: Props) => {
                             <button onClick={() => deleteTableData(rowData['id'])} disabled={props.editMode}>削除</button>
                           </>
                         }
-                      </Td>
+                      </TdFreezed>
 
                       { Object.values(rowData).map((column, j) => (
                         (j !== Object.keys(rowData).findIndex((e) => e === 'id')) && (j !== Object.keys(rowData).findIndex((e) => e === 'title')) &&
@@ -205,7 +218,7 @@ const Component = (props: Props) => {
                     </tr>
                   );
                 })}
-              </TBody>
+              </tbody>
             </Table>
           </TWrapper>
         </>

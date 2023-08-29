@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 
 import { rows2geojson } from './utils/csv2geojson';
 
@@ -15,20 +15,20 @@ interface Feature {
 interface Props {
   className?: string; // Required to apply styles by styled-components
   features: Feature[];
-  setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>;
+  setFeatures: Dispatch<SetStateAction<Feature[]>>;
   editMode: boolean;
-  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditMode: Dispatch<SetStateAction<boolean>>;
   selectedRowId: string | null;
-  setSelectedRowId: React.Dispatch<React.SetStateAction<string | null>>;
-  setFitBounds: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedRowId: Dispatch<SetStateAction<string | null>>;
+  setFitBounds: Dispatch<SetStateAction<boolean>>;
   selectedOn: string | null;
-  setSelectedOn: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedOn: Dispatch<SetStateAction<string | null>>;
 }
 
 const Component = (props: Props) => {
-  const mapContainer = React.useRef<HTMLDivElement>(null);
-  const [simpleStyle, setSimpleStyle] = React.useState<any>();
-  const [map, setMap] = React.useState<any>();
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const [simpleStyle, setSimpleStyle] = useState<any>();
+  const [map, setMap] = useState<any>();
 
   const {
     editMode,
@@ -42,7 +42,7 @@ const Component = (props: Props) => {
     setSelectedOn,
   } = props;
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if ((mapContainer.current as any).__initialized === true) {
       return;
     }
@@ -74,7 +74,7 @@ const Component = (props: Props) => {
     });
   }, [mapContainer, setEditMode, setSelectedRowId, setSelectedOn]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!simpleStyle) { return; }
 
     const geojson = rows2geojson(features);
@@ -90,7 +90,7 @@ const Component = (props: Props) => {
     });
   }, [simpleStyle, features, setFitBounds]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let draggableMarker: any = null;
     const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
     const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;

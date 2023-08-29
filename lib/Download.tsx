@@ -1,4 +1,4 @@
-import React, { type MouseEvent } from 'react';
+import { useCallback, type MouseEvent } from 'react';
 import Papa from 'papaparse';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { write, read } from 'xlsx';
@@ -24,7 +24,7 @@ const Component = (props: Props) => {
     filename,
   } = props;
 
-  const onClick = React.useCallback((event: MouseEvent<HTMLButtonElement>) => {
+  const onClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     const exportData = features.map((feature) => {

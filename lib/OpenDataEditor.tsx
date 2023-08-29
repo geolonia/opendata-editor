@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 
 import Table from './Table';
 import Download from './Download';
@@ -59,19 +59,19 @@ type Props = {
 };
 
 const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
-  const [ features, setFeatures ] = React.useState<Row[]>([]);
-  const [ filename, setFilename ] = React.useState<string>('');
-  const [ editMode, setEditMode ] = React.useState(false);
-  const [ , setFitBounds ] = React.useState(false);
-  const [ selectedRowId, setSelectedRowId ] = React.useState<string | null>(null);
-  const [ selectedOn, setSelectedOn ] = React.useState<string | null>(null);
+  const [ features, setFeatures ] = useState<Row[]>([]);
+  const [ filename, setFilename ] = useState<string>('');
+  const [ editMode, setEditMode ] = useState(false);
+  const [ , setFitBounds ] = useState(false);
+  const [ selectedRowId, setSelectedRowId ] = useState<string | null>(null);
+  const [ selectedOn, setSelectedOn ] = useState<string | null>(null);
 
   const hideUploader = () => {
     const el = document.querySelector('.uploader') as HTMLElement;
     el.style.display = 'none';
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (data) {
       const csv = Papa.unparse(data);
       const { data: formattedData } = Papa.parse<Row>(csv, {

@@ -1,7 +1,7 @@
 import React, { type MouseEvent } from 'react';
 import Papa from 'papaparse';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
-import { write, read } from 'xlsx';
+import { write, utils } from 'xlsx';
 import { styled } from 'styled-components';
 import Button from './Button';
 
@@ -31,7 +31,7 @@ const Component = (props: Props) => {
       const newFeature: Feature = {};
       for (let i = 0; i < Object.keys(feature).length; i++) {
         if (Object.keys(feature)[i] !== 'id' && Object.keys(feature)[i] !== 'title') {
-          newFeature[Object.keys(feature)[i]] = Object.values(feature)[i];
+          newFeature[Object.keys(feature)[i]] = `${Object.values(feature)[i]}`;
         }
       }
       return newFeature;
@@ -49,7 +49,8 @@ const Component = (props: Props) => {
     document.body.removeChild(csvAtag);
 
     // Excel ダウンロード
-    const workbook = read(output, {type: 'binary'});
+    const ws = utils.json_to_sheet(exportData);
+    const workbook = { Sheets: { 'Sheet1': ws }, SheetNames: ['Sheet1'] };
     const wbout = write(workbook, {bookType: 'xlsx', type: 'array'});
 
     const excelAtag = document.createElement('a');

@@ -31,7 +31,7 @@ const Component = (props: Props) => {
       const newFeature: Feature = {};
       for (let i = 0; i < Object.keys(feature).length; i++) {
         if (Object.keys(feature)[i] !== 'id' && Object.keys(feature)[i] !== 'title') {
-          newFeature[Object.keys(feature)[i]] = `${Object.values(feature)[i]}`;
+          newFeature[Object.keys(feature)[i]] = Object.values(feature)[i];
         }
       }
       return newFeature;

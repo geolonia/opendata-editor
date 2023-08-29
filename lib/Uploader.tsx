@@ -1,4 +1,4 @@
-import React from 'react';
+import { useCallback, useEffect } from 'react';
 
 import {useDropzone} from 'react-dropzone';
 
@@ -64,14 +64,14 @@ interface Props {
 }
 
 const Component = (props: Props) => {
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener('dragenter', showUploader);
     if (props.filename) {
       window.addEventListener('dragleave', hideUploader);
     }
   });
 
-  const onDrop = React.useCallback((acceptedFiles : any) => {
+  const onDrop = useCallback((acceptedFiles : any) => {
     acceptedFiles.forEach((file: any) => {
       props.setFilename(file.name);
 

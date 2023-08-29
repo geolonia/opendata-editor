@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { styled } from 'styled-components';
 import { ulid } from 'ulid';
@@ -63,18 +63,18 @@ const TdFreezed = styled(Td)`
 
 interface Props {
   features: Feature[];
-  setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>;
+  setFeatures: Dispatch<SetStateAction<Feature[]>>;
   editMode: boolean;
-  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditMode: Dispatch<SetStateAction<boolean>>;
   selectedRowId: string | null;
-  setSelectedRowId: React.Dispatch<React.SetStateAction<string | null>>;
-  setSelectedOn: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedRowId: Dispatch<SetStateAction<string | null>>;
+  setSelectedOn: Dispatch<SetStateAction<string | null>>;
   onDataUpdate?: (tableData: Feature[]) => void;
 }
 
 const Component = (props: Props) => {
-  const [tableData, setTableData] = React.useState<Feature[]>(props.features);
-  const inputRef = React.useRef<Array<HTMLInputElement | null>>([]);
+  const [tableData, setTableData] = useState<Feature[]>(props.features);
+  const inputRef = useRef<Array<HTMLInputElement | null>>([]);
 
   const {
     setEditMode,
@@ -154,11 +154,11 @@ const Component = (props: Props) => {
 
   const headers = tableData[0] ? Object.keys(tableData[0]) : [];
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTableData(features);
   }, [features]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.getElementById(`table-data-${selectedRowId}`)?.scrollIntoView();
   }, [selectedRowId]);
 

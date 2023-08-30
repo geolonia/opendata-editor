@@ -61,7 +61,6 @@ type Props = {
 const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   const [ features, setFeatures ] = useState<Row[]>([]);
   const [ filename, setFilename ] = useState<string>('');
-  const [ editMode, setEditMode ] = useState(false);
   const [ , setFitBounds ] = useState(false);
   const [ selectedRowId, setSelectedRowId ] = useState<string | null>(null);
   const [ selectedOn, setSelectedOn ] = useState<string | null>(null);
@@ -114,8 +113,6 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
         <StyledMap
           features={features}
           setFeatures={setFeatures}
-          editMode={editMode}
-          setEditMode={setEditMode}
           selectedRowId={selectedRowId}
           setSelectedRowId={setSelectedRowId}
           setFitBounds={setFitBounds}

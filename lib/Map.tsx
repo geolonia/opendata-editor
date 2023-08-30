@@ -16,8 +16,6 @@ interface Props {
   className?: string; // Required to apply styles by styled-components
   features: Feature[];
   setFeatures: Dispatch<SetStateAction<Feature[]>>;
-  editMode: boolean;
-  setEditMode: Dispatch<SetStateAction<boolean>>;
   selectedRowId: string | null;
   setSelectedRowId: Dispatch<SetStateAction<string | null>>;
   setFitBounds: Dispatch<SetStateAction<boolean>>;
@@ -31,8 +29,6 @@ const Component = (props: Props) => {
   const [map, setMap] = useState<any>();
 
   const {
-    editMode,
-    setEditMode,
     selectedRowId,
     setSelectedRowId,
     features,
@@ -68,11 +64,10 @@ const Component = (props: Props) => {
 
     map.on('click', 'custom-geojson-circle-points', (e: any) => {
       const id = e.features[0].properties['id'];
-      setEditMode(false);
       setSelectedRowId(id);
       setSelectedOn('map');
     });
-  }, [mapContainer, setEditMode, setSelectedRowId, setSelectedOn]);
+  }, [mapContainer, setSelectedRowId, setSelectedOn]);
 
   useEffect(() => {
     if (!simpleStyle) { return; }
@@ -155,37 +150,33 @@ const Component = (props: Props) => {
       }
     }
 
-    if (editMode) {
-      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map);
+    draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map);
 
-      draggableMarker.on('dragend', () => {
-        const feature = features.find((feature) => feature['id'] === selectedRowId);
-        const lngLat = draggableMarker.getLngLat();
+    draggableMarker.on('dragend', () => {
+      const feature = features.find((feature) => feature['id'] === selectedRowId);
+      const lngLat = draggableMarker.getLngLat();
 
-        // 新規データ追加の場合
-        if (!feature) {
-          const latField = document.querySelector(`tr#table-data-${selectedRowId} td.latitude input`) as HTMLInputElement;
-          const lngField = document.querySelector(`tr#table-data-${selectedRowId} td.longitude input`) as HTMLInputElement;
+      // 新規データ追加の場合
+      if (!feature) {
+        const latField = document.querySelector(`tr#table-data-${selectedRowId} td.latitude input`) as HTMLInputElement;
+        const lngField = document.querySelector(`tr#table-data-${selectedRowId} td.longitude input`) as HTMLInputElement;
 
-          if (latField && lngField) {
-            latField.value = lngLat.lat.toString();
-            lngField.value = lngLat.lng.toString();
-          }
-          return;
+        if (latField && lngField) {
+          latField.value = lngLat.lat.toString();
+          lngField.value = lngLat.lng.toString();
         }
+        return;
+      }
 
-        // 既存データ編集の場合
-        if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
-          setEditMode(false);
-          return;
-        }
+      // 既存データ編集の場合
+      if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
+        return;
+      }
 
-        feature.longitude = lngLat.lng.toString();
-        feature.latitude = lngLat.lat.toString();
-        setFeatures([...features]);
-        setEditMode(false);
-      });
-    }
+      feature.longitude = lngLat.lng.toString();
+      feature.latitude = lngLat.lat.toString();
+      setFeatures([...features]);
+    });
 
     if (selectedOn === 'map') {
       map.flyTo({
@@ -205,7 +196,7 @@ const Component = (props: Props) => {
         draggableMarker.remove();
       }
     };
-  }, [map, selectedRowId, editMode, setEditMode, features, setFeatures, selectedOn]);
+  }, [map, selectedRowId, features, setFeatures, selectedOn]);
 
   return (
     <>

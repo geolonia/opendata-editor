@@ -12,7 +12,7 @@ import Map from './Map';
 import Uploader from './Uploader';
 
 import { addIdToFeatures } from './utils/add-id-to-features';
-import { Row, csv2rows } from './utils/csv2geojson';
+import { type Row, csv2rows } from './utils/csv2geojson';
 
 import type { Feature } from './types';
 

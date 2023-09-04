@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import DataGrid, { SelectColumn, textEditor, type Column, type CellSelectArgs, type DataGridHandle } from 'react-data-grid';
 
 import Download from './Download';
@@ -69,17 +69,24 @@ type Props = {
 };
 
 const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
+  const gridRef = useRef<DataGridHandle>(null);
+
   const [ features, setFeatures ] = useState<Row[]>([]);
   const [ columns, setColumns ] = useState<Column<Row>[]>([]);
   const [ filename, setFilename ] = useState<string>('');
   const [ , setFitBounds ] = useState(false);
-  const [ selectedRows, setSelectedRows ] = useState((): ReadonlySet<string> => new Set());
+  const [ selectedRowIds, setSelectedRowIds ] = useState((): ReadonlySet<string> => new Set());
   const [ selectedOn, setSelectedOn ] = useState<string | null>(null);
 
   const hideUploader = () => {
     const el = document.querySelector('.uploader') as HTMLElement;
     el.style.display = 'none';
   };
+
+  const onMapPinSelected = useCallback((id: string) => {
+    const { rowIdx } = getRowById(features, id);
+    gridRef.current?.selectCell({ idx: 0, rowIdx });
+  }, [features]);
 
   useEffect(() => {
     if (data) {
@@ -126,11 +133,12 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
         <StyledMap
           features={features}
           setFeatures={setFeatures}
-          selectedRowId={selectedRowId}
-          setSelectedRowId={setSelectedRowId}
+          selectedRowIds={selectedRowIds}
+          onMapPinSelected={onMapPinSelected}
           setFitBounds={setFitBounds}
           selectedOn={selectedOn}
           setSelectedOn={setSelectedOn}
+          key={JSON.stringify(features)}
         />
 
         <DataGrid
@@ -142,8 +150,8 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
             resizable: true,
           }}
           rowKeyGetter={(row: Row) => row.id}
-          selectedRows={selectedRows}
-          onSelectedRowsChange={setSelectedRows}
+          selectedRows={selectedRowIds}
+          onSelectedRowsChange={setSelectedRowIds}
           onRowsChange={setFeatures}
         />
       </InnerWrapper>

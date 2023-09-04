@@ -16,8 +16,8 @@ interface Props {
   className?: string; // Required to apply styles by styled-components
   features: Feature[];
   setFeatures: Dispatch<SetStateAction<Feature[]>>;
-  selectedRowId: string | null;
-  setSelectedRowId: Dispatch<SetStateAction<string | null>>;
+  selectedRowIds: ReadonlySet<string>;
+  readonly onMapPinSelected: (id: string) => void;
   setFitBounds: Dispatch<SetStateAction<boolean>>;
   selectedOn: string | null;
   setSelectedOn: Dispatch<SetStateAction<string | null>>;
@@ -29,10 +29,10 @@ const Component = (props: Props) => {
   const [map, setMap] = useState<any>();
 
   const {
-    selectedRowId,
-    setSelectedRowId,
     features,
     setFeatures,
+    selectedRowIds,
+    onMapPinSelected,
     setFitBounds,
     selectedOn,
     setSelectedOn,
@@ -64,10 +64,10 @@ const Component = (props: Props) => {
 
     map.on('click', 'custom-geojson-circle-points', (e: any) => {
       const id = e.features[0].properties['id'];
-      setSelectedRowId(id);
+      onMapPinSelected(id);
       setSelectedOn('map');
     });
-  }, [mapContainer, setSelectedRowId, setSelectedOn]);
+  }, [mapContainer, onMapPinSelected, setSelectedOn]);
 
   useEffect(() => {
     if (!simpleStyle) { return; }
@@ -90,113 +90,115 @@ const Component = (props: Props) => {
     const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
     const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
 
-    if (!map || selectedRowId === null) {
+    if (!map || selectedRowIds.size <= 0) {
       return;
     }
 
-    const selectedFeature = features.find((feature) => feature.id === selectedRowId);
+    for (const selectedRowId of selectedRowIds) {
+      const selectedFeature = features.find((feature) => feature.id === selectedRowId);
 
-    let center = map.getCenter();
+      let center = map.getCenter();
 
-    const mapLayer = map.getLayer('selected-point');
-    if (typeof mapLayer !== 'undefined') {
-      map.removeLayer('selected-point').removeSource('selected-point');
-    }
-
-    // 既存データ編集の場合
-    if (selectedFeature) {
-      const selectedFeatureKeys = Object.keys(selectedFeature);
-      let latColumn = 'latitude';
-      let lngColumn = 'longitude';
-
-      for (let i = 0; i < latColumns.length; i++) {
-        if (selectedFeatureKeys.includes(latColumns[i])) {
-          latColumn = latColumns[i];
-        }
-      }
-      for (let i = 0; i < lngColumns.length; i++) {
-        if (selectedFeatureKeys.includes(lngColumns[i])) {
-          lngColumn = lngColumns[i];
-        }
-      }
-
-      if (selectedFeature[lngColumn] && selectedFeature[latColumn]) {
-        center = [Number(selectedFeature[lngColumn]), Number(selectedFeature[latColumn])];
-
-        // 選択されたポイントをハイライトする。
-        map.addSource('selected-point', {
-          type: 'geojson',
-          data: {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: center,
-            },
-          },
-        });
-        map.addLayer({
-          id: 'selected-point',
-          type: 'circle',
-          source: 'selected-point',
-          layout: {},
-          paint: {
-            'circle-radius': 21,
-            'circle-color': '#ff0000',
-            'circle-opacity': 0.5,
-            'circle-blur': 0.5,
-          },
-        });
-        map.moveLayer('selected-point', 'custom-geojson-circle-points');
-      }
-    }
-
-    draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map);
-
-    draggableMarker.on('dragend', () => {
-      const feature = features.find((feature) => feature['id'] === selectedRowId);
-      const lngLat = draggableMarker.getLngLat();
-
-      // 新規データ追加の場合
-      if (!feature) {
-        const latField = document.querySelector(`tr#table-data-${selectedRowId} td.latitude input`) as HTMLInputElement;
-        const lngField = document.querySelector(`tr#table-data-${selectedRowId} td.longitude input`) as HTMLInputElement;
-
-        if (latField && lngField) {
-          latField.value = lngLat.lat.toString();
-          lngField.value = lngLat.lng.toString();
-        }
-        return;
+      const mapLayer = map.getLayer('selected-point');
+      if (typeof mapLayer !== 'undefined') {
+        map.removeLayer('selected-point').removeSource('selected-point');
       }
 
       // 既存データ編集の場合
-      if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
-        return;
+      if (selectedFeature) {
+        const selectedFeatureKeys = Object.keys(selectedFeature);
+        let latColumn = 'latitude';
+        let lngColumn = 'longitude';
+
+        for (let i = 0; i < latColumns.length; i++) {
+          if (selectedFeatureKeys.includes(latColumns[i])) {
+            latColumn = latColumns[i];
+          }
+        }
+        for (let i = 0; i < lngColumns.length; i++) {
+          if (selectedFeatureKeys.includes(lngColumns[i])) {
+            lngColumn = lngColumns[i];
+          }
+        }
+
+        if (selectedFeature[lngColumn] && selectedFeature[latColumn]) {
+          center = [Number(selectedFeature[lngColumn]), Number(selectedFeature[latColumn])];
+
+          // 選択されたポイントをハイライトする。
+          map.addSource('selected-point', {
+            type: 'geojson',
+            data: {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: center,
+              },
+            },
+          });
+          map.addLayer({
+            id: 'selected-point',
+            type: 'circle',
+            source: 'selected-point',
+            layout: {},
+            paint: {
+              'circle-radius': 21,
+              'circle-color': '#ff0000',
+              'circle-opacity': 0.5,
+              'circle-blur': 0.5,
+            },
+          });
+          map.moveLayer('selected-point', 'custom-geojson-circle-points');
+        }
       }
 
-      feature.longitude = lngLat.lng.toString();
-      feature.latitude = lngLat.lat.toString();
-      setFeatures([...features]);
-    });
+      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map);
 
-    if (selectedOn === 'map') {
-      map.flyTo({
-        center: center,
-        speed: 3,
+      draggableMarker.on('dragend', () => {
+        const feature = features.find((feature) => feature['id'] === selectedRowId);
+        const lngLat = draggableMarker.getLngLat();
+
+        // 新規データ追加の場合
+        if (!feature) {
+          const latField = document.querySelector(`tr#table-data-${selectedRowId} td.latitude input`) as HTMLInputElement;
+          const lngField = document.querySelector(`tr#table-data-${selectedRowId} td.longitude input`) as HTMLInputElement;
+
+          if (latField && lngField) {
+            latField.value = lngLat.lat.toString();
+            lngField.value = lngLat.lng.toString();
+          }
+          return;
+        }
+
+        // 既存データ編集の場合
+        if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
+          return;
+        }
+
+        feature.longitude = lngLat.lng.toString();
+        feature.latitude = lngLat.lat.toString();
+        setFeatures([...features]);
       });
-    } else {
-      map.jumpTo({
-        center: center,
-        speed: 3,
-        zoom: 17,
-      });
+
+      if (selectedOn === 'map') {
+        map.flyTo({
+          center: center,
+          speed: 3,
+        });
+      } else {
+        map.jumpTo({
+          center: center,
+          speed: 3,
+          zoom: 17,
+        });
+      }
+
+      return () => {
+        if (draggableMarker) {
+          draggableMarker.remove();
+        }
+      };
     }
-
-    return () => {
-      if (draggableMarker) {
-        draggableMarker.remove();
-      }
-    };
-  }, [map, selectedRowId, features, setFeatures, selectedOn]);
+  }, [map, selectedRowIds, features, setFeatures, selectedOn]);
 
   return (
     <>

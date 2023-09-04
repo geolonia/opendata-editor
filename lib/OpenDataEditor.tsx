@@ -14,7 +14,7 @@ import Uploader from './Uploader';
 import { addIdToFeatures } from './utils/add-id-to-features';
 import { type Row, csv2rows } from './utils/csv2geojson';
 
-import type { Feature } from './types';
+import type { Cell, Feature } from './types';
 import 'react-data-grid/lib/styles.css';
 
 const baseStyle = `
@@ -77,6 +77,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   const [ , setFitBounds ] = useState(false);
   const [ selectedRowIds, setSelectedRowIds ] = useState((): ReadonlySet<string> => new Set());
   const [ selectedOn, setSelectedOn ] = useState<string | null>(null);
+  const [ selectedCell, setSelectedCell ] = useState<Cell>({ rowId: undefined, rowIdx: -1, columnIdx: -1 });
 
   const hideUploader = () => {
     const el = document.querySelector('.uploader') as HTMLElement;
@@ -87,6 +88,10 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
     const { rowIdx } = getRowById(features, id);
     gridRef.current?.selectCell({ idx: 0, rowIdx });
   }, [features]);
+
+  const onCellSelected = useCallback(({ idx: columnIdx, rowIdx, row }: CellSelectArgs<Row, unknown>) => {
+    setSelectedCell({ rowId: row?.id, rowIdx, columnIdx });
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -133,6 +138,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
         <StyledMap
           features={features}
           setFeatures={setFeatures}
+          selectedCell={selectedCell}
           selectedRowIds={selectedRowIds}
           onMapPinSelected={onMapPinSelected}
           setFitBounds={setFitBounds}
@@ -153,6 +159,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
           selectedRows={selectedRowIds}
           onSelectedRowsChange={setSelectedRowIds}
           onRowsChange={setFeatures}
+          onCellSelected={onCellSelected}
         />
       </InnerWrapper>
     </OuterWrapper>

@@ -186,17 +186,22 @@ const Component = (props: Props) => {
         setFeatures([...features]);
       });
 
-      if (selectedOn === 'map') {
-        map.flyTo({
-          center: center,
-          speed: 3,
-        });
+      if (focusedRowIds.length > 1) {
+        const geojson = rows2geojson(features.filter((feature) => focusedRowIds.includes(feature.id)));
+        simpleStyle.updateData(geojson).fitBounds({ duration: 0 });
       } else {
-        map.jumpTo({
-          center: center,
-          speed: 3,
-          zoom: 17,
-        });
+        if (selectedOn === 'map') {
+          map.flyTo({
+            center: center,
+            speed: 3,
+          });
+        } else {
+          map.jumpTo({
+            center: center,
+            speed: 3,
+            zoom: 17,
+          });
+        }
       }
 
       return () => {
@@ -205,7 +210,7 @@ const Component = (props: Props) => {
         }
       };
     }
-  }, [map, selectedRowIds, features, setFeatures, selectedOn, selectedCell.rowId]);
+  }, [map, selectedRowIds, features, setFeatures, selectedCell.rowId, simpleStyle, selectedOn]);
 
   return (
     <>

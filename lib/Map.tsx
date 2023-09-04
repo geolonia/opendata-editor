@@ -173,17 +173,16 @@ const Component = (props: Props) => {
             latField.value = lngLat.lat.toString();
             lngField.value = lngLat.lng.toString();
           }
-          return;
-        }
+        } else {
+          // 既存データ編集の場合
+          if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
+            return;
+          }
 
-        // 既存データ編集の場合
-        if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
-          return;
+          feature.longitude = lngLat.lng.toString();
+          feature.latitude = lngLat.lat.toString();
+          setFeatures([...features]);
         }
-
-        feature.longitude = lngLat.lng.toString();
-        feature.latitude = lngLat.lat.toString();
-        setFeatures([...features]);
       });
 
       if (focusedRowIds.length > 1) {

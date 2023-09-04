@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
-
+import { dedupe } from './utils/utils';
 import { rows2geojson } from './utils/csv2geojson';
+import type { Cell } from './types';
 
 declare global {
   interface Window {
@@ -16,6 +17,7 @@ interface Props {
   className?: string; // Required to apply styles by styled-components
   features: Feature[];
   setFeatures: Dispatch<SetStateAction<Feature[]>>;
+  selectedCell: Cell;
   selectedRowIds: ReadonlySet<string>;
   readonly onMapPinSelected: (id: string) => void;
   setFitBounds: Dispatch<SetStateAction<boolean>>;
@@ -31,6 +33,7 @@ const Component = (props: Props) => {
   const {
     features,
     setFeatures,
+    selectedCell,
     selectedRowIds,
     onMapPinSelected,
     setFitBounds,
@@ -90,12 +93,16 @@ const Component = (props: Props) => {
     const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
     const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
 
-    if (!map || selectedRowIds.size <= 0) {
+    if (!map || (selectedRowIds.size <= 0 && !selectedCell.rowId)) {
       return;
     }
 
-    for (const selectedRowId of selectedRowIds) {
-      const selectedFeature = features.find((feature) => feature.id === selectedRowId);
+    const focusedRowIds = selectedCell.rowId ?
+      dedupe([ selectedCell.rowId, ...selectedRowIds ]) :
+      dedupe([ ...selectedRowIds ]);
+
+    for (const focusedRowId of focusedRowIds) {
+      const selectedFeature = features.find((feature) => feature.id === focusedRowId);
 
       let center = map.getCenter();
 
@@ -154,13 +161,13 @@ const Component = (props: Props) => {
       draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map);
 
       draggableMarker.on('dragend', () => {
-        const feature = features.find((feature) => feature['id'] === selectedRowId);
+        const feature = features.find((feature) => feature['id'] === focusedRowId);
         const lngLat = draggableMarker.getLngLat();
 
         // 新規データ追加の場合
         if (!feature) {
-          const latField = document.querySelector(`tr#table-data-${selectedRowId} td.latitude input`) as HTMLInputElement;
-          const lngField = document.querySelector(`tr#table-data-${selectedRowId} td.longitude input`) as HTMLInputElement;
+          const latField = document.querySelector(`tr#table-data-${focusedRowId} td.latitude input`) as HTMLInputElement;
+          const lngField = document.querySelector(`tr#table-data-${focusedRowId} td.longitude input`) as HTMLInputElement;
 
           if (latField && lngField) {
             latField.value = lngLat.lat.toString();
@@ -198,7 +205,7 @@ const Component = (props: Props) => {
         }
       };
     }
-  }, [map, selectedRowIds, features, setFeatures, selectedOn]);
+  }, [map, selectedRowIds, features, setFeatures, selectedOn, selectedCell.rowId]);
 
   return (
     <>

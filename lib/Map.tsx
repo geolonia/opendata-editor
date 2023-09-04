@@ -1,13 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { dedupe } from './utils/utils';
 import { rows2geojson } from './utils/csv2geojson';
+import type { Map, Marker } from '@geolonia/embed'; // Required to declare types of window.geolonia
+import type { LngLatLike } from 'maplibre-gl';
 import type { Cell } from './types';
-
-declare global {
-  interface Window {
-    geolonia: any;
-  }
-}
 
 interface Feature {
   [key: string]: string;
@@ -28,7 +24,7 @@ interface Props {
 const Component = (props: Props) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [simpleStyle, setSimpleStyle] = useState<any>();
-  const [map, setMap] = useState<any>();
+  const [map, setMap] = useState<Map>();
 
   const {
     features,
@@ -42,12 +38,16 @@ const Component = (props: Props) => {
   } = props;
 
   useLayoutEffect(() => {
+    if (!mapContainer.current) {
+      return;
+    }
     if ((mapContainer.current as any).__initialized === true) {
       return;
     }
 
-    const map = new window.geolonia.Map({
+    const map: Map = new window.geolonia.Map({
       container: mapContainer.current,
+      // @ts-ignore @geolonia/embed should allow `style` property, while it disallows it currently. (it is a bug.)
       style: 'geolonia/gsi',
       hash: true,
     });
@@ -61,7 +61,7 @@ const Component = (props: Props) => {
         type: 'FeatureCollection',
         features: [],
       } as GeoJSON.FeatureCollection;
-      const simpleStyle: any = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map);
+      const simpleStyle = new window.geolonia.SimpleStyle(geojson, {id: sourceId}).addTo(map);
       setSimpleStyle(simpleStyle);
     });
 
@@ -89,7 +89,7 @@ const Component = (props: Props) => {
   }, [simpleStyle, features, setFitBounds]);
 
   useEffect(() => {
-    let draggableMarker: any = null;
+    let draggableMarker: Marker;
     const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
     const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
 
@@ -104,7 +104,7 @@ const Component = (props: Props) => {
     for (const focusedRowId of focusedRowIds) {
       const selectedFeature = features.find((feature) => feature.id === focusedRowId);
 
-      let center = map.getCenter();
+      let center: LngLatLike = map.getCenter();
 
       const mapLayer = map.getLayer('selected-point');
       if (typeof mapLayer !== 'undefined') {

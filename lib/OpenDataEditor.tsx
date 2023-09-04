@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
+import DataGrid, { SelectColumn, textEditor, type Column, type CellSelectArgs, type DataGridHandle } from 'react-data-grid';
 
-import Table from './Table';
 import Download from './Download';
 
 import { Buffer } from 'buffer';
@@ -15,6 +15,7 @@ import { addIdToFeatures } from './utils/add-id-to-features';
 import { type Row, csv2rows } from './utils/csv2geojson';
 
 import type { Feature } from './types';
+import 'react-data-grid/lib/styles.css';
 
 const baseStyle = `
   position: absolute;
@@ -53,6 +54,15 @@ const StyledMap = styled(Map)`
   margin-bottom: 20px;
 `;
 
+const getColumns = (data: Feature[]): Column<Row>[] => [
+  SelectColumn,
+  ...Object.keys(data[0]).map((key) => ({
+    key,
+    name: key,
+    renderEditCell: textEditor,
+  })),
+];
+
 type Props = {
   data?: string[][];
   onDataUpdate?: (tableData: Feature[]) => void;
@@ -60,9 +70,10 @@ type Props = {
 
 const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   const [ features, setFeatures ] = useState<Row[]>([]);
+  const [ columns, setColumns ] = useState<Column<Row>[]>([]);
   const [ filename, setFilename ] = useState<string>('');
   const [ , setFitBounds ] = useState(false);
-  const [ selectedRowId, setSelectedRowId ] = useState<string | null>(null);
+  const [ selectedRows, setSelectedRows ] = useState((): ReadonlySet<string> => new Set());
   const [ selectedOn, setSelectedOn ] = useState<string | null>(null);
 
   const hideUploader = () => {
@@ -77,6 +88,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
         header: true,
       });
       setFeatures(addIdToFeatures(formattedData));
+      setColumns(getColumns(formattedData));
       hideUploader();
     } else if (location.search) {
       const params = new URLSearchParams(location.search);
@@ -100,6 +112,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
         const features = csv2rows(unicodeData);
         setFitBounds(true);
         setFeatures(addIdToFeatures(features));
+        setColumns(getColumns(features));
       })();
     }
   }, [data]);
@@ -120,15 +133,18 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
           setSelectedOn={setSelectedOn}
         />
 
-        <Table
-          features={features}
-          setFeatures={setFeatures}
-          editMode={editMode}
-          setEditMode={setEditMode}
-          selectedRowId={selectedRowId}
-          setSelectedRowId={setSelectedRowId}
-          setSelectedOn={setSelectedOn}
-          onDataUpdate={onDataUpdate}
+        <DataGrid
+          ref={gridRef}
+          rows={features}
+          columns={columns}
+          defaultColumnOptions={{
+            sortable: true,
+            resizable: true,
+          }}
+          rowKeyGetter={(row: Row) => row.id}
+          selectedRows={selectedRows}
+          onSelectedRowsChange={setSelectedRows}
+          onRowsChange={setFeatures}
         />
       </InnerWrapper>
     </OuterWrapper>

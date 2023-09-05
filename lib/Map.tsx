@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
-import { dedupe } from './utils/utils';
+import { dedupe, getLatLngColumnNames } from './utils/utils';
 import { rows2geojson } from './utils/csv2geojson';
 import type { Map, Marker } from '@geolonia/embed'; // Required to declare types of window.geolonia
 import type { LngLatLike } from 'maplibre-gl';
@@ -90,8 +90,6 @@ const Component = (props: Props) => {
 
   useEffect(() => {
     let draggableMarker: Marker;
-    const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
-    const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
 
     if (!map || (selectedRowIds.size <= 0 && !selectedCell.rowId)) {
       return;
@@ -113,23 +111,10 @@ const Component = (props: Props) => {
 
       // 既存データ編集の場合
       if (selectedFeature) {
-        const selectedFeatureKeys = Object.keys(selectedFeature);
-        let latColumn = 'latitude';
-        let lngColumn = 'longitude';
+        const { latColumnName, lngColumnName } = getLatLngColumnNames(selectedFeature);
 
-        for (let i = 0; i < latColumns.length; i++) {
-          if (selectedFeatureKeys.includes(latColumns[i])) {
-            latColumn = latColumns[i];
-          }
-        }
-        for (let i = 0; i < lngColumns.length; i++) {
-          if (selectedFeatureKeys.includes(lngColumns[i])) {
-            lngColumn = lngColumns[i];
-          }
-        }
-
-        if (selectedFeature[lngColumn] && selectedFeature[latColumn]) {
-          center = [Number(selectedFeature[lngColumn]), Number(selectedFeature[latColumn])];
+        if (lngColumnName && latColumnName) {
+          center = [Number(selectedFeature[lngColumnName]), Number(selectedFeature[latColumnName])];
 
           // 選択されたポイントをハイライトする。
           map.addSource('selected-point', {

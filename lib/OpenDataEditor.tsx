@@ -149,6 +149,12 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (onDataUpdate) {
+      onDataUpdate(features);
+    }
+  }, [features, onDataUpdate]);
+
   return (
     <OuterWrapper>
       <StyledUploader className="uploader" setFeatures={setFeatures} filename={filename} setFilename={setFilename} setFitBounds={setFitBounds} />

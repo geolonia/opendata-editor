@@ -16,6 +16,7 @@ import { type Row, csv2rows } from './utils/csv2geojson';
 
 import type { Cell, Feature } from './types';
 import 'react-data-grid/lib/styles.css';
+import { getLatLngColumnNames, getRowById } from './utils/utils';
 
 const baseStyle = `
   position: absolute;
@@ -89,6 +90,25 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
     gridRef.current?.selectCell({ idx: 0, rowIdx });
   }, [features]);
 
+  const onMapPinMoved = useCallback((rowId: string, newLatitude: number, newLongitude: number) => {
+    const { latColumnName, lngColumnName } = getLatLngColumnNames(features);
+    const { rowIdx: movedRowIdx } = getRowById(features, rowId);
+
+    if (!latColumnName || !lngColumnName) {
+      throw new Error(`latColumnName and/or lngColumnName are undefined: latColumnName is ${latColumnName} and lngColumnName is ${lngColumnName}`);
+    }
+
+    setFeatures([
+      ...features.slice(0, movedRowIdx),
+      {
+        ...features[movedRowIdx],
+        [latColumnName]: newLatitude.toString(),
+        [lngColumnName]: newLongitude.toString(),
+      },
+      ...features.slice(movedRowIdx + 1),
+    ]);
+  }, [features]);
+
   const onCellSelected = useCallback(({ idx: columnIdx, rowIdx, row }: CellSelectArgs<Row, unknown>) => {
     setSelectedCell({ rowId: row?.id, rowIdx, columnIdx });
   }, []);
@@ -137,10 +157,10 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
 
         <StyledMap
           features={features}
-          setFeatures={setFeatures}
           selectedCell={selectedCell}
           selectedRowIds={selectedRowIds}
           onMapPinSelected={onMapPinSelected}
+          onMapPinMoved={onMapPinMoved}
           setFitBounds={setFitBounds}
           selectedOn={selectedOn}
           setSelectedOn={setSelectedOn}

@@ -12,10 +12,10 @@ interface Feature {
 interface Props {
   className?: string; // Required to apply styles by styled-components
   features: Feature[];
-  setFeatures: Dispatch<SetStateAction<Feature[]>>;
   selectedCell: Cell;
   selectedRowIds: ReadonlySet<string>;
   readonly onMapPinSelected: (id: string) => void;
+  onMapPinMoved: (rowId: string, newLatitude: number, newLongitude: number) => void;
   setFitBounds: Dispatch<SetStateAction<boolean>>;
   selectedOn: string | null;
   setSelectedOn: Dispatch<SetStateAction<string | null>>;
@@ -28,10 +28,10 @@ const Component = (props: Props) => {
 
   const {
     features,
-    setFeatures,
     selectedCell,
     selectedRowIds,
     onMapPinSelected,
+    onMapPinMoved,
     setFitBounds,
     selectedOn,
     setSelectedOn,
@@ -164,9 +164,7 @@ const Component = (props: Props) => {
             return;
           }
 
-          feature.longitude = lngLat.lng.toString();
-          feature.latitude = lngLat.lat.toString();
-          setFeatures([...features]);
+          onMapPinMoved(focusedRowId, lngLat.lat, lngLat.lng);
         }
       });
 
@@ -193,7 +191,7 @@ const Component = (props: Props) => {
         }
       };
     }
-  }, [map, selectedRowIds, features, setFeatures, selectedCell.rowId, simpleStyle, selectedOn]);
+  }, [map, selectedRowIds, features, selectedCell.rowId, simpleStyle, selectedOn, onMapPinMoved]);
 
   return (
     <>

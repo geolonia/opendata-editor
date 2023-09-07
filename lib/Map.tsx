@@ -1,4 +1,7 @@
-import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import styled from 'styled-components';
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import Button from './Button';
 import { dedupe, getLatLngColumnNames } from './utils/utils';
 import { rows2geojson } from './utils/csv2geojson';
 import type { Map, Marker } from '@geolonia/embed'; // Required to declare types of window.geolonia
@@ -9,12 +12,19 @@ interface Feature {
   [key: string]: string;
 }
 
+const StyledButton = styled(Button)`
+  position: absolute;
+  top: 385px;
+  right: 35px;
+`;
+
 interface Props {
   className?: string; // Required to apply styles by styled-components
   features: Feature[];
   selectedCell: Cell;
   selectedRowIds: ReadonlySet<string>;
   readonly onMapPinSelected: (id: string) => void;
+  readonly onMapPinAdded: (latitude: number, longtitude: number) => void;
   onMapPinMoved: (rowId: string, newLatitude: number, newLongitude: number) => void;
   setFitBounds: Dispatch<SetStateAction<boolean>>;
   selectedOn: string | null;
@@ -31,11 +41,22 @@ const Component = (props: Props) => {
     selectedCell,
     selectedRowIds,
     onMapPinSelected,
+    onMapPinAdded,
     onMapPinMoved,
     setFitBounds,
     selectedOn,
     setSelectedOn,
   } = props;
+
+  const addRow = useCallback(() => {
+    const { lat, lng } = map?.getCenter() ?? {};
+
+    map?.jumpTo({
+      center: { lat: lat ?? 0, lng: lng ?? 0 },
+      zoom: 17,
+    });
+    onMapPinAdded(lat ?? 0, lng ?? 0);
+  }, [ map, onMapPinAdded ]);
 
   useLayoutEffect(() => {
     if (!mapContainer.current) {
@@ -151,13 +172,7 @@ const Component = (props: Props) => {
 
         // 新規データ追加の場合
         if (!feature) {
-          const latField = document.querySelector(`tr#table-data-${focusedRowId} td.latitude input`) as HTMLInputElement;
-          const lngField = document.querySelector(`tr#table-data-${focusedRowId} td.longitude input`) as HTMLInputElement;
-
-          if (latField && lngField) {
-            latField.value = lngLat.lat.toString();
-            lngField.value = lngLat.lng.toString();
-          }
+          onMapPinAdded(lngLat.lat, lngLat.lng);
         } else {
           // 既存データ編集の場合
           if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
@@ -191,7 +206,7 @@ const Component = (props: Props) => {
         }
       };
     }
-  }, [map, selectedRowIds, features, selectedCell.rowId, simpleStyle, selectedOn, onMapPinMoved]);
+  }, [map, selectedRowIds, features, selectedCell.rowId, simpleStyle, selectedOn, onMapPinAdded, onMapPinMoved]);
 
   return (
     <>
@@ -201,6 +216,9 @@ const Component = (props: Props) => {
         data-navigation-control="on"
         data-gesture-handling="off"
       ></div>
+      <StyledButton icon={faPlusCircle} onClick={addRow}>
+        データを追加
+      </StyledButton>
     </>
   );
 };

@@ -71,6 +71,7 @@ type Props = {
 
 const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   const gridRef = useRef<DataGridHandle>(null);
+  const selectNewRowOnNextRowUpdate = useRef(false);
 
   const [ features, setFeatures ] = useState<Row[]>([]);
   const [ columns, setColumns ] = useState<Column<Row>[]>([]);
@@ -88,6 +89,39 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   const onMapPinSelected = useCallback((id: string) => {
     const { rowIdx } = getRowById(features, id);
     gridRef.current?.selectCell({ idx: 0, rowIdx });
+  }, [features]);
+
+  const onMapPinAdded = useCallback((latitude: number, longitude: number) => {
+    const { latColumnName, lngColumnName } = getLatLngColumnNames(features);
+
+    if (!latColumnName || !lngColumnName) {
+      throw new Error(`latColumnName and/or lngColumnName are undefined: latColumnName is ${latColumnName} and lngColumnName is ${lngColumnName}`);
+    }
+
+    const newRow: Row = {};
+    newRow[latColumnName] = latitude.toString();
+    newRow[lngColumnName] = longitude.toString();
+    newRow.name = '新規マップピン';
+    const newRows = addIdToFeatures(newRow);
+
+    setFeatures((previousFeatures) => [ ...previousFeatures, ...newRows ]);
+    selectNewRowOnNextRowUpdate.current = true;
+  }, [features]);
+
+  useEffect(() => {
+    if (selectNewRowOnNextRowUpdate.current === true) {
+      const { latIndex, lngIndex } = getLatLngColumnNames(features);
+      let columnIdx = 0;
+
+      if (latIndex >= 0) {
+        columnIdx = latIndex;
+      } else if (lngIndex >= 0) {
+        columnIdx = lngIndex;
+      }
+
+      gridRef.current?.selectCell({ idx: columnIdx, rowIdx: features.length - 1 });
+      selectNewRowOnNextRowUpdate.current = false;
+    }
   }, [features]);
 
   const onMapPinMoved = useCallback((rowId: string, newLatitude: number, newLongitude: number) => {
@@ -166,6 +200,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
           selectedCell={selectedCell}
           selectedRowIds={selectedRowIds}
           onMapPinSelected={onMapPinSelected}
+          onMapPinAdded={onMapPinAdded}
           onMapPinMoved={onMapPinMoved}
           setFitBounds={setFitBounds}
           selectedOn={selectedOn}

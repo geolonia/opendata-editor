@@ -116,6 +116,7 @@ const Component = (props: Props) => {
       return;
     }
 
+    const { latColumnName, lngColumnName } = getLatLngColumnNames(features);
     const focusedRowIds = selectedCell.rowId ?
       dedupe([ selectedCell.rowId, ...selectedRowIds ]) :
       dedupe([ ...selectedRowIds ]);
@@ -132,8 +133,6 @@ const Component = (props: Props) => {
 
       // 既存データ編集の場合
       if (selectedFeature) {
-        const { latColumnName, lngColumnName } = getLatLngColumnNames(selectedFeature);
-
         if (lngColumnName && latColumnName) {
           center = [Number(selectedFeature[lngColumnName]), Number(selectedFeature[latColumnName])];
 
@@ -164,25 +163,6 @@ const Component = (props: Props) => {
         }
       }
 
-      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map);
-
-      draggableMarker.on('dragend', () => {
-        const feature = features.find((feature) => feature['id'] === focusedRowId);
-        const lngLat = draggableMarker.getLngLat();
-
-        // 新規データ追加の場合
-        if (!feature) {
-          onMapPinAdded(lngLat.lat, lngLat.lng);
-        } else {
-          // 既存データ編集の場合
-          if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
-            return;
-          }
-
-          onMapPinMoved(focusedRowId, lngLat.lat, lngLat.lng);
-        }
-      });
-
       if (focusedRowIds.length > 1) {
         const geojson = rows2geojson(features.filter((feature) => focusedRowIds.includes(feature.id)));
         simpleStyle.updateData(geojson).fitBounds({ duration: 0 });
@@ -199,14 +179,44 @@ const Component = (props: Props) => {
           });
         }
       }
-
-      return () => {
-        if (draggableMarker) {
-          draggableMarker.remove();
-        }
-      };
     }
-  }, [map, selectedRowIds, features, selectedCell.rowId, simpleStyle, selectedOn, onMapPinAdded, onMapPinMoved]);
+
+    if (lngColumnName && latColumnName) {
+      const feature = features[selectedCell.rowIdx];
+      const featureLngLat: LngLatLike = {
+        lng: Number(feature[lngColumnName]),
+        lat: Number(feature[latColumnName]),
+      };
+
+      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(featureLngLat).addTo(map);
+
+      draggableMarker.on('dragend', () => {
+        if (!selectedCell.rowId) {
+          throw new Error('Attempt to drag a map marker but the corresponding cell is not selected.');
+        }
+
+        const lngLat = draggableMarker.getLngLat();
+
+        // 新規データ追加の場合
+        if (!feature) {
+          onMapPinAdded(lngLat.lat, lngLat.lng);
+        } else {
+          // 既存データ編集の場合
+          if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
+            return;
+          }
+
+          onMapPinMoved(selectedCell.rowId, lngLat.lat, lngLat.lng);
+        }
+      });
+    }
+
+    return () => {
+      if (draggableMarker) {
+        draggableMarker.remove();
+      }
+    };
+  }, [map, selectedRowIds, features, selectedCell.rowId, selectedCell.rowIdx, simpleStyle, selectedOn, onMapPinAdded, onMapPinMoved]);
 
   return (
     <>

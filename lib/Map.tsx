@@ -203,6 +203,7 @@ const Component = (props: Props) => {
         } else {
           // 既存データ編集の場合
           if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
+            draggableMarker.setLngLat(featureLngLat);
             return;
           }
 

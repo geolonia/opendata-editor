@@ -91,7 +91,7 @@ const Component = (props: Props) => {
       onMapPinSelected(id);
       setSelectedOn('map');
     });
-  }, [mapContainer, onMapPinSelected, setSelectedOn]);
+  }, [onMapPinSelected, setSelectedOn]);
 
   useEffect(() => {
     if (!simpleStyle) { return; }

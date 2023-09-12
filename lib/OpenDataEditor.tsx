@@ -92,6 +92,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   }, [features]);
 
   const onMapPinAdded = useCallback((latitude: number, longitude: number) => {
+  const addNewRow = useCallback((latitude: number, longitude: number) => {
     const { latColumnName, lngColumnName } = getLatLngColumnNames(features);
 
     if (!latColumnName || !lngColumnName) {
@@ -107,6 +108,10 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
     setFeatures((previousFeatures) => [ ...previousFeatures, ...newRows ]);
     selectNewRowOnNextRowUpdate.current = true;
   }, [features]);
+
+  const onMapPinAdded = useCallback((latitude: number, longitude: number) => {
+    addNewRow(latitude, longitude);
+  }, [addNewRow]);
 
   useEffect(() => {
     if (selectNewRowOnNextRowUpdate.current === true) {

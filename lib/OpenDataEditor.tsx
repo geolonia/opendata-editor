@@ -205,7 +205,6 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
           setFitBounds={setFitBounds}
           selectedOn={selectedOn}
           setSelectedOn={setSelectedOn}
-          key={JSON.stringify(features)}
         />
 
         <DataGrid

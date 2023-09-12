@@ -85,13 +85,21 @@ const Component = (props: Props) => {
       const simpleStyle = new window.geolonia.SimpleStyle(geojson, {id: sourceId}).addTo(map);
       setSimpleStyle(simpleStyle);
     });
+  }, [onMapPinSelected, setSelectedOn]);
 
-    map.on('click', 'custom-geojson-circle-points', (e: any) => {
+  useEffect(() => {
+    const onClick = (e: any) => {
       const id = e.features[0].properties['id'];
       onMapPinSelected(id);
       setSelectedOn('map');
-    });
-  }, [onMapPinSelected, setSelectedOn]);
+    };
+
+    map?.on('click', 'custom-geojson-circle-points', onClick);
+
+    return () => {
+      map?.off('click', 'custom-geojson-circle-points', onClick);
+    };
+  }, [map, onMapPinSelected, setSelectedOn]);
 
   useEffect(() => {
     if (!simpleStyle) { return; }

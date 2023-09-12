@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import DataGrid, { SelectColumn, textEditor, type Column, type CellSelectArgs, type DataGridHandle } from 'react-data-grid';
+import DataGrid, {
+  SelectColumn,
+  textEditor,
+  type Column,
+  type CellMouseEvent,
+  type CellClickArgs,
+  type CellSelectArgs,
+  type DataGridHandle,
+} from 'react-data-grid';
+import { Menu, Item, Separator, useContextMenu, type ItemParams } from 'react-contexify';
 
 import Download from './Download';
 
@@ -16,6 +25,7 @@ import { type Row, csv2rows } from './utils/csv2geojson';
 
 import type { Cell, Feature } from './types';
 import 'react-data-grid/lib/styles.css';
+import 'react-contexify/ReactContexify.css';
 import { getLatLngColumnNames, getRowById } from './utils/utils';
 
 const baseStyle = `
@@ -72,6 +82,9 @@ type Props = {
 const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   const gridRef = useRef<DataGridHandle>(null);
   const selectNewRowOnNextRowUpdate = useRef(false);
+  const { show: showContextMenu } = useContextMenu({
+    id: 'default',
+  });
 
   const [ features, setFeatures ] = useState<Row[]>([]);
   const [ columns, setColumns ] = useState<Column<Row>[]>([]);
@@ -80,6 +93,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   const [ selectedRowIds, setSelectedRowIds ] = useState((): ReadonlySet<string> => new Set());
   const [ selectedOn, setSelectedOn ] = useState<string | null>(null);
   const [ selectedCell, setSelectedCell ] = useState<Cell>({ rowId: undefined, rowIdx: -1, columnIdx: -1 });
+  const [ rowIdxWhereContextMenuOpens, setRowIdxWhereContextMenuOpens ] = useState<number>(-1);
 
   const hideUploader = () => {
     const el = document.querySelector('.uploader') as HTMLElement;
@@ -91,8 +105,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
     gridRef.current?.selectCell({ idx: 0, rowIdx });
   }, [features]);
 
-  const onMapPinAdded = useCallback((latitude: number, longitude: number) => {
-  const addNewRow = useCallback((latitude: number, longitude: number) => {
+  const addNewRow = useCallback((latitude: number|string, longitude: number|string, options?: { rowIdx?: number, moveToNewLine?: boolean }) => {
     const { latColumnName, lngColumnName } = getLatLngColumnNames(features);
 
     if (!latColumnName || !lngColumnName) {
@@ -105,12 +118,28 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
     newRow.name = '新規マップピン';
     const newRows = addIdToFeatures(newRow);
 
-    setFeatures((previousFeatures) => [ ...previousFeatures, ...newRows ]);
-    selectNewRowOnNextRowUpdate.current = true;
+    if (options?.rowIdx === undefined) {
+      setFeatures((previousFeatures) => [ ...previousFeatures, ...newRows ]);
+    } else {
+      setFeatures([
+        ...features.slice(0, options.rowIdx),
+        ...newRows,
+        ...features.slice(options.rowIdx),
+      ]);
+    }
+
+    selectNewRowOnNextRowUpdate.current = options?.moveToNewLine ?? false;
+  }, [features]);
+
+  const deleteRow = useCallback((rowIdx: number) => {
+    setFeatures([
+      ...features.slice(0, rowIdx),
+      ...features.slice(rowIdx + 1),
+    ]);
   }, [features]);
 
   const onMapPinAdded = useCallback((latitude: number, longitude: number) => {
-    addNewRow(latitude, longitude);
+    addNewRow(latitude, longitude, { moveToNewLine: true });
   }, [addNewRow]);
 
   useEffect(() => {
@@ -151,6 +180,37 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   const onCellSelected = useCallback(({ idx: columnIdx, rowIdx, row }: CellSelectArgs<Row, unknown>) => {
     setSelectedCell({ rowId: row?.id, rowIdx, columnIdx });
   }, []);
+
+  const onCellContextMenu = useCallback(({ row: clickedRow, column: clickedColumn }: CellClickArgs<Row>, event: CellMouseEvent): void => {
+    event.preventGridDefault();
+    event.preventDefault();
+
+    const clickedRowIdx = features.findIndex((feature) => feature.id === clickedRow.id);
+    setRowIdxWhereContextMenuOpens(clickedRowIdx);
+    gridRef.current?.selectCell({ idx: clickedColumn.idx, rowIdx: clickedRowIdx });
+    showContextMenu({ event });
+  }, [features, showContextMenu]);
+
+  const onContextMenuItemClick = useCallback(({ id }: ItemParams) => {
+    if (id === 'insert-above' || id === 'insert-below') {
+      const { latColumnName, lngColumnName } = getLatLngColumnNames(features);
+
+      if (!latColumnName || !lngColumnName) {
+        throw new Error(`latColumnName and/or lngColumnName are undefined: latColumnName is ${latColumnName} and lngColumnName is ${lngColumnName}`);
+      }
+
+      const latitude = features[rowIdxWhereContextMenuOpens][latColumnName];
+      const longitude = features[rowIdxWhereContextMenuOpens][lngColumnName];
+
+      addNewRow(latitude, longitude, {
+        rowIdx: id === 'insert-above' ? rowIdxWhereContextMenuOpens : rowIdxWhereContextMenuOpens + 1,
+      });
+    } else if (id === 'delete') {
+      deleteRow(rowIdxWhereContextMenuOpens);
+    } else {
+      throw new Error(`Unknown context menu item ID ${id}`);
+    }
+  }, [addNewRow, deleteRow, features, rowIdxWhereContextMenuOpens]);
 
   useEffect(() => {
     if (data) {
@@ -225,8 +285,16 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
           onSelectedRowsChange={setSelectedRowIds}
           onRowsChange={setFeatures}
           onCellSelected={onCellSelected}
+          onCellContextMenu={onCellContextMenu}
         />
       </InnerWrapper>
+
+      <Menu id="default">
+        <Item id="insert-above" onClick={onContextMenuItemClick}>この行の上に1行追加</Item>
+        <Item id="insert-below" onClick={onContextMenuItemClick}>この行の下に1行追加</Item>
+        <Separator />
+        <Item id="delete" onClick={onContextMenuItemClick}>この行を削除</Item>
+      </Menu>
     </OuterWrapper>
   );
 };

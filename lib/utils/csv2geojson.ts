@@ -1,13 +1,12 @@
 import Papa from 'papaparse';
+import type { Feature } from '../types';
 
 const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
 const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
 const titleColumns = [ '名称', '名前', 'タイトル', 'title', 'name' ] as const;
 
-export type Row = { [key: string]: string };
-
 export function csv2rows(csv: string) {
-  return Papa.parse<Row>(csv, {
+  return Papa.parse<Feature>(csv, {
     header: true,
     skipEmptyLines: true,
   }).data;
@@ -18,7 +17,7 @@ export function csv2geojson(csv: string) {
   return rows2geojson(data);
 }
 
-export function rows2geojson(data: Row[]) {
+export function rows2geojson(data: Feature[]) {
   let latColumn = 'latitude';
   let lngColumn = 'longitude';
   let titleColumn = 'title';

@@ -6,11 +6,7 @@ import { dedupe, getLatLngColumnNames } from './utils/utils';
 import { rows2geojson } from './utils/csv2geojson';
 import type { Map, Marker } from '@geolonia/embed'; // Required to declare types of window.geolonia
 import type { LngLatLike } from 'maplibre-gl';
-import type { Cell } from './types';
-
-interface Feature {
-  [key: string]: string;
-}
+import type { Cell, Feature } from './types';
 
 const StyledButton = styled(Button)`
   position: absolute;

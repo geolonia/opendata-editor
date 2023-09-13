@@ -4,15 +4,13 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { write, read } from 'xlsx';
 import { styled } from 'styled-components';
 import Button from './Button';
+import type { Feature } from './types';
 
 const DownloadWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
-interface Feature {
-  [key: string]: string;
-}
 interface Props {
   features: Feature[];
   filename: string;

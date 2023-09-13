@@ -21,7 +21,7 @@ import Map from './Map';
 import Uploader from './Uploader';
 
 import { addIdToFeatures } from './utils/add-id-to-features';
-import { type Row, csv2rows } from './utils/csv2geojson';
+import { csv2rows } from './utils/csv2geojson';
 
 import type { Cell, Feature } from './types';
 import 'react-data-grid/lib/styles.css';
@@ -65,7 +65,7 @@ const StyledMap = styled(Map)`
   margin-bottom: 20px;
 `;
 
-const getColumns = (data: Feature[]): Column<Row>[] => [
+const getColumns = (data: Feature[]): Column<Feature>[] => [
   SelectColumn,
   ...Object.keys(data[0]).map((key) => ({
     key,
@@ -86,8 +86,8 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
     id: 'default',
   });
 
-  const [ features, setFeatures ] = useState<Row[]>([]);
-  const [ columns, setColumns ] = useState<Column<Row>[]>([]);
+  const [ features, setFeatures ] = useState<Feature[]>([]);
+  const [ columns, setColumns ] = useState<Column<Feature>[]>([]);
   const [ filename, setFilename ] = useState<string>('');
   const [ , setFitBounds ] = useState(false);
   const [ selectedRowIds, setSelectedRowIds ] = useState((): ReadonlySet<string> => new Set());
@@ -112,7 +112,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
       throw new Error(`latColumnName and/or lngColumnName are undefined: latColumnName is ${latColumnName} and lngColumnName is ${lngColumnName}`);
     }
 
-    const newRow: Row = {};
+    const newRow: Feature = {};
     newRow[latColumnName] = latitude.toString();
     newRow[lngColumnName] = longitude.toString();
     newRow.name = '新規マップピン';
@@ -177,11 +177,11 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
     ]);
   }, [features]);
 
-  const onCellSelected = useCallback(({ idx: columnIdx, rowIdx, row }: CellSelectArgs<Row, unknown>) => {
+  const onCellSelected = useCallback(({ idx: columnIdx, rowIdx, row }: CellSelectArgs<Feature, unknown>) => {
     setSelectedCell({ rowId: row?.id, rowIdx, columnIdx });
   }, []);
 
-  const onCellContextMenu = useCallback(({ row: clickedRow, column: clickedColumn }: CellClickArgs<Row>, event: CellMouseEvent): void => {
+  const onCellContextMenu = useCallback(({ row: clickedRow, column: clickedColumn }: CellClickArgs<Feature>, event: CellMouseEvent): void => {
     event.preventGridDefault();
     event.preventDefault();
 
@@ -215,7 +215,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   useEffect(() => {
     if (data) {
       const csv = Papa.unparse(data);
-      const { data: formattedData } = Papa.parse<Row>(csv, {
+      const { data: formattedData } = Papa.parse<Feature>(csv, {
         header: true,
       });
       setFeatures(addIdToFeatures(formattedData));
@@ -280,7 +280,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
             sortable: true,
             resizable: true,
           }}
-          rowKeyGetter={(row: Row) => row.id}
+          rowKeyGetter={(row: Feature) => row.id}
           selectedRows={selectedRowIds}
           onSelectedRowsChange={setSelectedRowIds}
           onRowsChange={setFeatures}

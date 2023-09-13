@@ -1,7 +1,7 @@
 import { ulid } from 'ulid';
-import { Row } from './csv2geojson';
+import type { Feature } from '../types';
 
-export function addIdToFeatures(rows: Row|Row[]): Row[] {
+export function addIdToFeatures(rows: Feature|Feature[]): Feature[] {
   if (Array.isArray(rows)) {
     return rows.map((row) => ({
       ...row,

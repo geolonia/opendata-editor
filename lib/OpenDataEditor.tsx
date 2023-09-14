@@ -177,8 +177,8 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
     ]);
   }, [features]);
 
-  const onCellSelected = useCallback(({ idx: columnIdx, rowIdx, row }: CellSelectArgs<Feature, unknown>) => {
-    setSelectedCell({ rowId: row?.id, rowIdx, columnIdx });
+  const onSelectedCellChange = useCallback(({ rowIdx, row, column }: CellSelectArgs<Feature, unknown>) => {
+    setSelectedCell({ rowId: row?.id, rowIdx, columnIdx: column.idx });
   }, []);
 
   const onCellContextMenu = useCallback(({ row: clickedRow, column: clickedColumn }: CellClickArgs<Feature>, event: CellMouseEvent): void => {
@@ -284,7 +284,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
           selectedRows={selectedRowIds}
           onSelectedRowsChange={setSelectedRowIds}
           onRowsChange={setFeatures}
-          onCellSelected={onCellSelected}
+          onSelectedCellChange={onSelectedCellChange}
           onCellContextMenu={onCellContextMenu}
         />
       </InnerWrapper>

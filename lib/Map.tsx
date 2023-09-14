@@ -4,7 +4,9 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import Button from './Button';
 import { dedupe, getLatLngColumnNames } from './utils/utils';
 import { rows2geojson } from './utils/csv2geojson';
-import type { Map, Marker } from '@geolonia/embed'; // Required to declare types of window.geolonia
+import { GeoloniaMap } from '@geolonia/embed-react';
+import type geolonia from '@geolonia/embed';
+import type { Map, Marker } from '@geolonia/embed';
 import type { LngLatLike } from 'maplibre-gl';
 import type { Cell, Feature } from './types';
 
@@ -28,9 +30,8 @@ interface Props {
 }
 
 const Component = (props: Props) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<geolonia.Map | null>(null);
   const [simpleStyle, setSimpleStyle] = useState<any>();
-  const [map, setMap] = useState<Map>();
 
   const {
     features,
@@ -45,43 +46,24 @@ const Component = (props: Props) => {
   } = props;
 
   const addRow = useCallback(() => {
-    const { lat, lng } = map?.getCenter() ?? {};
+    const { lat, lng } = map.current?.getCenter() ?? {};
 
-    map?.jumpTo({
+    map.current?.jumpTo({
       center: { lat: lat ?? 0, lng: lng ?? 0 },
       zoom: 17,
     });
     onMapPinAdded(lat ?? 0, lng ?? 0);
   }, [ map, onMapPinAdded ]);
 
-  useLayoutEffect(() => {
-    if (!mapContainer.current) {
-      return;
-    }
-    if ((mapContainer.current as any).__initialized === true) {
-      return;
-    }
-
-    const map: Map = new window.geolonia.Map({
-      container: mapContainer.current,
-      // @ts-ignore @geolonia/embed should allow `style` property, while it disallows it currently. (it is a bug.)
-      style: 'geolonia/gsi',
-      hash: true,
-    });
-
-    (mapContainer.current as any).__initialized = true;
-    setMap(map);
-
-    map.on('load', () => {
-      const sourceId = 'custom-geojson';
-      const geojson = {
-        type: 'FeatureCollection',
-        features: [],
-      } as GeoJSON.FeatureCollection;
-      const simpleStyle = new window.geolonia.SimpleStyle(geojson, {id: sourceId}).addTo(map);
-      setSimpleStyle(simpleStyle);
-    });
-  }, [onMapPinSelected, setSelectedOn]);
+  const onGeoloniaMapLoad = useCallback(() => {
+    const sourceId = 'custom-geojson';
+    const geojson = {
+      type: 'FeatureCollection',
+      features: [],
+    } as GeoJSON.FeatureCollection;
+    const simpleStyle = new window.geolonia.SimpleStyle(geojson, {id: sourceId}).addTo(map.current);
+    setSimpleStyle(simpleStyle);
+  }, []);
 
   useEffect(() => {
     const onClick = (e: any) => {
@@ -90,10 +72,10 @@ const Component = (props: Props) => {
       setSelectedOn('map');
     };
 
-    map?.on('click', 'custom-geojson-circle-points', onClick);
+    map.current?.on('click', 'custom-geojson-circle-points', onClick);
 
     return () => {
-      map?.off('click', 'custom-geojson-circle-points', onClick);
+      map.current?.off('click', 'custom-geojson-circle-points', onClick);
     };
   }, [map, onMapPinSelected, setSelectedOn]);
 
@@ -116,7 +98,7 @@ const Component = (props: Props) => {
   useEffect(() => {
     let draggableMarker: Marker;
 
-    if (!map || (selectedRowIds.size <= 0 && !selectedCell.rowId)) {
+    if (!map.current || (selectedRowIds.size <= 0 && !selectedCell.rowId)) {
       return;
     }
 
@@ -128,11 +110,11 @@ const Component = (props: Props) => {
     for (const focusedRowId of focusedRowIds) {
       const selectedFeature = features.find((feature) => feature.id === focusedRowId);
 
-      let center: LngLatLike = map.getCenter();
+      let center: LngLatLike = map.current.getCenter();
 
-      const mapLayer = map.getLayer('selected-point');
+      const mapLayer = map.current.getLayer('selected-point');
       if (typeof mapLayer !== 'undefined') {
-        map.removeLayer('selected-point').removeSource('selected-point');
+        map.current.removeLayer('selected-point').removeSource('selected-point');
       }
 
       // 既存データ編集の場合
@@ -141,7 +123,7 @@ const Component = (props: Props) => {
           center = [Number(selectedFeature[lngColumnName]), Number(selectedFeature[latColumnName])];
 
           // 選択されたポイントをハイライトする。
-          map.addSource('selected-point', {
+          map.current.addSource('selected-point', {
             type: 'geojson',
             data: {
               type: 'Feature',
@@ -151,7 +133,7 @@ const Component = (props: Props) => {
               },
             },
           });
-          map.addLayer({
+          map.current.addLayer({
             id: 'selected-point',
             type: 'circle',
             source: 'selected-point',
@@ -163,7 +145,7 @@ const Component = (props: Props) => {
               'circle-blur': 0.5,
             },
           });
-          map.moveLayer('selected-point', 'custom-geojson-circle-points');
+          map.current.moveLayer('selected-point', 'custom-geojson-circle-points');
         }
       }
 
@@ -172,12 +154,12 @@ const Component = (props: Props) => {
         simpleStyle.updateData(geojson).fitBounds({ duration: 0 });
       } else {
         if (selectedOn === 'map') {
-          map.flyTo({
+          map.current.flyTo({
             center: center,
             speed: 3,
           });
         } else {
-          map.jumpTo({
+          map.current.jumpTo({
             center: center,
             zoom: 17,
           });
@@ -192,7 +174,7 @@ const Component = (props: Props) => {
         lat: Number(feature[latColumnName]),
       };
 
-      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(featureLngLat).addTo(map);
+      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(featureLngLat).addTo(map.current);
 
       draggableMarker.on('dragend', () => {
         if (!selectedCell.rowId) {
@@ -225,12 +207,15 @@ const Component = (props: Props) => {
 
   return (
     <>
-      <div
+      <GeoloniaMap
         className={props.className}
-        ref={mapContainer}
-        data-navigation-control="on"
-        data-gesture-handling="off"
-      ></div>
+        mapStyle='geolonia/gsi'
+        hash='on'
+        navigationControl="on"
+        gestureHandling="off"
+        onLoad={onGeoloniaMapLoad}
+        mapRef={map}
+      />
       <StyledButton icon={faPlusCircle} onClick={addRow}>
         データを追加
       </StyledButton>

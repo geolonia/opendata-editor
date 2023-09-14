@@ -11,5 +11,5 @@ export default defineConfig({
   },
   plugins: [react()],
   publicDir: resolve(__dirname, 'web/public'),
-  base: '/opendata-editor/',
+  base: process.env.NODE_ENV === 'preview' ? '/' : '/opendata-editor/',
 });

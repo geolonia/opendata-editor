@@ -1,5 +1,8 @@
 module.exports = {
-  extends: ['@geolonia'],
+  extends: [
+    '@geolonia',
+    'plugin:storybook/recommended',
+  ],
 
   env: {
     node: true,

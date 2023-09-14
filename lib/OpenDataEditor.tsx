@@ -286,6 +286,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
           onRowsChange={setFeatures}
           onCellSelected={onCellSelected}
           onCellContextMenu={onCellContextMenu}
+          data-e2e="datagrid"
         />
       </InnerWrapper>
 

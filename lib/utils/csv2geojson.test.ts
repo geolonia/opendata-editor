@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest';
 import { csv2geojson } from './csv2geojson';
 
 const data = `都道府県コード又は市区町村コード,NO,都道府県名,市区町村名,名称,名称_カナ,名称_通称,POIコード,住所,方書,緯度,経度,電話番号,内線番号,法人番号,団体名,利用可能曜日,開始時間,終了時間,利用可能時間特記事項,説明,バリアフリー情報,URL,備考

@@ -35,7 +35,7 @@ const Component = (props: Props) => {
       return newFeature;
     });
 
-    const output = Papa.unparse(exportData);
+    const output = Papa.unparse(exportData, { quotes: true });
 
     // CSV ダウンロード
     const csvAtag = document.createElement('a');

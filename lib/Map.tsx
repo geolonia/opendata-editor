@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { GeoloniaMap } from '@geolonia/embed-react';
+import geolonia, { Marker } from '@geolonia/embed';
 import { rows2geojson } from './utils/csv2geojson';
 import type { Map } from '@geolonia/embed';
 import type { LngLatLike } from 'maplibre-gl';
@@ -43,7 +44,7 @@ const Component = (props: Props) => {
       type: 'FeatureCollection',
       features: [],
     } as GeoJSON.FeatureCollection;
-    const simpleStyle = new window.geolonia.SimpleStyle(geojson, {id: sourceId}).addTo(map.current);
+    const simpleStyle = new geolonia.SimpleStyle(geojson, {id: sourceId}).addTo(map.current);
     setSimpleStyle(simpleStyle);
   }, []);
 
@@ -145,7 +146,7 @@ const Component = (props: Props) => {
     }
 
     if (editMode) {
-      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map.current);
+      draggableMarker = new Marker({ draggable: true }).setLngLat(center).addTo(map.current);
 
       draggableMarker.on('dragend', () => {
         const feature = features.find((feature) => feature['id'] === selectedRowId);

@@ -1,12 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
-
+import { GeoloniaMap } from '@geolonia/embed-react';
 import { rows2geojson } from './utils/csv2geojson';
-
-declare global {
-  interface Window {
-    geolonia: any;
-  }
-}
+import type { Map } from '@geolonia/embed';
 
 interface Feature {
   [key: string]: string;
@@ -26,9 +21,8 @@ interface Props {
 }
 
 const Component = (props: Props) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<Map | null>(null);
   const [simpleStyle, setSimpleStyle] = useState<any>();
-  const [map, setMap] = useState<any>();
 
   const {
     editMode,
@@ -43,36 +37,13 @@ const Component = (props: Props) => {
   } = props;
 
   useLayoutEffect(() => {
-    if ((mapContainer.current as any).__initialized === true) {
-      return;
-    }
-
-    const map = new window.geolonia.Map({
-      container: mapContainer.current,
-      style: 'geolonia/gsi',
-      hash: true,
-    });
-
-    (mapContainer.current as any).__initialized = true;
-    setMap(map);
-
-    map.on('load', () => {
-      const sourceId = 'custom-geojson';
-      const geojson = {
-        type: 'FeatureCollection',
-        features: [],
-      } as GeoJSON.FeatureCollection;
-      const simpleStyle: any = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map);
-      setSimpleStyle(simpleStyle);
-    });
-
-    map.on('click', 'custom-geojson-circle-points', (e: any) => {
+    map.current?.on('click', 'custom-geojson-circle-points', (e: any) => {
       const id = e.features[0].properties['id'];
       setEditMode(false);
       setSelectedRowId(id);
       setSelectedOn('map');
     });
-  }, [mapContainer, setEditMode, setSelectedRowId, setSelectedOn]);
+  }, [setEditMode, setSelectedOn, setSelectedRowId]);
 
   useEffect(() => {
     if (!simpleStyle) { return; }
@@ -95,17 +66,17 @@ const Component = (props: Props) => {
     const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
     const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
 
-    if (!map || selectedRowId === null) {
+    if (!map.current || selectedRowId === null) {
       return;
     }
 
     const selectedFeature = features.find((feature) => feature.id === selectedRowId);
 
-    let center = map.getCenter();
+    let center = map.current.getCenter();
 
-    const mapLayer = map.getLayer('selected-point');
+    const mapLayer = map.current.getLayer('selected-point');
     if (typeof mapLayer !== 'undefined') {
-      map.removeLayer('selected-point').removeSource('selected-point');
+      map.current.removeLayer('selected-point').removeSource('selected-point');
     }
 
     // 既存データ編集の場合
@@ -129,7 +100,7 @@ const Component = (props: Props) => {
         center = [Number(selectedFeature[lngColumn]), Number(selectedFeature[latColumn])];
 
         // 選択されたポイントをハイライトする。
-        map.addSource('selected-point', {
+        map.current.addSource('selected-point', {
           type: 'geojson',
           data: {
             type: 'Feature',
@@ -139,7 +110,7 @@ const Component = (props: Props) => {
             },
           },
         });
-        map.addLayer({
+        map.current.addLayer({
           id: 'selected-point',
           type: 'circle',
           source: 'selected-point',
@@ -151,12 +122,12 @@ const Component = (props: Props) => {
             'circle-blur': 0.5,
           },
         });
-        map.moveLayer('selected-point', 'custom-geojson-circle-points');
+        map.current.moveLayer('selected-point', 'custom-geojson-circle-points');
       }
     }
 
     if (editMode) {
-      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map);
+      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map.current);
 
       draggableMarker.on('dragend', () => {
         const feature = features.find((feature) => feature['id'] === selectedRowId);
@@ -188,12 +159,12 @@ const Component = (props: Props) => {
     }
 
     if (selectedOn === 'map') {
-      map.flyTo({
+      map.current.flyTo({
         center: center,
         speed: 3,
       });
     } else {
-      map.jumpTo({
+      map.current.jumpTo({
         center: center,
         speed: 3,
         zoom: 17,
@@ -209,12 +180,14 @@ const Component = (props: Props) => {
 
   return (
     <>
-      <div
+      <GeoloniaMap
         className={props.className}
-        ref={mapContainer}
-        data-navigation-control="on"
-        data-gesture-handling="off"
-      ></div>
+        mapStyle='geolonia/gsi'
+        hash='on'
+        navigationControl="on"
+        gestureHandling="off"
+        mapRef={map}
+      />
     </>
   );
 };

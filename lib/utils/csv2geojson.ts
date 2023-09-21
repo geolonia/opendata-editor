@@ -17,7 +17,8 @@ export function csv2geojson(csv: string) {
   return rows2geojson(data);
 }
 
-export function rows2geojson(data: Feature[]) {
+export function rows2geojson(features: Feature | Feature[]) {
+  const data = Array.isArray(features) ? features : [ features ];
   let latColumn = 'latitude';
   let lngColumn = 'longitude';
   let titleColumn = 'title';

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { GeoloniaMap } from '@geolonia/embed-react';
 import { rows2geojson } from './utils/csv2geojson';
 import type { Map } from '@geolonia/embed';
@@ -35,6 +35,16 @@ const Component = (props: Props) => {
     selectedOn,
     setSelectedOn,
   } = props;
+
+  const onGeoloniaMapLoad = useCallback(() => {
+    const sourceId = 'custom-geojson';
+    const geojson = {
+      type: 'FeatureCollection',
+      features: [],
+    } as GeoJSON.FeatureCollection;
+    const simpleStyle = new window.geolonia.SimpleStyle(geojson, {id: sourceId}).addTo(map.current);
+    setSimpleStyle(simpleStyle);
+  }, []);
 
   useLayoutEffect(() => {
     map.current?.on('click', 'custom-geojson-circle-points', (e: any) => {
@@ -186,6 +196,7 @@ const Component = (props: Props) => {
         hash='on'
         navigationControl="on"
         gestureHandling="off"
+        onLoad={onGeoloniaMapLoad}
         mapRef={map}
       />
     </>

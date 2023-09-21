@@ -46,11 +46,9 @@ jobs:
             !./node_modules/**/*
 
   deploy:
-    # We only need to deploy if we're on the main branch
-    if: github.ref == 'refs/heads/main'
-
     needs:
       - build
+    if: github.event_name == 'release'
 
     # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
     permissions:

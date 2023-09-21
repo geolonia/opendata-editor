@@ -184,7 +184,6 @@ const Component = (props: Props) => {
     } else {
       map.current.jumpTo({
         center: center,
-        speed: 3,
         zoom: 17,
       });
     }

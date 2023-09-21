@@ -1,8 +1,5 @@
 import { Feature } from '../types';
 
-export const dedupe = <T>(arr: T[]): T[] =>
-  arr.filter((item, i) => arr.indexOf(item) === i);
-
 export const getRowById = (rows: Feature[], rowId: string): { row: Feature, rowIdx: number } => {
   const rowIdx = rows.findIndex((row) => row.id === rowId);
   const row = rows[rowIdx];

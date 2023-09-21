@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import DataGrid, {
-  SelectColumn,
   textEditor,
   type Column,
   type CellMouseEvent,
@@ -66,7 +65,6 @@ const StyledMap = styled(Map)`
 `;
 
 const getColumns = (data: Feature[]): Column<Feature>[] => [
-  SelectColumn,
   ...Object.keys(data[0]).map((key) => ({
     key,
     name: key,
@@ -90,7 +88,6 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   const [ columns, setColumns ] = useState<Column<Feature>[]>([]);
   const [ filename, setFilename ] = useState<string>('');
   const [ , setFitBounds ] = useState(false);
-  const [ selectedRowIds, setSelectedRowIds ] = useState((): ReadonlySet<string> => new Set());
   const [ selectedOn, setSelectedOn ] = useState<string | null>(null);
   const [ selectedCell, setSelectedCell ] = useState<Cell>({ rowId: undefined, rowIdx: -1, columnIdx: -1 });
   const [ rowIdxWhereContextMenuOpens, setRowIdxWhereContextMenuOpens ] = useState<number>(-1);
@@ -263,7 +260,6 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
         <StyledMap
           features={features}
           selectedCell={selectedCell}
-          selectedRowIds={selectedRowIds}
           onMapPinSelected={onMapPinSelected}
           onMapPinAdded={onMapPinAdded}
           onMapPinMoved={onMapPinMoved}
@@ -281,8 +277,6 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
             resizable: true,
           }}
           rowKeyGetter={(row: Feature) => row.id}
-          selectedRows={selectedRowIds}
-          onSelectedRowsChange={setSelectedRowIds}
           onRowsChange={setFeatures}
           onSelectedCellChange={onSelectedCellChange}
           onCellContextMenu={onCellContextMenu}

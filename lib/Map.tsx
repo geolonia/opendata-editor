@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type Dispatc
 import styled from 'styled-components';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import Button from './Button';
-import { dedupe, getLatLngColumnNames } from './utils/utils';
+import { getLatLngColumnNames } from './utils/utils';
 import { rows2geojson } from './utils/csv2geojson';
 import type { Map, Marker } from '@geolonia/embed'; // Required to declare types of window.geolonia
 import type { LngLatLike } from 'maplibre-gl';
@@ -18,7 +18,6 @@ interface Props {
   className?: string; // Required to apply styles by styled-components
   features: Feature[];
   selectedCell: Cell;
-  selectedRowIds: ReadonlySet<string>;
   readonly onMapPinSelected: (id: string) => void;
   readonly onMapPinAdded: (latitude: number, longtitude: number) => void;
   onMapPinMoved: (rowId: string, newLatitude: number, newLongitude: number) => void;
@@ -35,7 +34,6 @@ const Component = (props: Props) => {
   const {
     features,
     selectedCell,
-    selectedRowIds,
     onMapPinSelected,
     onMapPinAdded,
     onMapPinMoved,
@@ -116,73 +114,63 @@ const Component = (props: Props) => {
   useEffect(() => {
     let draggableMarker: Marker;
 
-    if (!map || (selectedRowIds.size <= 0 && !selectedCell.rowId)) {
+    if (!map || !selectedCell.rowId) {
       return;
     }
 
     const { latColumnName, lngColumnName } = getLatLngColumnNames(features);
-    const focusedRowIds = selectedCell.rowId ?
-      dedupe([ selectedCell.rowId, ...selectedRowIds ]) :
-      dedupe([ ...selectedRowIds ]);
 
-    for (const focusedRowId of focusedRowIds) {
-      const selectedFeature = features.find((feature) => feature.id === focusedRowId);
+    const selectedFeature = features.find((feature) => feature.id === selectedCell.rowId);
 
-      let center: LngLatLike = map.getCenter();
+    let center: LngLatLike = map.getCenter();
 
-      const mapLayer = map.getLayer('selected-point');
-      if (typeof mapLayer !== 'undefined') {
-        map.removeLayer('selected-point').removeSource('selected-point');
-      }
+    const mapLayer = map.getLayer('selected-point');
+    if (typeof mapLayer !== 'undefined') {
+      map.removeLayer('selected-point').removeSource('selected-point');
+    }
 
-      // 既存データ編集の場合
-      if (selectedFeature) {
-        if (lngColumnName && latColumnName) {
-          center = [Number(selectedFeature[lngColumnName]), Number(selectedFeature[latColumnName])];
+    // 既存データ編集の場合
+    if (selectedFeature) {
+      if (lngColumnName && latColumnName) {
+        center = [Number(selectedFeature[lngColumnName]), Number(selectedFeature[latColumnName])];
 
-          // 選択されたポイントをハイライトする。
-          map.addSource('selected-point', {
-            type: 'geojson',
-            data: {
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: center,
-              },
+        // 選択されたポイントをハイライトする。
+        map.addSource('selected-point', {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: center,
             },
-          });
-          map.addLayer({
-            id: 'selected-point',
-            type: 'circle',
-            source: 'selected-point',
-            layout: {},
-            paint: {
-              'circle-radius': 21,
-              'circle-color': '#ff0000',
-              'circle-opacity': 0.5,
-              'circle-blur': 0.5,
-            },
-          });
-          map.moveLayer('selected-point', 'custom-geojson-circle-points');
-        }
+          },
+        });
+        map.addLayer({
+          id: 'selected-point',
+          type: 'circle',
+          source: 'selected-point',
+          layout: {},
+          paint: {
+            'circle-radius': 21,
+            'circle-color': '#ff0000',
+            'circle-opacity': 0.5,
+            'circle-blur': 0.5,
+          },
+        });
+        map.moveLayer('selected-point', 'custom-geojson-circle-points');
       }
+    }
 
-      if (focusedRowIds.length > 1) {
-        const geojson = rows2geojson(features.filter((feature) => focusedRowIds.includes(feature.id)));
-        simpleStyle.updateData(geojson).fitBounds({ duration: 0 });
-      } else {
-        if (selectedOn === 'map') {
-          map.flyTo({
-            center: center,
-            speed: 3,
-          });
-        } else {
-          map.jumpTo({
-            center: center,
-            zoom: 17,
-          });
-        }
-      }
+    if (selectedOn === 'map') {
+      map.flyTo({
+        center: center,
+        speed: 3,
+      });
+    } else {
+      map.jumpTo({
+        center: center,
+        zoom: 17,
+      });
     }
 
     if (lngColumnName && latColumnName) {
@@ -221,7 +209,7 @@ const Component = (props: Props) => {
         draggableMarker.remove();
       }
     };
-  }, [map, selectedRowIds, features, selectedCell.rowId, selectedCell.rowIdx, simpleStyle, selectedOn, onMapPinAdded, onMapPinMoved]);
+  }, [map, features, selectedCell.rowId, selectedCell.rowIdx, simpleStyle, selectedOn, onMapPinAdded, onMapPinMoved]);
 
   return (
     <>

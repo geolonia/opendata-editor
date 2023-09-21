@@ -47,12 +47,19 @@ const Component = (props: Props) => {
   }, []);
 
   useLayoutEffect(() => {
-    map.current?.on('click', 'custom-geojson-circle-points', (e: any) => {
+    const mapCurrent = map.current;
+    const onClick = (e: any) => {
       const id = e.features[0].properties['id'];
       setEditMode(false);
       setSelectedRowId(id);
       setSelectedOn('map');
-    });
+    };
+
+    mapCurrent?.on('click', 'custom-geojson-circle-points', onClick);
+
+    return () => {
+      mapCurrent?.off('click', 'custom-geojson-circle-points', onClick);
+    };
   }, [setEditMode, setSelectedOn, setSelectedRowId]);
 
   useEffect(() => {

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type Dispatc
 import { GeoloniaMap } from '@geolonia/embed-react';
 import { rows2geojson } from './utils/csv2geojson';
 import type { Map } from '@geolonia/embed';
+import type { LngLatLike } from 'maplibre-gl';
 
 interface Feature {
   [key: string]: string;
@@ -89,7 +90,7 @@ const Component = (props: Props) => {
 
     const selectedFeature = features.find((feature) => feature.id === selectedRowId);
 
-    let center = map.current.getCenter();
+    let center: LngLatLike = map.current.getCenter();
 
     const mapLayer = map.current.getLayer('selected-point');
     if (typeof mapLayer !== 'undefined') {

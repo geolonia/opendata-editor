@@ -284,10 +284,10 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
       </InnerWrapper>
 
       <Menu id="default">
-        <Item id="insert-above" onClick={onContextMenuItemClick}>この行の上に1行追加</Item>
-        <Item id="insert-below" onClick={onContextMenuItemClick}>この行の下に1行追加</Item>
+        <Item id="insert-above" onClick={onContextMenuItemClick} data-e2e="insert-above">この行の上に1行追加</Item>
+        <Item id="insert-below" onClick={onContextMenuItemClick} data-e2e="insert-below">この行の下に1行追加</Item>
         <Separator />
-        <Item id="delete" onClick={onContextMenuItemClick}>この行を削除</Item>
+        <Item id="delete" onClick={onContextMenuItemClick} data-e2e="delete">この行を削除</Item>
       </Menu>
     </OuterWrapper>
   );

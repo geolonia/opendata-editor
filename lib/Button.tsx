@@ -31,11 +31,12 @@ interface Props {
   icon: IconDefinition;
   disabled?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  'data-e2e'?: string;
 }
 
-const Component = ({ className, children, icon, disabled = false, onClick = () => {} }: Props) => {
+const Component = ({ className, children, icon, disabled = false, onClick = () => {}, 'data-e2e': dataE2e }: Props) => {
   return (
-    <StyledButton disabled={disabled} className={className} onClick={onClick}>
+    <StyledButton disabled={disabled} className={className} onClick={onClick} data-e2e={dataE2e}>
       <Icon icon={icon} />
       {children}
     </StyledButton>

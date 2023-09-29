@@ -72,6 +72,7 @@ const Component = (props: Props) => {
       <Button
         icon={faDownload}
         onClick={onClick}
+        data-e2e="download"
       >
         エクスポート
       </Button>

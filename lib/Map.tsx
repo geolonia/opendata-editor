@@ -235,7 +235,7 @@ const Component = (props: Props) => {
         data-navigation-control="on"
         data-gesture-handling="off"
       ></div>
-      <StyledButton icon={faPlusCircle} onClick={addRow}>
+      <StyledButton icon={faPlusCircle} onClick={addRow} data-e2e="button-add-data">
         データを追加
       </StyledButton>
     </>

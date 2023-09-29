@@ -25,8 +25,9 @@
     "build": "npm run build:lib && npm run build:web",
     "build:lib": "vite build --config ./vite.config.lib.ts",
     "build:web": "vite build --config ./vite.config.web.ts",
-    "test": "vitest",
-    "lint": "tsc --noEmit && eslint . --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "test": "vitest run && playwright test",
+    "lint": "tsc --noEmit && eslint . --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "postinstall": "npm list @playwright/test && playwright install"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@geolonia/embed": "^4.0.0",
     "@geolonia/eslint-config": "^0.0.7",
+    "@playwright/test": "^1.38.1",
     "@types/encoding-japanese": "^2.0.1",
     "@types/geojson": "^7946.0.10",
     "@types/node": "^18.11.9",

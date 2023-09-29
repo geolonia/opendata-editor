@@ -10,6 +10,12 @@ export interface Feature {
 // Internally-used types
 //
 
+declare global {
+  interface Window {
+    geoloniaDebug: { [key: string]: unknown }
+  }
+}
+
 export type Cell = {
   rowId: string | undefined,
   rowIdx: number,

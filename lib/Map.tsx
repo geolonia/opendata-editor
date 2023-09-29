@@ -78,7 +78,23 @@ const Component = (props: Props) => {
       } as GeoJSON.FeatureCollection;
       const simpleStyle = new window.geolonia.SimpleStyle(geojson, {id: sourceId}).addTo(map);
       setSimpleStyle(simpleStyle);
+
+      if (location.search.includes('debug=1')) {
+        if (!window.geoloniaDebug) {
+          window.geoloniaDebug = {};
+        }
+        window.geoloniaDebug.loaded = true;
+      }
     });
+
+    if (location.search.includes('debug=1')) {
+      map.on('zoomend', () => {
+        if (!window.geoloniaDebug) {
+          window.geoloniaDebug = {};
+        }
+        window.geoloniaDebug.mapZoom = map?.getZoom();
+      });
+    }
   }, [onMapPinSelected, setSelectedOn]);
 
   useEffect(() => {

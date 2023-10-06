@@ -62,7 +62,6 @@ const Component = (props: Props) => {
 
     const map = new window.geolonia.Map({
       container: mapContainer.current,
-      // @ts-ignore @geolonia/embed should allow `style` property, while it disallows it currently. (it is a bug.)
       style: 'geolonia/gsi',
       hash: true,
     }) as Map;

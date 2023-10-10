@@ -150,6 +150,7 @@ test('if new line is inserted above and below by the context menu', async ({ pag
   const aboveLineName = await page.locator('.rdg-row[aria-rowindex="3"] > .rdg-cell[aria-colindex="5"]').innerText();
   expect(aboveLineName).toBe('新規マップピン');
 
+  await sleep(500);
   await page.locator('.rdg-row[aria-rowindex="4"] > .rdg-cell[aria-colindex="1"]').click({ button: 'right' });
   await sleep(500);
   await page.locator('*[data-e2e="insert-below"]').click();

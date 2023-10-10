@@ -13,6 +13,7 @@ export default {
         // headless: false,
         // launchOptions: {
         //   slowMo: 3000,
+        //   devtools: true,
         // },
       },
     },

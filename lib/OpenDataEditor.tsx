@@ -64,13 +64,21 @@ const StyledMap = styled(Map)`
   margin-bottom: 20px;
 `;
 
-const getColumns = (data: Feature[]): Column<Feature>[] => [
-  ...Object.keys(data[0]).map((key) => ({
-    key,
-    name: key,
-    renderEditCell: textEditor,
-  })),
-];
+const getColumns = (data: Feature[]): Column<Feature>[] => {
+  if (data.length === 0) {
+    return [];
+  }
+
+  return [
+    ...Object.keys(data[0])
+      .filter((key) => key !== 'id')
+      .map((key) => ({
+        key,
+        name: key,
+        renderEditCell: textEditor,
+      })),
+  ];
+};
 
 type Props = {
   data?: string[][];
@@ -216,7 +224,6 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
         header: true,
       });
       setFeatures(addIdToFeatures(formattedData));
-      setColumns(getColumns(formattedData));
       hideUploader();
     } else if (location.search) {
       const params = new URLSearchParams(location.search);
@@ -240,12 +247,13 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
         const features = csv2rows(unicodeData);
         setFitBounds(true);
         setFeatures(addIdToFeatures(features));
-        setColumns(getColumns(features));
       })();
     }
   }, [data]);
 
   useEffect(() => {
+    setColumns(getColumns(features));
+
     if (onDataUpdate) {
       onDataUpdate(features);
     }

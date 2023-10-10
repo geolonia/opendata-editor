@@ -8,6 +8,40 @@ import { sleep } from './utils';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+test('if table is properly displayed when data is given by URL', async ({ page }) => {
+  await page.goto('/?data=https://opendata.takamatsu-fact.com/polling_place_list/data.csv&debug=1');
+  await page.waitForFunction(() => window.geoloniaDebug?.loaded === true);
+
+  const cellValue = await page.locator('.rdg-row[aria-rowindex="2"] > .rdg-cell[aria-colindex="5"]').innerText();
+  await sleep(500);
+
+  expect(cellValue).toBe('瀬戸内保育所');
+});
+
+test('if table is properly displayed when data is given by drag & drop', async ({ page }) => {
+  await page.goto('/?debug=1');
+  await page.waitForFunction(() => window.geoloniaDebug?.loaded === true);
+
+  const res = await fetch('https://opendata.takamatsu-fact.com/polling_place_list/data.csv');
+  const csv = await res.text();
+
+  await page.locator('.uploader > div').dispatchEvent('drop', {
+    dataTransfer: await page.evaluateHandle((data) => {
+      const dt = new DataTransfer();
+      const file = new File([ data ], 'data.csv', { type: 'text/csv' });
+      dt.items.add(file);
+      return dt;
+    }, csv),
+  });
+
+  await sleep(500);
+
+  const cellValue = await page.locator('.rdg-row[aria-rowindex="2"] > .rdg-cell[aria-colindex="5"]').innerText();
+  await sleep(500);
+
+  expect(cellValue).toBe('瀬戸内保育所');
+});
+
 test('if map is zoomed to the selected pin when the user click the corresponding cell', async ({ page }) => {
   await page.goto('/?data=https://opendata.takamatsu-fact.com/polling_place_list/data.csv&debug=1');
   await page.waitForFunction(() => window.geoloniaDebug?.loaded === true);

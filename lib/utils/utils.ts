@@ -25,3 +25,28 @@ export const getLatLngColumnNames = (row: Feature | Feature[]): { latColumnName?
     lngIndex,
   };
 };
+
+export const getInvalidFeatureIndexes = (features: Feature[]): number[] => {
+  if (features.length === 0) {
+    return [];
+  }
+
+  const { latColumnName, lngColumnName } = getLatLngColumnNames(features[0]);
+
+  if (!latColumnName || !lngColumnName) {
+    return [];
+  }
+
+  const invalidIndexes: number[] = [];
+
+  for (const [i, feature] of features.entries()) {
+    const lng = Number(feature[lngColumnName]);
+    const lat = Number(feature[latColumnName]);
+
+    if (!(lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90)) {
+      invalidIndexes.push(i);
+    }
+  }
+
+  return invalidIndexes;
+};

@@ -25,7 +25,8 @@ import { csv2rows } from './utils/csv2geojson';
 import type { Cell, Feature } from './types';
 import 'react-data-grid/lib/styles.css';
 import 'react-contexify/ReactContexify.css';
-import { getLatLngColumnNames, getRowById } from './utils/utils';
+import './datagrid.css';
+import { getLatLngColumnNames, getRowById, getInvalidFeatureIndexes } from './utils/utils';
 
 const baseStyle = `
   position: absolute;
@@ -93,6 +94,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   });
 
   const [ features, setFeatures ] = useState<Feature[]>([]);
+  const [ invalidFeatureIndexes, setInvalidFeatureIndexes ] = useState<number[]>([]);
   const [ columns, setColumns ] = useState<Column<Feature>[]>([]);
   const [ filename, setFilename ] = useState<string>('');
   const [ , setFitBounds ] = useState(false);
@@ -161,6 +163,8 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
       gridRef.current?.selectCell({ idx: columnIdx, rowIdx: features.length - 1 });
       selectNewRowOnNextRowUpdate.current = false;
     }
+
+    setInvalidFeatureIndexes(getInvalidFeatureIndexes(features));
   }, [features]);
 
   const onMapPinMoved = useCallback((rowId: string, newLatitude: number, newLongitude: number) => {
@@ -285,6 +289,9 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
             resizable: true,
           }}
           rowKeyGetter={(row: Feature) => row.id}
+          rowClass={(_, index) =>
+            invalidFeatureIndexes.includes(index) ? 'error-row' : undefined
+          }
           onRowsChange={setFeatures}
           onSelectedCellChange={onSelectedCellChange}
           onCellContextMenu={onCellContextMenu}

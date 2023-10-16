@@ -27,6 +27,8 @@ import 'react-data-grid/lib/styles.css';
 import 'react-contexify/ReactContexify.css';
 import './datagrid.css';
 import { getLatLngColumnNames, getRowById, getInvalidFeatureIndexes } from './utils/utils';
+import Popup from './Popup';
+import EventLink from './EventLink';
 
 const baseStyle = `
   position: absolute;
@@ -63,6 +65,10 @@ const StyledMap = styled(Map)`
   height: 400px;
   box-sizing: border-box;
   margin-bottom: 20px;
+`;
+const Text = styled.p`
+  margin: 0;
+  padding: 0;
 `;
 
 const getColumns = (data: Feature[]): Column<Feature>[] => {
@@ -166,6 +172,12 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
 
     setInvalidFeatureIndexes(getInvalidFeatureIndexes(features));
   }, [features]);
+
+  useEffect(() => {
+    if (invalidFeatureIndexes.length > 0) {
+      gridRef.current?.scrollToCell({ rowIdx: invalidFeatureIndexes[0] });
+    }
+  }, [invalidFeatureIndexes]);
 
   const onMapPinMoved = useCallback((rowId: string, newLatitude: number, newLongitude: number) => {
     const { latColumnName, lngColumnName } = getLatLngColumnNames(features);
@@ -304,6 +316,17 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
         <Separator />
         <Item id="delete" onClick={onContextMenuItemClick} data-e2e="delete">この行を削除</Item>
       </Menu>
+
+      <Popup enabled={invalidFeatureIndexes.length > 0} title="データにエラーがあります">
+        <Text>緯度経度の値が不正なデータがあります。緯度は -90〜90、経度は -180〜180 の間の値を指定して下さい。</Text>
+        <ul>
+          {(invalidFeatureIndexes.slice(0, 6)).map((invalidFeatureIndex) => (
+            <li key={invalidFeatureIndex}>
+              <EventLink onClick={() => gridRef.current?.scrollToCell({ rowIdx: invalidFeatureIndex })}>{invalidFeatureIndex}行目</EventLink>
+            </li>
+          ))}
+        </ul>
+      </Popup>
     </OuterWrapper>
   );
 };

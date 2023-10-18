@@ -25,7 +25,10 @@ import { csv2rows } from './utils/csv2geojson';
 import type { Cell, Feature } from './types';
 import 'react-data-grid/lib/styles.css';
 import 'react-contexify/ReactContexify.css';
-import { getLatLngColumnNames, getRowById } from './utils/utils';
+import './datagrid.css';
+import { getLatLngColumnNames, getRowById, getInvalidFeatureIndexes } from './utils/utils';
+import Popup from './Popup';
+import EventLink from './EventLink';
 
 const baseStyle = `
   position: absolute;
@@ -63,6 +66,10 @@ const StyledMap = styled(Map)`
   box-sizing: border-box;
   margin-bottom: 20px;
 `;
+const Text = styled.p`
+  margin: 0;
+  padding: 0;
+`;
 
 const getColumns = (data: Feature[]): Column<Feature>[] => {
   if (data.length === 0) {
@@ -93,6 +100,7 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
   });
 
   const [ features, setFeatures ] = useState<Feature[]>([]);
+  const [ invalidFeatureIndexes, setInvalidFeatureIndexes ] = useState<number[]>([]);
   const [ columns, setColumns ] = useState<Column<Feature>[]>([]);
   const [ filename, setFilename ] = useState<string>('');
   const [ , setFitBounds ] = useState(false);
@@ -161,7 +169,15 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
       gridRef.current?.selectCell({ idx: columnIdx, rowIdx: features.length - 1 });
       selectNewRowOnNextRowUpdate.current = false;
     }
+
+    setInvalidFeatureIndexes(getInvalidFeatureIndexes(features));
   }, [features]);
+
+  useEffect(() => {
+    if (invalidFeatureIndexes.length > 0) {
+      gridRef.current?.scrollToCell({ rowIdx: invalidFeatureIndexes[0] });
+    }
+  }, [invalidFeatureIndexes]);
 
   const onMapPinMoved = useCallback((rowId: string, newLatitude: number, newLongitude: number) => {
     const { latColumnName, lngColumnName } = getLatLngColumnNames(features);
@@ -285,6 +301,9 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
             resizable: true,
           }}
           rowKeyGetter={(row: Feature) => row.id}
+          rowClass={(_, index) =>
+            invalidFeatureIndexes.includes(index) ? 'error-row' : undefined
+          }
           onRowsChange={setFeatures}
           onSelectedCellChange={onSelectedCellChange}
           onCellContextMenu={onCellContextMenu}
@@ -297,6 +316,17 @@ const OpenDataEditor = ({ data, onDataUpdate }: Props): JSX.Element => {
         <Separator />
         <Item id="delete" onClick={onContextMenuItemClick} data-e2e="delete">この行を削除</Item>
       </Menu>
+
+      <Popup enabled={invalidFeatureIndexes.length > 0} title="データにエラーがあります">
+        <Text>緯度経度の値が不正なデータがあります。緯度は -90〜90、経度は -180〜180 の間の値を指定して下さい。</Text>
+        <ul>
+          {(invalidFeatureIndexes.slice(0, 6)).map((invalidFeatureIndex) => (
+            <li key={invalidFeatureIndex}>
+              <EventLink onClick={() => gridRef.current?.scrollToCell({ rowIdx: invalidFeatureIndex })}>{invalidFeatureIndex}行目</EventLink>
+            </li>
+          ))}
+        </ul>
+      </Popup>
     </OuterWrapper>
   );
 };

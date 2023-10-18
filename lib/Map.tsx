@@ -1,25 +1,26 @@
-import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
-
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import styled from 'styled-components';
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import Button from './Button';
+import { getLatLngColumnNames } from './utils/utils';
 import { rows2geojson } from './utils/csv2geojson';
+import type { Map, Marker } from '@geolonia/embed'; // Required to declare types of window.geolonia
+import type { LngLatLike } from 'maplibre-gl';
+import type { Cell, Feature } from './types';
 
-declare global {
-  interface Window {
-    geolonia: any;
-  }
-}
-
-interface Feature {
-  [key: string]: string;
-}
+const StyledButton = styled(Button)`
+  position: absolute;
+  top: 385px;
+  right: 35px;
+`;
 
 interface Props {
   className?: string; // Required to apply styles by styled-components
   features: Feature[];
-  setFeatures: Dispatch<SetStateAction<Feature[]>>;
-  editMode: boolean;
-  setEditMode: Dispatch<SetStateAction<boolean>>;
-  selectedRowId: string | null;
-  setSelectedRowId: Dispatch<SetStateAction<string | null>>;
+  selectedCell: Cell;
+  readonly onMapPinSelected: (id: string) => void;
+  readonly onMapPinAdded: (latitude: number, longtitude: number) => void;
+  onMapPinMoved: (rowId: string, newLatitude: number, newLongitude: number) => void;
   setFitBounds: Dispatch<SetStateAction<boolean>>;
   selectedOn: string | null;
   setSelectedOn: Dispatch<SetStateAction<string | null>>;
@@ -28,21 +29,33 @@ interface Props {
 const Component = (props: Props) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [simpleStyle, setSimpleStyle] = useState<any>();
-  const [map, setMap] = useState<any>();
+  const [map, setMap] = useState<Map>();
 
   const {
-    editMode,
-    setEditMode,
-    selectedRowId,
-    setSelectedRowId,
     features,
-    setFeatures,
+    selectedCell,
+    onMapPinSelected,
+    onMapPinAdded,
+    onMapPinMoved,
     setFitBounds,
     selectedOn,
     setSelectedOn,
   } = props;
 
+  const addRow = useCallback(() => {
+    const { lat, lng } = map?.getCenter() ?? {};
+
+    map?.jumpTo({
+      center: { lat: lat ?? 0, lng: lng ?? 0 },
+      zoom: 17,
+    });
+    onMapPinAdded(lat ?? 0, lng ?? 0);
+  }, [ map, onMapPinAdded ]);
+
   useLayoutEffect(() => {
+    if (!mapContainer.current) {
+      return;
+    }
     if ((mapContainer.current as any).__initialized === true) {
       return;
     }
@@ -51,7 +64,7 @@ const Component = (props: Props) => {
       container: mapContainer.current,
       style: 'geolonia/gsi',
       hash: true,
-    });
+    }) as Map;
 
     (mapContainer.current as any).__initialized = true;
     setMap(map);
@@ -62,17 +75,40 @@ const Component = (props: Props) => {
         type: 'FeatureCollection',
         features: [],
       } as GeoJSON.FeatureCollection;
-      const simpleStyle: any = new window.geolonia.simpleStyle(geojson, {id: sourceId}).addTo(map);
+      const simpleStyle = new window.geolonia.SimpleStyle(geojson, {id: sourceId}).addTo(map);
       setSimpleStyle(simpleStyle);
+
+      if (location.search.includes('debug=1')) {
+        if (!window.geoloniaDebug) {
+          window.geoloniaDebug = {};
+        }
+        window.geoloniaDebug.loaded = true;
+      }
     });
 
-    map.on('click', 'custom-geojson-circle-points', (e: any) => {
+    if (location.search.includes('debug=1')) {
+      map.on('zoomend', () => {
+        if (!window.geoloniaDebug) {
+          window.geoloniaDebug = {};
+        }
+        window.geoloniaDebug.mapZoom = map?.getZoom();
+      });
+    }
+  }, [onMapPinSelected, setSelectedOn]);
+
+  useEffect(() => {
+    const onClick = (e: any) => {
       const id = e.features[0].properties['id'];
-      setEditMode(false);
-      setSelectedRowId(id);
+      onMapPinSelected(id);
       setSelectedOn('map');
-    });
-  }, [mapContainer, setEditMode, setSelectedRowId, setSelectedOn]);
+    };
+
+    map?.on('click', 'custom-geojson-circle-points', onClick);
+
+    return () => {
+      map?.off('click', 'custom-geojson-circle-points', onClick);
+    };
+  }, [map, onMapPinSelected, setSelectedOn]);
 
   useEffect(() => {
     if (!simpleStyle) { return; }
@@ -91,17 +127,17 @@ const Component = (props: Props) => {
   }, [simpleStyle, features, setFitBounds]);
 
   useEffect(() => {
-    let draggableMarker: any = null;
-    const latColumns = [ '緯度', 'lat', 'latitude', '緯度（10進法）', '緯度(10進法)'] as const;
-    const lngColumns = [ '経度', 'lng', 'longitude', '経度（10進法）', '経度(10進法)' ] as const;
+    let draggableMarker: Marker;
 
-    if (!map || selectedRowId === null) {
+    if (!map || !selectedCell.rowId) {
       return;
     }
 
-    const selectedFeature = features.find((feature) => feature.id === selectedRowId);
+    const { latColumnName, lngColumnName } = getLatLngColumnNames(features);
 
-    let center = map.getCenter();
+    const selectedFeature = features.find((feature) => feature.id === selectedCell.rowId);
+
+    let center: LngLatLike = map.getCenter();
 
     const mapLayer = map.getLayer('selected-point');
     if (typeof mapLayer !== 'undefined') {
@@ -110,23 +146,8 @@ const Component = (props: Props) => {
 
     // 既存データ編集の場合
     if (selectedFeature) {
-      const selectedFeatureKeys = Object.keys(selectedFeature);
-      let latColumn = 'latitude';
-      let lngColumn = 'longitude';
-
-      for (let i = 0; i < latColumns.length; i++) {
-        if (selectedFeatureKeys.includes(latColumns[i])) {
-          latColumn = latColumns[i];
-        }
-      }
-      for (let i = 0; i < lngColumns.length; i++) {
-        if (selectedFeatureKeys.includes(lngColumns[i])) {
-          lngColumn = lngColumns[i];
-        }
-      }
-
-      if (selectedFeature[lngColumn] && selectedFeature[latColumn]) {
-        center = [Number(selectedFeature[lngColumn]), Number(selectedFeature[latColumn])];
+      if (lngColumnName && latColumnName) {
+        center = [Number(selectedFeature[lngColumnName]), Number(selectedFeature[latColumnName])];
 
         // 選択されたポイントをハイライトする。
         map.addSource('selected-point', {
@@ -155,38 +176,6 @@ const Component = (props: Props) => {
       }
     }
 
-    if (editMode) {
-      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(center).addTo(map);
-
-      draggableMarker.on('dragend', () => {
-        const feature = features.find((feature) => feature['id'] === selectedRowId);
-        const lngLat = draggableMarker.getLngLat();
-
-        // 新規データ追加の場合
-        if (!feature) {
-          const latField = document.querySelector(`tr#table-data-${selectedRowId} td.latitude input`) as HTMLInputElement;
-          const lngField = document.querySelector(`tr#table-data-${selectedRowId} td.longitude input`) as HTMLInputElement;
-
-          if (latField && lngField) {
-            latField.value = lngLat.lat.toString();
-            lngField.value = lngLat.lng.toString();
-          }
-          return;
-        }
-
-        // 既存データ編集の場合
-        if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
-          setEditMode(false);
-          return;
-        }
-
-        feature.longitude = lngLat.lng.toString();
-        feature.latitude = lngLat.lat.toString();
-        setFeatures([...features]);
-        setEditMode(false);
-      });
-    }
-
     if (selectedOn === 'map') {
       map.flyTo({
         center: center,
@@ -195,8 +184,38 @@ const Component = (props: Props) => {
     } else {
       map.jumpTo({
         center: center,
-        speed: 3,
         zoom: 17,
+      });
+    }
+
+    if (lngColumnName && latColumnName) {
+      const feature = features[selectedCell.rowIdx];
+      const featureLngLat: LngLatLike = {
+        lng: Number(feature[lngColumnName]),
+        lat: Number(feature[latColumnName]),
+      };
+
+      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(featureLngLat).addTo(map);
+
+      draggableMarker.on('dragend', () => {
+        if (!selectedCell.rowId) {
+          throw new Error('Attempt to drag a map marker but the corresponding cell is not selected.');
+        }
+
+        const lngLat = draggableMarker.getLngLat();
+
+        // 新規データ追加の場合
+        if (!feature) {
+          onMapPinAdded(lngLat.lat, lngLat.lng);
+        } else {
+          // 既存データ編集の場合
+          if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
+            draggableMarker.setLngLat(featureLngLat);
+            return;
+          }
+
+          onMapPinMoved(selectedCell.rowId, lngLat.lat, lngLat.lng);
+        }
       });
     }
 
@@ -205,7 +224,7 @@ const Component = (props: Props) => {
         draggableMarker.remove();
       }
     };
-  }, [map, selectedRowId, editMode, setEditMode, features, setFeatures, selectedOn]);
+  }, [map, features, selectedCell.rowId, selectedCell.rowIdx, simpleStyle, selectedOn, onMapPinAdded, onMapPinMoved]);
 
   return (
     <>
@@ -215,6 +234,9 @@ const Component = (props: Props) => {
         data-navigation-control="on"
         data-gesture-handling="off"
       ></div>
+      <StyledButton icon={faPlusCircle} onClick={addRow} data-e2e="button-add-data">
+        データを追加
+      </StyledButton>
     </>
   );
 };

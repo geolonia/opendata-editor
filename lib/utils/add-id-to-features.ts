@@ -1,13 +1,16 @@
 import { ulid } from 'ulid';
-import { Row } from './csv2geojson';
+import type { Feature } from '../types';
 
-export function addIdToFeatures(array: Row[]) {
-  const features: Row[] = [];
-  for (const row of array) {
-    features.push({
+export function addIdToFeatures(rows: Feature|Feature[]): Feature[] {
+  if (Array.isArray(rows)) {
+    return rows.map((row) => ({
       ...row,
       id: ulid(),
-    });
+    }));
+  } else {
+    return [{
+      ...rows,
+      id: ulid(),
+    }];
   }
-  return features;
 }

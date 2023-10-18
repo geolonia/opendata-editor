@@ -1,8 +1,5 @@
 import readXlsxFile from 'read-excel-file';
-
-interface Feature {
-  [key: string]: string;
-}
+import type { Feature } from '../types';
 
 export const xlsParser = async (buffer: ArrayBuffer) => {
   const array = await readXlsxFile(buffer);

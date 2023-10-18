@@ -4,15 +4,13 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { write, utils } from 'xlsx';
 import { styled } from 'styled-components';
 import Button from './Button';
+import type { Feature } from './types';
 
 const DownloadWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
-interface Feature {
-  [key: string]: string;
-}
 interface Props {
   features: Feature[];
   filename: string;
@@ -37,7 +35,7 @@ const Component = (props: Props) => {
       return newFeature;
     });
 
-    const output = Papa.unparse(exportData);
+    const output = Papa.unparse(exportData, { quotes: true });
 
     // CSV ダウンロード
     const csvAtag = document.createElement('a');
@@ -74,6 +72,7 @@ const Component = (props: Props) => {
       <Button
         icon={faDownload}
         onClick={onClick}
+        data-e2e="download"
       >
         エクスポート
       </Button>

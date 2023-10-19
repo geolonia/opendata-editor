@@ -190,33 +190,38 @@ const Component = (props: Props) => {
 
     if (lngColumnName && latColumnName) {
       const feature = features[selectedCell.rowIdx];
-      const featureLngLat: LngLatLike = {
-        lng: Number(feature[lngColumnName]),
-        lat: Number(feature[latColumnName]),
-      };
 
-      draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(featureLngLat).addTo(map);
+      if (feature) {
+        const featureLngLat: LngLatLike = {
+          lng: Number(feature[lngColumnName]),
+          lat: Number(feature[latColumnName]),
+        };
 
-      draggableMarker.on('dragend', () => {
-        if (!selectedCell.rowId) {
-          throw new Error('Attempt to drag a map marker but the corresponding cell is not selected.');
-        }
+        draggableMarker = new window.geolonia.Marker({ draggable: true }).setLngLat(featureLngLat).addTo(map);
 
-        const lngLat = draggableMarker.getLngLat();
-
-        // 新規データ追加の場合
-        if (!feature) {
-          onMapPinAdded(lngLat.lat, lngLat.lng);
-        } else {
-          // 既存データ編集の場合
-          if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
-            draggableMarker.setLngLat(featureLngLat);
-            return;
+        draggableMarker.on('dragend', () => {
+          if (!selectedCell.rowId) {
+            throw new Error('Attempt to drag a map marker but the corresponding cell is not selected.');
           }
 
-          onMapPinMoved(selectedCell.rowId, lngLat.lat, lngLat.lng);
-        }
-      });
+          const lngLat = draggableMarker.getLngLat();
+
+          // 新規データ追加の場合
+          if (!feature) {
+            onMapPinAdded(lngLat.lat, lngLat.lng);
+          } else {
+            // 既存データ編集の場合
+            if (!window.confirm(`「${feature?.name}」の位置情報を変更しても良いですか?`)) {
+              draggableMarker.setLngLat(featureLngLat);
+              return;
+            }
+
+            onMapPinMoved(selectedCell.rowId, lngLat.lat, lngLat.lng);
+          }
+        });
+      } else {
+        simpleStyle.fitBounds({ duration: 0 });
+      }
     }
 
     return () => {

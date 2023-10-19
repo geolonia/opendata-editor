@@ -140,7 +140,7 @@ test('if one of the cells in the added row is selected when データを追加 b
   expect(selectedColumnInLastRow).toBe(true);
 });
 
-test('if new line is inserted above and below by the context menu', async ({ page }) => {
+test('if new line is inserted above by the context menu', async ({ page }) => {
   await page.goto('/?data=https://opendata.takamatsu-fact.com/polling_place_list/data.csv&debug=1');
   await page.waitForFunction(() => window.geoloniaDebug?.loaded === true);
 
@@ -149,8 +149,12 @@ test('if new line is inserted above and below by the context menu', async ({ pag
   await page.locator('*[data-e2e="insert-above"]').click();
   const aboveLineName = await page.locator('.rdg-row[aria-rowindex="3"] > .rdg-cell[aria-colindex="5"]').innerText();
   expect(aboveLineName).toBe('新規マップピン');
+});
 
-  await sleep(500);
+test('if new line is inserted below by the context menu', async ({ page }) => {
+  await page.goto('/?data=https://opendata.takamatsu-fact.com/polling_place_list/data.csv&debug=1');
+  await page.waitForFunction(() => window.geoloniaDebug?.loaded === true);
+
   await page.locator('.rdg-row[aria-rowindex="4"] > .rdg-cell[aria-colindex="1"]').click({ button: 'right' });
   await sleep(500);
   await page.locator('*[data-e2e="insert-below"]').click();

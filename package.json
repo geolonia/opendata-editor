@@ -27,7 +27,7 @@
     "build:web": "vite build --config ./vite.config.web.ts",
     "test": "vitest run && playwright test",
     "lint": "tsc --noEmit && eslint . --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "postinstall": "npm list @playwright/test && playwright install"
+    "postinstall": "if npm list @playwright/test; then playwright install; fi"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.2.0",

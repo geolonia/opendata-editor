@@ -96,6 +96,19 @@ test('if the row is added when データを追加 button is pressed', async ({ p
   expect(await page.locator('.rdg-row').last().getByText('新規マップピン').isVisible()).toBe(true);
 });
 
+test('if the columns are not changed when データを追加 button is pressed', async ({ page }) => {
+  await page.goto(pageURL);
+  await page.waitForFunction(() => window.geoloniaDebug?.loaded === true);
+
+  await page.locator('*[data-e2e="button-add-data"]').click();
+  await sleep(500);
+
+  const headerCells = await page.locator('.rdg-header-row > .rdg-cell').all();
+  const headerTexts = await Promise.all(headerCells.map((headerCell) => headerCell.innerText()));
+
+  expect(headerTexts).toStrictEqual([ 'number', 'name', 'latitude', 'longitude' ]);
+});
+
 test('if the viewport is scrolled to the added row when データを追加 button is pressed', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(pageURL);

@@ -1,6 +1,6 @@
 {
   "name": "@geolonia/create-opendata-editor",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "homepage": "https://geolonia.github.io/opendata-editor/",
   "license": "MIT",
   "type": "module",
@@ -20,7 +20,7 @@
     "build:template": "cp ../../tsconfig.json ./template/tsconfig.json && cp --recursive './template' './dist/template'"
   },
   "dependencies": {
-    "@geolonia/opendata-editor-web": "1.1.1",
+    "@geolonia/opendata-editor-web": "^1.2.0",
     "minimist": "^1.2.8",
     "yesno": "^0.4.0"
   },

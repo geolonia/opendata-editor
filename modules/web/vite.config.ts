@@ -8,7 +8,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   build: {
-    outDir: join(__dirname, 'dist'),
+    outDir: join(__dirname, 'dist/lib'),
   },
   server: {
     port: 3000,

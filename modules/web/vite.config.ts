@@ -4,12 +4,11 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   build: {
-    outDir: resolve(__dirname, 'dist/web'),
+    outDir: resolve(__dirname, 'dist'),
   },
   server: {
     port: 3000,
   },
   plugins: [react()],
-  publicDir: resolve(__dirname, 'web/public'),
   base: process.env.NODE_ENV === 'preview' ? '/' : '/opendata-editor/',
 });

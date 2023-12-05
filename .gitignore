@@ -1,19 +1,19 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
 # testing
 /coverage
-/web/public/test.csv
+/modules/web/public/test.csv
 
 # production
-/dist/
+dist/
 
 # misc
-/tmp/
+tmp/
 
 .DS_Store
 .env.local

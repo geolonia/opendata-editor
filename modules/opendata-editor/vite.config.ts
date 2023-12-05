@@ -8,9 +8,9 @@ const deps = Object.keys(dependencies).concat(Object.keys(devDependencies));
 
 export default defineConfig({
   build: {
-    outDir: resolve(__dirname, 'dist/lib'),
+    outDir: resolve(__dirname, 'dist'),
     lib: {
-      entry: resolve(__dirname, 'lib/OpenDataEditor.tsx'),
+      entry: resolve(__dirname, 'src/OpenDataEditor.tsx'),
       name: 'OpenDataEditor',
       fileName: 'opendata-editor',
       formats: ['es', 'cjs'],
@@ -22,8 +22,8 @@ export default defineConfig({
   plugins: [
     react(),
     dts({
-      outDir: resolve(__dirname, 'dist/lib/types'),
-      entryRoot: resolve(__dirname, 'lib'),
+      outDir: resolve(__dirname, 'dist/types'),
+      entryRoot: resolve(__dirname, 'src'),
     }),
   ],
 });

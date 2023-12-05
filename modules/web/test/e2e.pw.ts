@@ -10,7 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const pageURL = '/?data=http://localhost:2923/opendata-editor/test.csv&debug=1';
 
 test.beforeAll(async () => {
-  await copyFile(join(__dirname, './fixtures/data.csv'), join(__dirname, '../web/public/test.csv'));
+  await copyFile(join(__dirname, './fixtures/data.csv'), join(__dirname, '../public/test.csv'));
 });
 
 test('if table is properly displayed when data is given by URL', async ({ page }) => {

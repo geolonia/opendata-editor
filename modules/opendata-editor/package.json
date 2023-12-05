@@ -4,33 +4,26 @@
   "homepage": "https://geolonia.github.io/opendata-editor/",
   "type": "module",
   "files": [
-    "dist/lib",
-    "lib",
+    "dist",
+    "src",
     "LICENSE.txt"
   ],
-  "main": "./dist/lib/opendata-editor.cjs",
-  "module": "./dist/lib/opendata-editor.js",
+  "main": "./dist/opendata-editor.cjs",
+  "module": "./dist/opendata-editor.js",
   "exports": {
     ".": {
       "import": {
-        "default": "./dist/lib/opendata-editor.js",
-        "types": "./dist/lib/types/OpenDataEditor.d.ts"
+        "default": "./dist/opendata-editor.js",
+        "types": "./dist/types/OpenDataEditor.d.ts"
       },
-      "require": "./dist/lib/opendata-editor.cjs"
+      "require": "./dist/opendata-editor.cjs"
     }
   },
-  "types": "./dist/lib/types/OpenDataEditor.d.ts",
-  "workspaces": [
-    "modules/*"
-  ],
+  "types": "./dist/types/OpenDataEditor.d.ts",
   "scripts": {
-    "dev": "vite --config ./vite.config.web.ts",
-    "build": "npm run build:lib && npm run build:web",
-    "build:lib": "vite build --config ./vite.config.lib.ts",
-    "build:web": "vite build --config ./vite.config.web.ts",
-    "test": "vitest run && playwright test",
-    "lint": "tsc --noEmit && eslint . --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "postinstall": "if npm list @playwright/test; then playwright install; fi"
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "test": "vitest run"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
@@ -51,20 +44,14 @@
   },
   "devDependencies": {
     "@geolonia/embed": "^4.0.0",
-    "@geolonia/eslint-config": "^0.0.7",
-    "@lerna-lite/cli": "^3.0.0",
-    "@playwright/test": "^1.38.1",
     "@types/encoding-japanese": "^2.0.1",
     "@types/node": "^20.10.3",
     "@types/papaparse": "^5.3.5",
     "@types/react": "^18.0.18",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^4.0.4",
-    "eslint": "^8.46.0",
-    "looks-same": "^9.0.0",
     "maplibre-gl": "^3.3.1",
     "typescript": "^5.1.6",
-    "undici": "^6.0.0",
     "vite": "^5.0.5",
     "vite-plugin-dts": "^3.4.0",
     "vitest": "^1.0.1"

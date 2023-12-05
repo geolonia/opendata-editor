@@ -20,6 +20,9 @@
     }
   },
   "types": "./dist/lib/types/OpenDataEditor.d.ts",
+  "workspaces": [
+    "modules/*"
+  ],
   "scripts": {
     "dev": "vite --config ./vite.config.web.ts",
     "build": "npm run build:lib && npm run build:web",
@@ -49,6 +52,8 @@
   "devDependencies": {
     "@geolonia/embed": "^4.0.0",
     "@geolonia/eslint-config": "^0.0.7",
+    "@lerna-lite/cli": "^3.0.0",
+    "@lerna-lite/exec": "^3.0.0",
     "@playwright/test": "^1.38.1",
     "@types/encoding-japanese": "^2.0.1",
     "@types/node": "^20.10.3",

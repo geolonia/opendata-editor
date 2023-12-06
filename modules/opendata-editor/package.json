@@ -17,6 +17,10 @@
         "types": "./dist/types/OpenDataEditor.d.ts"
       },
       "require": "./dist/opendata-editor.cjs"
+    },
+    "./style.css": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
     }
   },
   "types": "./dist/types/OpenDataEditor.d.ts",

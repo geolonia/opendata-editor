@@ -26,7 +26,7 @@
 
 以下の文字列があるデータをサポートしています。
 
-- `latitude`, `longitude` 
+- `latitude`, `longitude`
 
 ## コンポーネントとして使う (開発者向け)
 

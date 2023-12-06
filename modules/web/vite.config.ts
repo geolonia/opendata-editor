@@ -19,5 +19,5 @@ export default defineConfig({
       noIndex: false,
     }),
   ],
-  base: process.env.NODE_ENV === 'preview' ? '/' : '/opendata-editor/',
+  base: process.env.NODE_ENV === 'gh-pages' ? '/opendata-editor/' : '/',
 });

@@ -15,4 +15,10 @@ module.exports = {
     'no-console': 'off',
     'import/no-extraneous-dependencies': 'off',
   },
+  overrides: [{
+    files: [ './modules/create/**/*.ts' ],
+    parserOptions: {
+      project: './modules/create/tsconfig.json',
+    },
+  }],
 };

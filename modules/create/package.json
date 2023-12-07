@@ -1,0 +1,30 @@
+{
+  "name": "@geolonia/create-opendata-editor",
+  "version": "1.1.1",
+  "homepage": "https://geolonia.github.io/opendata-editor/",
+  "license": "MIT",
+  "type": "module",
+  "bin": "./dist/bin/cli.mjs",
+  "types": "./dist/lib/create.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./dist/lib/create.mjs",
+        "types": "./dist/lib/create.d.ts"
+      }
+    }
+  },
+  "scripts": {
+    "build": "npm run build:cli && npm run build:template",
+    "build:cli": "unbuild && chmod +x ./dist/bin/cli.mjs",
+    "build:template": "cp ../../tsconfig.json ./template/tsconfig.json && cp --recursive './template' './dist/template'"
+  },
+  "dependencies": {
+    "@geolonia/opendata-editor-web": "1.1.1",
+    "minimist": "^1.2.8",
+    "yesno": "^0.4.0"
+  },
+  "devDependencies": {
+    "unbuild": "^2.0.0"
+  }
+}

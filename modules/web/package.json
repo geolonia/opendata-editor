@@ -6,9 +6,9 @@
     "ode": "./bin/cli.js"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config ./vite.web.config.ts",
     "build": "npm run build:web && npm run build:cli",
-    "build:web": "vite build",
+    "build:web": "vite build --config ./vite.web.config.ts",
     "build:cli": "tsc --project ./tsconfig.cli.json && chmod +x ./bin/cli.js",
     "test": "playwright test",
     "postinstall": "if npm list @playwright/test; then playwright install; fi"

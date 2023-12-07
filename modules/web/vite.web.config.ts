@@ -5,7 +5,7 @@ import { ViteEjsPlugin } from 'vite-plugin-ejs';
 
 export default defineConfig({
   build: {
-    outDir: resolve(__dirname, 'dist'),
+    outDir: resolve(__dirname, 'dist/web'),
   },
   server: {
     port: 3000,

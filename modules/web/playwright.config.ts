@@ -20,7 +20,7 @@ export default {
   ],
 
   webServer: {
-    command: 'npx vite --port 2923',
+    command: 'npx vite --config ./vite.web.config.ts --port 2923',
     url: 'http://localhost:2923/opendata-editor/',
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,

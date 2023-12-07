@@ -1,0 +1,13 @@
+{
+  "name": "@geolonia/create-opendata-editor",
+  "version": "1.1.1",
+  "homepage": "https://geolonia.github.io/opendata-editor/",
+  "type": "module",
+  "bin": "./bin/cli.js",
+  "scripts": {
+    "build": "tsc && chmod +x ./bin/cli.js"
+  },
+  "dependencies": {
+    "@geolonia/opendata-editor-web": "1.1.1"
+  }
+}

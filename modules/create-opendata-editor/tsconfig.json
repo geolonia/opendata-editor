@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "skipLibCheck": false,
+    "noEmit": false,
+    "module": "nodenext",
+    "moduleResolution": "nodenext"
+  },
+  "include": [ "./**/*.ts" ]
+}

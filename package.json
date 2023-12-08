@@ -12,6 +12,7 @@
     "build": "lerna run --stream build",
     "test": "lerna run --stream test",
     "lint": "tsc --noEmit && eslint . --ext js,jsx,ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "version": "lerna version --message 'chore: %s' --no-git-tag-version && esno ./scripts/version.ts && npm install --package-lock-only",
     "release": "lerna publish"
   },
   "devDependencies": {
@@ -19,8 +20,10 @@
     "@lerna-lite/cli": "^3.0.0",
     "@lerna-lite/publish": "^3.1.0",
     "@lerna-lite/run": "^3.0.0",
+    "@lerna-lite/version": "^3.1.0",
     "@types/node": "^20.10.3",
     "eslint": "^8.46.0",
+    "esno": "^4.0.0",
     "typescript": "^5.1.6"
   }
 }

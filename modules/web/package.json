@@ -6,16 +6,29 @@
   "bin": {
     "ode": "./dist/bin/cli.js"
   },
+  "main": "./dist/odeweb.cjs",
+  "module": "./dist/odeweb.js",
+  "types": "./dist/lib/types/index.d.ts",
   "exports": {
+    ".": {
+      "import": {
+        "default": "./dist/lib/odeweb.js",
+        "types": "./dist/lib/types/index.d.ts"
+      },
+      "require": "./dist/odeweb.cjs"
+    },
     "./cli": {
       "import": {
         "default": "./dist/bin/lib.js",
         "types": "./dist/bin/lib.d.ts"
       }
+    },
+    "./style.css": {
+      "import": "./dist/lib/style.css",
+      "require": "./dist/lib/style.css"
     }
   },
   "scripts": {
-    "dev": "vite",
     "build": "npm run build:lib && npm run build:cli",
     "build:lib": "vite build",
     "build:cli": "tsc --project ./tsconfig.cli.json && chmod +x ./dist/bin/cli.js",

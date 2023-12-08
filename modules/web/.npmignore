@@ -1,0 +1,5 @@
+# .npmignore is required to include dist/ directory in the package.
+
+node_modules/
+test/
+playwright.config.ts

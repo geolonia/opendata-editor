@@ -1,6 +1,6 @@
 {
   "name": "@geolonia/opendata-editor-web",
-  "private": true,
+  "version": "1.1.1",
   "type": "module",
   "bin": {
     "ode": "./bin/cli.js"

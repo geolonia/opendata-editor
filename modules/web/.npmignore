@@ -1,0 +1,4 @@
+dist/web/
+node_modules/
+test/
+playwright.config.ts

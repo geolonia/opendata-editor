@@ -4,6 +4,8 @@
     "declaration": true,
     "skipLibCheck": false,
     "noEmit": false,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "outDir": "./dist/bin"
   },
   "include": [ "./bin/*.ts" ]

@@ -6,7 +6,7 @@ import { cwd } from 'node:process';
 import { build, createServer } from 'vite';
 import minimist from 'minimist';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
-import type { OpenDataEditorConfig } from '../src/configurator/types';
+import type { OpenDataEditorConfig } from '../src/configurator/types.ts';
 
 const userAssetsDir = join(__dirname, '../src/web/user-assets');
 

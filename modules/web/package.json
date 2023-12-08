@@ -5,10 +5,23 @@
   "bin": {
     "ode": "./bin/cli.js"
   },
+  "main": "./dist/configurator/configurator.cjs",
+  "module": "./dist/configurator/configurator.js",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./dist/configurator/configurator.js",
+        "types": "./dist/configurator/types/index.d.ts"
+      },
+      "require": "./dist/configurator/configurator.cjs"
+    }
+  },
+  "types": "./dist/configurator/types/index.d.ts",
   "scripts": {
     "dev": "vite --config ./vite.web.config.ts",
-    "build": "npm run build:web && npm run build:cli",
+    "build": "npm run build:web && npm run build:configurator && npm run build:cli",
     "build:web": "vite build --config ./vite.web.config.ts",
+    "build:configurator": "vite build --config ./vite.configurator.config.ts",
     "build:cli": "tsc --project ./tsconfig.cli.json && chmod +x ./bin/cli.js",
     "test": "playwright test",
     "postinstall": "if npm list @playwright/test; then playwright install; fi"

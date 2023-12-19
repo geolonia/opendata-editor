@@ -38,15 +38,16 @@ jobs:
         if: github.event_name == 'release'
         with:
           name: web
-          path: dist/web/
+          path: ./modules/web/dist/
 
       - uses: actions/upload-artifact@v3
         if: github.event_name == 'release'
         with:
           name: lib
           path: |
-            ./
+            ./modules/opendata-editor/
             !./node_modules/**/*
+            !./modules/opendata-editor/node_modules/**/*
 
   deploy:
     needs:
@@ -74,7 +75,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: web
-          path: dist/web/
+          path: ./modules/web/dist/
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -82,7 +83,7 @@ jobs:
       - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v1
         with:
-          path: dist/web/
+          path: ./modules/web/dist/
 
       - name: Deploy to GitHub Pages
         id: deployment
@@ -97,7 +98,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: lib
-          path: ./
+          path: ./modules/opendata-editor/
       - uses: actions/setup-node@v3
         with:
           node-version: 18

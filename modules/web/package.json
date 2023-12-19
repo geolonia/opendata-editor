@@ -1,0 +1,27 @@
+{
+  "name": "@geolonia/opendata-editor-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "playwright test",
+    "postinstall": "if npm list @playwright/test; then playwright install; fi"
+  },
+  "dependencies": {
+    "@geolonia/opendata-editor": "^1.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.38.1",
+    "@types/node": "^20.10.3",
+    "@types/react": "^18.0.18",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^4.0.4",
+    "looks-same": "^9.0.0",
+    "typescript": "^5.1.6",
+    "undici": "^6.0.0",
+    "vite": "^5.0.5"
+  }
+}

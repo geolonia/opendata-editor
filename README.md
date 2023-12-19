@@ -40,6 +40,7 @@ npm install @geolonia/opendata-editor
 
 ```typescript
 import { OpenDataEditor } from '@geolonia/opendata-editor';
+import '@geolonia/opendata-editor/style.css';
 
 export const Page = (): JSX.Element => {
   return (

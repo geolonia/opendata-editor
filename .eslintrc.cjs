@@ -9,7 +9,7 @@ module.exports = {
   parserOptions: {
     project: './tsconfig.json',
   },
-  ignorePatterns: ['/dist/*'],
+  ignorePatterns: [ '**/dist/*' ],
 
   rules: {
     'no-console': 'off',

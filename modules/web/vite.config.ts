@@ -1,3 +1,4 @@
+/* Build config for Web (src/*) */
 import { resolve } from 'path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';

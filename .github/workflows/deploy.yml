@@ -38,7 +38,7 @@ jobs:
         if: github.event_name == 'release'
         with:
           name: web
-          path: ./modules/web/dist/
+          path: ./modules/geolonia.github.io/dist/
 
       - uses: actions/upload-artifact@v3
         if: github.event_name == 'release'
@@ -75,7 +75,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: web
-          path: ./modules/web/dist/
+          path: ./modules/geolonia.github.io/dist/
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -83,7 +83,7 @@ jobs:
       - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./modules/web/dist/
+          path: ./modules/geolonia.github.io/dist/
 
       - name: Deploy to GitHub Pages
         id: deployment

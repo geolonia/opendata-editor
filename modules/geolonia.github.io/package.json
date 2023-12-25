@@ -1,0 +1,13 @@
+{
+  "name": "@geolonia/geolonia.github.io",
+  "version": "1.1.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esno ./scripts/build.ts"
+  },
+  "devDependencies": {
+    "@geolonia/create-opendata-editor": "1.1.1",
+    "esno": "^4.0.0"
+  }
+}

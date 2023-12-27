@@ -1,5 +1,6 @@
 {
   "name": "@geolonia/opendata-editor-web",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {

@@ -78,6 +78,6 @@ http://localhost:3000/opendata-editor またはポート番号3000が使えな�
 
 ## リリース
 
-Web 版は main ブランチに変更がマージされたタイミングでリリースされます。
-
-ライブラリー版は Release が作成されたタイミングで npmjs.com に publish されます。事前に package.json の `version` を上げることを忘れないで下さい。
+リリースは GitHub 上で Release が作成されたタイミングで行われます。  
+GitHub Actions が起動し、Web 版のリリースと、各パッケージの npmjs.com への publish が行われます。  
+事前に package.json の `version` を上げることを忘れないで下さい。

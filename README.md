@@ -78,6 +78,7 @@ http://localhost:3000/opendata-editor またはポート番号3000が使えな�
 
 ## リリース
 
+リリースの前に、プロジェクトルートで `npm run version` を実行し、package.json などに記載のバージョン番号を上げて下さい。
+
 リリースは GitHub 上で Release が作成されたタイミングで行われます。  
-GitHub Actions が起動し、Web 版のリリースと、各パッケージの npmjs.com への publish が行われます。  
-事前に package.json の `version` を上げることを忘れないで下さい。
+GitHub Actions が起動し、Web 版のリリースと、各パッケージの npmjs.com への publish が行われます。

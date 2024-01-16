@@ -62,7 +62,7 @@ export const Page = (): JSX.Element => {
 
 以下のコマンドで環境を用意してください。
 
-```
+```sh
 $ git clone git@github.com:geolonia/opendata-editor.git
 $ cd opendata-editor
 $ npm install
@@ -70,7 +70,7 @@ $ npm install
 
 以下のコマンドで起動します。
 
-```
+```sh
 $ npm run dev
 ```
 

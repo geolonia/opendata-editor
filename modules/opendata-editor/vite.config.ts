@@ -2,9 +2,9 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
-import { dependencies, devDependencies } from './package.json';
+import { dependencies } from './package.json';
 
-const deps = Object.keys(dependencies).concat(Object.keys(devDependencies));
+const deps = Object.keys(dependencies);
 
 export default defineConfig({
   build: {

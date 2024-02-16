@@ -62,7 +62,7 @@ export const Page = (): JSX.Element => {
 
 以下のコマンドで環境を用意してください。
 
-```
+```sh
 $ git clone git@github.com:geolonia/opendata-editor.git
 $ cd opendata-editor
 $ npm install
@@ -70,7 +70,7 @@ $ npm install
 
 以下のコマンドで起動します。
 
-```
+```sh
 $ npm run dev
 ```
 
@@ -78,6 +78,7 @@ http://localhost:3000/opendata-editor またはポート番号3000が使えな�
 
 ## リリース
 
-Web 版は main ブランチに変更がマージされたタイミングでリリースされます。
+リリースの前に、プロジェクトルートで `npm run version` を実行し、package.json などに記載のバージョン番号を上げて下さい。
 
-ライブラリー版は Release が作成されたタイミングで npmjs.com に publish されます。事前に package.json の `version` を上げることを忘れないで下さい。
+リリースは GitHub 上で Release が作成されたタイミングで行われます。  
+GitHub Actions が起動し、Web 版のリリースと、各パッケージの npmjs.com への publish が行われます。

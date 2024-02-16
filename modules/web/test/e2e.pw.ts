@@ -7,7 +7,7 @@ import { fetch } from 'undici';
 import { sleep } from './utils';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const pageURL = '/?data=http://localhost:2923/opendata-editor/test.csv&debug=1';
+const pageURL = '/?data=http://localhost:2923/test.csv&debug=1';
 
 test.beforeAll(async () => {
   await copyFile(join(__dirname, './fixtures/data.csv'), join(__dirname, '../public/test.csv'));
@@ -27,7 +27,7 @@ test('if table is properly displayed when data is given by drag & drop', async (
   await page.goto('/?debug=1');
   await page.waitForFunction(() => window.geoloniaDebug?.loaded === true);
 
-  const res = await fetch('http://localhost:2923/opendata-editor/test.csv');
+  const res = await fetch('http://localhost:2923/test.csv');
   const csv = await res.text();
 
   await page.locator('.uploader > div').dispatchEvent('drop', {
@@ -213,7 +213,7 @@ test('if downloaded CSV is valid', async ({ page }) => {
 
   const downloadedCsv = await readFile(downloadPath, 'utf-8');
 
-  const res = await fetch('http://localhost:2923/opendata-editor/test.csv');
+  const res = await fetch('http://localhost:2923/test.csv');
   const originalCsv = await res.text();
 
   const originalCsvLines = originalCsv.split('\n');

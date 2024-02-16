@@ -14,11 +14,17 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [ "./" ]
+  "include": [ "./" ],
+  "exclude": [
+    "node_modules",
+    "**/dist/*",
+    "**/*.js",
+    "**/*.d.ts"
+  ]
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <!-- TODO favicon を設定する場合は、以下のコメントアウトを解除し、favicon へのファイルパスを記載して下さい -->
+    <!-- <link rel="icon" href="./assets/favicon.ico" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 以下のタグにより、このページは Google や Bing などの検索エンジンでヒットしなくなります。検索にヒットさせたい場合は以下のタグを削除して下さい -->
+    <meta name="robots" content="noindex" />
+    <title>オープンデータ編集マップ</title>
+  </head>
+  <body>
+    <noscript>このページを表示するためには JavaScript を有効にする必要があります。</noscript>
+    <!--
+      アプリケーションはこの要素内に挿入されます。
+      要素の `id` などは index.ts 内の `initOpenDataEditor()` の引数で変更することができます。
+    -->
+    <div id="root"></div>
+
+    <!--
+      TODO YOUR-API-KEY を正しい API キーに置き換えて下さい。
+      API キーの取得の仕方はこちら: https://docs.geolonia.com/tutorial/002/
+
+      一部のホスティングサービスのドメインにおいては YOUR-API-KEY のままでも動作します。対象ドメインについては以下を参照して下さい。
+      https://docs.geolonia.com/tutorial/002/#%E5%AF%BE%E8%B1%A1%E3%81%A8%E3%81%AA%E3%82%8B-url-%E3%81%8A%E3%82%88%E3%81%B3%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9
+    -->
+    <script src="https://cdn.geolonia.com/v1/embed?geolonia-api-key=YOUR-API-KEY"></script>
+    <!--
+      初期化処理を行うスクリプトへのパス。
+      この HTML ファイルは内部的に Vite で処理されるため、*.ts ファイルを直接 `src` 属性に指定することも可能です。
+    -->
+    <script src="./src/index.ts" type="module"></script>
+  </body>
+</html>

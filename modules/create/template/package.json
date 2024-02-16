@@ -1,0 +1,12 @@
+{
+  "name": "your-project-name",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "ode dev",
+    "build": "ode build"
+  },
+  "dependencies": {
+    "@geolonia/opendata-editor-web": "^1.2.0"
+  }
+}

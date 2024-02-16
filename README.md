@@ -28,29 +28,6 @@
 
 - `latitude`, `longitude`
 
-## コンポーネントとして使う (開発者向け)
-
-### インストール
-
-```shell
-npm install @geolonia/opendata-editor
-```
-
-### 使い方
-
-```typescript
-import { OpenDataEditor } from '@geolonia/opendata-editor';
-import '@geolonia/opendata-editor/style.css';
-
-export const Page = (): JSX.Element => {
-  return (
-    <>
-      <OpenDataEditor />
-    </>
-  );
-};
-```
-
 ## ライセンス、利用規約、フィードバック
 
 - ソースコードのライセンスは MIT ライセンスです。
@@ -58,11 +35,23 @@ export const Page = (): JSX.Element => {
 
 # 開発者向け情報
 
-## ローカル環境構築
+## opendata-editor を自分のサーバーでセルフホストする
+
+https://geolonia.github.io/opendata-editor/ で公開されている opendata-editor と同様のものを、自分で用意したサーバー上でセルフホストできます。  
+詳細は [@geolonia/create-opendata-editor の README](./modules/create/README.md) を参照して下さい。
+
+## コンポーネントとして使う
+
+https://geolonia.github.io/opendata-editor/ で公開されている opendata-editor と同様のものを React コンポーネントとして利用できます。  
+詳細は [@geolonia/opendata-editor の README](./modules/opendata-editor/README.md) を参照して下さい。
+
+## 本プロジェクトにコントリビュートする
+
+### ローカル環境構築
 
 以下のコマンドで環境を用意してください。
 
-```
+```sh
 $ git clone git@github.com:geolonia/opendata-editor.git
 $ cd opendata-editor
 $ npm install
@@ -70,14 +59,15 @@ $ npm install
 
 以下のコマンドで起動します。
 
-```
+```sh
 $ npm run dev
 ```
 
 http://localhost:3000/opendata-editor またはポート番号3000が使えないときは、コンソール上に表示されるURLにアクセスして下さい。
 
-## リリース
+### リリース
 
-Web 版は main ブランチに変更がマージされたタイミングでリリースされます。
+リリースの前に、プロジェクトルートで `npm run version` を実行し、package.json などに記載のバージョン番号を上げて下さい。
 
-ライブラリー版は Release が作成されたタイミングで npmjs.com に publish されます。事前に package.json の `version` を上げることを忘れないで下さい。
+リリースは GitHub 上で Release が作成されたタイミングで行われます。  
+GitHub Actions が起動し、Web 版のリリースと、各パッケージの npmjs.com への publish が行われます。

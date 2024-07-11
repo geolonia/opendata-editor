@@ -8,6 +8,7 @@
     "src",
     "LICENSE.txt"
   ],
+  "license": "MIT",
   "main": "./dist/opendata-editor.cjs",
   "module": "./dist/opendata-editor.js",
   "exports": {

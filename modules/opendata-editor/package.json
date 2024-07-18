@@ -2,6 +2,7 @@
   "name": "@geolonia/opendata-editor",
   "version": "1.1.1",
   "homepage": "https://geolonia.github.io/opendata-editor/",
+  "license": "MIT",
   "type": "module",
   "files": [
     "dist",

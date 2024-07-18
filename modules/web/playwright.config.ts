@@ -21,11 +21,11 @@ export default {
 
   webServer: {
     command: 'npx vite --port 2923',
-    url: 'http://localhost:2923/opendata-editor/',
+    url: 'http://localhost:2923/',
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
   },
   use: {
-    baseURL: 'http://localhost:2923/opendata-editor/',
+    baseURL: 'http://localhost:2923/',
   },
 };

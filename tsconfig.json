@@ -20,5 +20,11 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [ "./" ]
+  "include": [ "./" ],
+  "exclude": [
+    "node_modules",
+    "**/dist/*",
+    "**/*.js",
+    "**/*.d.ts"
+  ]
 }
